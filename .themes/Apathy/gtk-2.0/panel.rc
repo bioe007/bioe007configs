@@ -1,0 +1,39 @@
+# panelrc for rezlooks engine by perry hargrave aka bioe007
+#
+# loosely based on the themes:
+#
+# Simple (xfce engine)
+# Candido-Graphite
+# 
+
+style "rezlooks-panel" = "rezlooks-default"
+{
+  xthickness = 3
+  ythickness = 3
+  # bg[NORMAL]="#000000" # most of the panel
+  bg[ACTIVE]="#a5a6a7" # the background for active window button
+  # fg[PRELIGHT]="#ffffff" # the background for active window button
+}
+widget_class "*Panel*GtkToggleButton" style "rezlooks-panel"
+widget_class "*Panel*GtkButton" style "rezlooks-panel"
+class "*Panel*" style "rezlooks-panel"
+class "*notif*" style "rezlooks-panel"
+class "*Notif*" style "rezlooks-panel"
+class "*Tray*" style "rezlooks-panel"
+class "*tray*" style "rezlooks-panel"
+
+style "pager" = "rezlooks-panel"
+{
+    xthickness = 1
+    ythickness = 1
+
+    bg[SELECTED]      = "#a7a7a7" 
+    fg[SELECTED]      = "#fdfdfd"
+
+    engine "xfce"
+    {
+        smooth_edge = true
+    }
+}
+widget_class "*Pager*"             style "pager"
+class "*Pager*"                    style "pager"
