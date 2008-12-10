@@ -1,7 +1,10 @@
 startup_message off
 vbell off
 defscrollback 1000
-
+defutf8 on
+defflow off
+autodetach on
+# attrcolor b ".I"
 # cleans screen after closing a text editor
 altscreen on
 
@@ -9,10 +12,11 @@ altscreen on
 term screen-256color
 terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 
-screen -t util
-screen -t make
-screen -t irssi irssi
-screen -t mocp mocp
+
+# screen -t util
+# screen -t make
+# screen -t irssi irssi
+# screen -t mocp mocp
 select 0
 # screen -t ttyS0
 # screen -t ttyUSB0
@@ -31,3 +35,8 @@ bind 'K' kill
 #screen, with the time and date and with the current window highlighted                                                                            
 hardstatus alwayslastline
 hardstatus string '%{= .b}[%= %{= .b}%?%-Lw%{b}%?%{m}->%{C}%n%{Y}:%{C}%f%{w}:%{C}%t%?(%u)%?%{m}<-%{b}%?%+Lw%?%?%= %{b}][%{= .C}%c %{b}]'
+# set the second mark, write to the screen-exchange
+# file, and use xsel to synchronize the paste buffer
+# with the X selection.
+# bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel -n < /tmp/screen-exchange'"
+bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel < /tmp/screen-exchange'"
