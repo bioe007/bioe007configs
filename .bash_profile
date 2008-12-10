@@ -3,8 +3,8 @@ if [ -r $HOME/.bashrc ] && [ -z "$SANDBOX" ] ; then
 fi
 
 # the very basics
-export PATH="~/.bin:/usr/local/bin":${PATH}
-
+export PATH="~/.bin:/usr/local/bin:/opt/mozilla/bin":${PATH}
+export MOZILLA_FIVE_HOME="/usr/lib/xulrunner-1.9.0.4"
 
 #---------------------- deprecated -----------------------#
 # replaced this with a symbolic link in /usr/local/bin
