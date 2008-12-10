@@ -61,15 +61,17 @@ alias cds="cd $SANDBOX"
 # correctly set path for octave use
 alias octave="LD_LIBRARY_PATH=/opt/octave/lib:$LD_LIBRARY_PATH PATH=/opt/octave/bin:$PATH /opt/octave/bin/octave"
 
-# nicer bash prompt and titles for xterminal
+# nicer bash prompt and titles for xterms
 if [ "$TERM" = "linux" ]; then
     # We're on the system console or maybe telnetting in
     PS1="\[\e[32;1m\]\u@\H \\$ \[\e[0m\]"
-elif [ "$(pgrep vim)" == "$PPID" ] ; then 
+elif [ "$(pgrep vim | grep -cw "$PPID")" -gt "0" ] ; then 
     PS1="\e]0;VIMSHELL \j:\w\a\e[37;1m\]\\$\[\e[0m\] "
+    clear
+    echo 'you are in vimshell'
+    # if xinit is running, assume in an xterm 
     if [[ "$(pgrep xinit)" ]] ; then
       TERM="rxvt-256color"
-      echo 'welcome to vimshell'
     fi
 else
     # We're not on the console, assume an x session
