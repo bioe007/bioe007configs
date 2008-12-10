@@ -20,7 +20,7 @@ settings.showmwfact = true
 settings.apps = {}
 settings.apps.terminal = "urxvtc"
 settings.apps.browser = "firefox"
-settings.apps.mail = "thunderbird3"
+settings.apps.mail = "thunderbird"
 settings.apps.filemgr = "pcmanfm"
 settings.apps.chat = "/home/perry/.bin/screen-start.sh"
 settings.apps.music = "mocp --server"
@@ -79,6 +79,7 @@ apptags = {
     ["gimp"] = { screen = 1, tag = 7, titlebar = true },
     ["OpenOffice"] = { screen = 1, tag = 8 },
     ["acroread"] = { screen = 1, tag = 2 },
+    ["Apvlv"] = { screen = 1, tag = 2 },
     ["pcb"] = { screen = 1, tag = 3 },
     ["gschem"] = { screen = 1, tag = 3 },
     ["gtkpod"] = { screen = 1, tag = 7 },
@@ -567,7 +568,11 @@ keybinding({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end):a
 
 -- {{{ - POWER
 keybinding({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end):add()
-keybinding({ modkey, "Mod1" },"s", function () awful.util.spawn('sudo pm-suspend') end):add()
+keybinding({ modkey, "Mod1" },"s", function () 
+  os.execute('sudo pm-suspend')
+  -- os.execute('sleep 1')
+  awful.util.spawn('slock')
+end):add()
 keybinding({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end):add()
 keybinding({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end):add()
 -- }}} 
@@ -741,7 +746,8 @@ awful.hooks.manage.register( function (c)
       elseif apptags[inst] then
         target = apptags[inst]
       end
-      if target and not c.type == "dialog" then
+      -- dont move floating dialogs 
+      if c.type ~= "dialog" and target then
         c.screen = target.screen
         awful.client.movetotag(tags[target.screen][target.tag], c)
 
@@ -753,7 +759,7 @@ awful.hooks.manage.register( function (c)
 
     -- Honor size hints: for all but terminals
     c.honorsizehints = true
-    if c.class == "urxvt" or c.class == "URxvt" then
+    if c.class == "urxvt" or c.class == "URxvt" or c.class == "Apvlv" or c.class == "apvlv" then
         -- print("found urxvt")
         c.honorsizehints = false
     end
