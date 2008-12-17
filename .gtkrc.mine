@@ -1,0 +1,10 @@
+# Auto-written by gtk2_prefs. Do not edit.
+gtk-font-name = "Bitstream Vera Sans 7"
+gtk-theme-name = "Apathy"
+style "userfont"
+{
+	font_name="Bitstream Vera Sans 7"
+}
+widget_class "*" style "userfont"
+widget "*" style "userfont"
+gtk-icon-theme-name="ALLBLACK"

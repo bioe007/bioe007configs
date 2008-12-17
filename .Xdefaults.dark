@@ -25,15 +25,22 @@ URxvt*transparent:        true
 URxvt.cursorBlink:        true
 URxvt.cursorOnTime:       400
 URxvt.cursorOffTime:      140
-URxvt*font:               xft:Terminus:pixelsize=12:autohint=true
-URxvt.boldFont:           xft:Terminus:pixelsize=12:bold:autohint=true
+Rxvt*font:               xft:Terminus:pixelsize=12:autohint=true
+Rxvt*boldFont:           xft:Terminus:bold:pixelsize=12:bold:autohint=true
+! URxvt.font: -xos4-terminus-medium-r-normal--0-0-72-72-*-*-iso8859-1
+! URxvt.boldFont: -xos4-terminus-bold-r--0-0-72-72-*-*-iso8859-1
+! URxvt.font: -xos4-terminus-medium-r-*-*-*-0-100-100-*-*-iso8859-1
+! URxvt.boldFont: -xos4-terminus-bold-r-*-*-*-0-72-72-*-*-iso8859-1
+! URxvt.font: xft:Proggy Clean:antialias=false:autohint=true:pixelsize=10
+! URxvt.boldFont: xft:Bitstream Vera Sans Mono:bold:antialias=false:autohint=true:pixelsize=10
 ! URxvt*font:               xft:inconsolata:antialias=false:autohint=true:pixelsize=12
 ! URxvt*font:               inconsolata:pixelsize=14
 ! URxvt*font:               xft:profont-9:antialias=true
 ! URxvt*font:             xft:profont-10:antialias=false
 ! URxvt*boldFont:           xft:Terminus-7
-! URxvt.italicFont:         xft:terminus:italic:autohint=true:antialias=true:pixelsize=10.5
-! URxvt.boldItalicFont:     xft:terminus:bolditalic:autohint=true:antialias=true:pixelsize=10.5
+! URxvt*font:         xft:proggysquare:autohint=true:antialias=false:pixelsize=12
+! URxvt*font:         x:bitstream vera sans mono:autohint=true:antialias=false:pixelsize=12
+! URxvt.boldFont:     xft:terminus:bold:autohint=true:antialias=false:pixelsize=12
 URxvt*internalBorder:     3
 URxvt*jumpScroll:         true
 URxvt*tintColor:          grey

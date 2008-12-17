@@ -1,0 +1,14 @@
+" restart Vimperator
+map <C-r> :restart<CR>
+ 
+" select next/previous tab
+map <C-l> gt
+map <C-h> gT
+ 
+" move current tab left/right
+map <C-L> :tabmove! +1<CR>
+map <C-H> :tabmove! -1<CR>
+ 
+echo ".vimperatorrc sourced"
+ 
+" vim: ft=vimperator sw=2 sts=2

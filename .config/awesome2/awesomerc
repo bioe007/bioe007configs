@@ -1,0 +1,545 @@
+# awesomerc for 2.3.3
+screen 0 {
+
+  general {
+    border = 1
+    snap = 8
+    mwfact_lower_limit = 0.1
+    mwfact_upper_limit = 0.9
+    resize_hints = false
+    new_get_focus = true
+    new_become_master = false
+    floating_placement = smart
+    # opacity_unfocused = 0.9
+  }
+  
+  styles {
+    normal
+    {
+      font   = "dina 7"
+      bg     = "#505050"
+      fg     = "#cfcfcf"
+      border = "#505050"
+    }
+    focus
+    {
+      bg     = "#cfcfcf"
+      fg     = "#505050"
+      border = "#cfcfcf"
+    }
+    urgent
+    {
+      fg     = "#111111"
+      bg     = "#ff4500"
+    }
+  }
+
+  tags {
+    tag w1     { layout = "tilebottom" mwfact = 0.68 }
+    tag w2     { layout = "tile"       mwfact = 0.68 }
+    tag web    { layout = "tilebottom" mwfact = 0.70 }
+    tag mail   { layout = "tile"       mwfact = 0.68 }
+    tag vbox   { layout = "tilebottom" mwfact = 0.78 }
+    tag media  { layout = "floating" }
+    tag office { layout = "floating" }
+  }
+
+  layouts {
+    layout tile { image = "/home/perry/.icons/awesome/layouts/tilew.png" }
+    layout tileleft { image = "/home/perry/.icons/awesome/layouts/tileleftw.png" }
+    layout tilebottom { image = "/home/perry/.icons/awesome/layouts/tilebottomw.png" }
+    layout tiletop { image = "/home/perry/.icons/awesome/layouts/tiletopw.png" }
+    layout max { image = "/home/perry/.icons/awesome/layouts/maxw.png" }
+    layout spiral { image = "/home/perry/.icons/awesome/layouts/spiralw.png" }
+    layout dwindle { image = "/home/perry/.icons/awesome/layouts/dwindlew.png" }
+    layout floating { image = "/home/perry/.icons/awesome/layouts/floatingw.png" }
+  }
+
+  titlebar {
+    position = "off"
+    height = "12" 
+    text_align = "left"
+    styles
+    {
+      normal
+      { 
+        # shadow = "#111111" 
+        font   = "sans 8"
+        fg     = "#505050"
+        bg     = "#cfcfcf"
+        border = "#505050"
+        # shadow_offset = "1" 
+      } 
+      focus 
+      { 
+        fg     = "#cfcfcf"
+        bg     = "#505050"
+        border = "#cfcfcf"
+        # shadow = "#111111"
+        # shadow_offset = "1" 
+      } 
+    }
+  }
+
+################## MYSTATUSBAR 
+  statusbar mystatusbar {
+    position = "top"
+    emptybox spc1 { width = "5" }
+
+    layoutinfo mylayoutinfo {
+      mouse { button = "1" command = "tag_setlayout" arg = "+1" }
+      mouse { button = "4" command = "tag_setlayout" arg = "+1" }
+      mouse { button = "3" command = "tag_setlayout" arg = "-1" }
+      mouse { button = "5" command = "tag_setlayout" arg = "-1" }
+    }
+
+    emptybox spc2 { width = "5" }
+
+    taglist mytaglist {
+      mouse { button = "1" command = "tag_view" }
+      mouse { button = "1" modkey = {"Mod4"} command = "client_tag" }
+      mouse { button = "3" command = "tag_toggleview" }
+      mouse { button = "3" modkey = {"Mod4"} command = "client_toggletag" }
+      mouse { button = "4" command = "tag_viewnext" }
+      mouse { button = "5" command = "tag_viewprev" }
+    }
+
+    emptybox spc3 { width = "5" }
+
+    tasklist mytasklist {
+      mouse { button = "4" command = "client_focusnext" }
+      mouse { button = "5" command = "client_focusprev" }
+      mouse { modkey = {"Mod4"} button = "4" command = "client_swapnext" }
+      mouse { modkey = {"Mod4"} button = "5" command = "client_swapprev" }
+      mouse { modkey = {"Mod4"} button = "8" command = "tag_viewprev" }
+      mouse { modkey = {"Mod4"} button = "9" command = "tag_viewnext" }
+    }
+    emptybox spc4 { width = "5" }
+    iconbox logo {
+      image = "/home/perry/.icons/awesome/awesome32.png"
+      mouse { button = "1" command = "spawn" arg = "exec urxvt -e man awesome" }
+    }
+    emptybox spc6 { width = "5" }
+  }
+
+################### SB_SYSTEM - the WIDGETS
+  statusbar sb_system {
+    position = "bottom"
+    emptybox spc1 { width = "5" }
+    iconbox logo {
+      image = "/home/perry/.icons/awesome/awesome32.png"
+      mouse { button = "1" command = "spawn" arg = "exec urxvt -e man awesome" }
+    }
+
+    emptybox spc2 { width = "5" }
+
+    textbox tb_cpu { 
+      text = "CPU:"
+      text_align = "center"
+    }
+    
+    emptybox spc3 { width = "5" }
+
+    graph gr_cpu {
+      bordercolor = "#505050"
+      bg = "#505050"
+      width = 40
+      data d_cpu
+      { 
+        vertical_gradient = "false"
+        fg = "#cfcfcf"
+        fg_center = "#797979"
+        fg_end = "#353535"
+        max = 80.0 
+        scale = true
+      }
+    } 
+
+    emptybox spc4 { width = "5" }
+
+   textbox tb_tmp { 
+      text = "TMP:"
+      text_align = "center"
+    }
+
+    emptybox tb_spc5 { width = "5" }
+
+    textbox tb_mem { 
+      text = "MEM:"
+      text_align = "center"
+    }
+
+    emptybox tb_spc6 { width = "5" }
+
+    # graph gr_mem {
+      # bordercolor = "#505050"
+      # bg = "#505050"
+      # width = 30
+      # data d_mem
+      # { 
+        # vertical_gradient = "false"
+        # fg = "#cfcfcf"
+        # fg_center = "#797979"
+        # fg_end = "#353535"
+        # max = 80.0 
+        # scale = true
+      # }
+    # } 
+# 
+    # emptybox tb_spc7 { width = "5" }
+    
+    textbox tb_swap {} 
+
+    emptybox tb_spc8 { width = "5" }
+
+    # graph gr_swap {
+      # bordercolor = "#505050"
+      # bg = "#505050"
+      # width = 30
+      # data d_swap
+      # { 
+        # vertical_gradient = "false"
+        # fg = "#cfcfcf"
+        # fg_center = "#797979"
+        # fg_end = "#353535"
+        # max = 100.0 
+        # scale = true
+      # }
+    # } 
+# 
+    # emptybox tb_spc9 { width = "5" }
+####### networking 
+    textbox tb_net_up { 
+      text = "ETH_U:"
+      text_align = "center"
+      mouse { button = "1" command = "spawn" arg = "exec sudo /etc/rc.d/network restart" }
+    }
+    
+    emptybox tb_spc10 { width = "5" }
+
+    graph gr_net_out { 
+      bordercolor = "#505050"
+      bg = "#505050"
+      width = 30
+      
+      data d_net_out { 
+        vertical_gradient = "true"
+        fg = "#ffffff"
+        fg_center = "#797979"
+        fg_end = "#353535"
+        max = 100.0 
+        scale = true
+        }
+    }
+    
+    emptybox tb_spc11 { width = "5" }
+
+    textbox tb_net_down { 
+      text = "ETH_D:"
+      text_align = "center"
+      mouse { button = "1" command = "spawn" arg = "exec sudo /etc/rc.d/network restart" }
+    }
+    
+    emptybox tb_spc12 { width = "5" }
+
+    graph gr_net_in { 
+      bordercolor = "#505050"
+      bg = "#505050"
+      width = 30
+      
+      data d_net_in { 
+        vertical_gradient = "true"
+        fg = "#cfcfcf"
+        fg_center = "#797979"
+        fg_end = "#353535"
+        max = 100.0 
+        scale = true
+        }
+    }
+
+    emptybox spc13 { width = "9" }
+
+    textbox tb_net_up_wlan0 { 
+      text = "WLN_U:"
+      text_align = "center"
+      mouse { button = "1" command = "spawn" arg = "exec sudo netcfg2 work" }
+      mouse { button = "3" command = "spawn" arg = "exec sudo netcfg2 home" }
+    }
+   
+    emptybox spc14 { width = "9" }
+
+    graph gr_net_out_wlan0 {
+      bordercolor = "#505050"
+      bg = "#505050"
+      width = 30
+      data d_net_out_wlan0 
+      { 
+        vertical_gradient = "false"
+        fg = "#cfcfcf"
+        fg_center = "#797979"
+        fg_end = "#353535"
+        max = 100.0 
+        scale = true
+      }
+    } 
+
+    emptybox spc15 { width = "9" }
+
+    textbox tb_net_down_wlan0 { 
+      text = "WLN_U:"
+      text_align = "center"
+      mouse { button = "1" command = "spawn" arg = "exec sudo netcfg2 work" }
+      mouse { button = "3" command = "spawn" arg = "exec sudo netcfg2 home" }
+    }
+    
+    emptybox spc16 { width = "5" }
+
+    graph gr_net_in_wlan0 {
+      bordercolor = "#505050"
+      bg = "#505050"
+      width = 30
+      data d_net_in_wlan0
+      { 
+        vertical_gradient = "false"
+        fg = "#cfcfcf"
+        fg_center = "#797979"
+        fg_end = "#353535"
+        max = 100.0 
+        scale = true
+      }
+    } 
+
+    emptybox spc17 { width = "5" }
+
+   progressbar pb_root { 
+      # align = "center"
+      width = "30"
+      # ticks_count = "100"
+      # ticks_gap = "0"
+      # vertical = false
+      data "d_root" {
+        fg = "#cfcfcf"
+        # fg_center = "#797979"
+        # fg_end = "#353535"
+      }
+      data "d_win" {
+        fg = "#cfcfcf"
+      }
+   }
+    
+    emptybox spc18 { width = "5" }
+
+   progressbar pb_dat { 
+      # text = "/:"
+      # align = "center"
+      width = "30"
+      data "d_dat" {
+        fg = "#cfcfcf"
+      }
+      data "d_boot" {
+        fg = "#cfcfcf"
+      }
+
+    }
+
+####### align right from here
+    emptybox spc19 { width = "5" align = "right" }
+
+    textbox tb_weather { 
+      align = "right"
+      text_align = "left" 
+    }
+
+    emptybox spc20 { width = "5" align = "right" }
+
+    textbox tb_date { 
+      align = "right"
+      text_align = "center" 
+    }
+    emptybox spc21 { width = "9" align = "right" }
+
+  }
+
+}
+
+################ APPLICATION RULES
+# it seems that order is important, with early having precedence over later rules so anything nesting in rxvt
+# must come before the rxvt rule (i.e. vim, irssi)
+rules { 
+  rule{ name = "galculator"    float = true master = "true" titlebar { position = "top" } icon = "/home/perry/.icons/galculator.png" }
+  rule{ name = "Gimp"          float = true  tags = "media" titlebar { position = "top"   } }
+  rule{ name = "Gran Paradiso" float = true  tags = "web"     master = "true" icon = "/home/perry/.icons/ALLBLACK/scalable/apps/firefox.svg" }
+  rule{ name = "MPlayer"       float = true  tags = "media"   master = "true" titlebar { position = "top"   } }
+  rule{ name = "Thunderbird"   float = false tags = "mail"    master = "true" titlebar { position = "top"   } }
+  rule{ name = "Shredder"      float = false tags = "mail"    master = "true" titlebar { position = "top"   } }
+  rule{ name = "VirtualBox"    float = true  tags = "vbox"    master = "true"                                 }
+  rule{ name = "VBoxSDL"       float = true  tags = "vbox"    master = "true" icon = "/home/perry/.icons/VBox.png" }
+  rule{ name = "pcmanfm"       float = false                  master = "true" titlebar { position = "top"   } }
+  rule{ name = "Gpicview"      float = true  tags = "media"   master = "true" titlebar { position = "bottom"} }
+  rule{ name = "Audacious"     float = true  tags = "media"   master = "false"                                }
+  rule{ name = "OpenOffice"    float = true  tags = "office"  master = "true" titlebar { position = "top"   } }
+  rule{ name = "irssi"         float = false tags = 0  master = "false"  icon = "/home/perry/.icons/irssi.png" }
+  rule{ name = "DOS in a BOX"  float = true  tags = 0  master = "false"  }
+  rule{ name = "VIM"           float = false icon = "/home/perry/.icons/gvim.png" }
+  rule{ name = "rxvt"          float = false icon = "/home/perry/.icons/ALLBLACK/scalable/apps/terminal.svg" }
+}
+
+############## MOUSE CONTROLS ################
+mouse {
+  root { button = "3" command = "spawn"         arg = "exec urxvt" }
+  root { button = "4" command = "tag_viewnext"                        }
+  root { button = "5" command = "tag_viewprev"                        }
+  root { button = "8" command = "tag_setlayout" arg = "+1" }
+
+  client { modkey = {"Mod4"}  button = "1" command = "client_movemouse"               }
+  client { modkey = {"Mod4"}  button = "2" command = "client_zoom"                    }
+  client { modkey = {"Mod4"}  button = "3" command = "client_resizemouse"             }
+  client {                    button = "8" command = "tag_setlayout"      arg = "+1"  }
+
+  titlebar {                  button = "1" command = "client_movemouse"                }
+  titlebar {                  button = "2" command = "client_kill"                     }
+  titlebar {                  button = "3" command = "client_resizemouse"              }
+  titlebar {                  button = "8" command = "tag_setlayout"       arg = "+1"  }
+}
+
+############## KEY CONTROLS ################
+keys {
+  key
+  { modkey = {"Mod4"} key = "F1" command = "spawn"
+      arg = "for i in /usr/share/man/man?;do ls $i; done | cut -d. -f1 | awesome-menu -e 'urxvt -e man ' 'See manual page for:'" }
+  key
+  { modkey = {"Mod4"} key = "F2" command = "spawn" 
+    arg = "find /usr/bin -type f -executable ! -empty | awesome-menu -e 'exec ' Execute:" }
+  key
+  { modkey = {"Mod4"} key = "F3" command = "spawn"
+    arg = "cut -d' ' -f1 ~/.ssh/known_hosts | cut -d, -f1 | awesome-menu -e 'urxvt -e ssh ' 'ssh to:'" }
+
+############### shutdown
+  key
+  { modkey = {"Mod4","Mod1"} key = "h" command = "spawn" arg = "exec sudo pm-hibernate" }
+  key
+  { modkey = {"Mod4","Mod1"} key = "s" command = "spawn" arg = "exec sudo pm-suspend" }
+  key
+  { modkey = {"Mod4","Mod1"} key = "r" command = "spawn" arg = "exec sudo reboot" }
+  key
+  { modkey = {"Mod4","Mod1"} key = "l" command = "spawn" arg = "exec xlock -dpmsstandby 30 -mode blank" }
+  
+########### applications
+  key
+  { modkey = {"Mod4"} key = "Return" command = "spawn" arg = "exec urxvt" }
+  key
+  { modkey = {"Mod4"} key = "f" command = "spawn" arg = "exec pcmanfm" }
+  key
+  { modkey = {"Mod4"} key = "w" command = "spawn" arg = "exec firefox" }
+  key
+  { modkey = {"Mod4"} key = "m" command = "spawn" arg = "exec thunderbird3" }
+  key
+  { modkey = {"Mod4"} key = "v" command = "spawn" arg = "exec VBoxSDL -vm xp2" }
+  key
+  { modkey = {"Mod4"} key = "i" command = "spawn" arg = "exec /home/perry/.bin/irssi-start.sh" }
+  key
+  { modkey = {"Mod4"} key = "p" command = "spawn" arg = "exec audacious --play-pause" }
+  key
+  { modkey = {"Mod4"} key = "n" command = "spawn" arg = "audacious --fwd" }
+  key
+  { modkey = {"Mod4"} key = "r" command = "spawn" arg = "audacious --rew" }
+
+  ################## audio
+  key
+  { key = "XF86AudioRaiseVolume" command = "spawn" arg = "/home/perry/.bin/volume.py +5" }
+  key
+  { key = "XF86AudioLowerVolume" command = "spawn" arg = "/home/perry/.bin/volume.py -5" }
+  key
+  { key = "XF86AudioMute" command = "spawn" arg = "/home/perry/.bin/volume.py" }
+  key
+  { modkey = {"Mod4"} key = "space" command = "tag_setlayout" arg = "+1" }
+  key
+  { modkey = {"Mod4", "Shift"} key = "space" command = "tag_setlayout" arg = "-1" }
+  key
+  { modkey = {"Mod4"} key = "b" command = "statusbar_toggle" }
+  key
+  { modkey = {"Mod4"} key = "j" command = "client_focusnext" }
+  key
+  { modkey = {"Mod4"} key = "k" command = "client_focusprev" }
+  key
+  { modkey = {"Mod4"} key = "Tab" command = "focus_history" arg = "-1" }
+  key
+  { modkey = {"Mod4", "Shift"} key = "j" command = "client_swapnext" }
+  key
+  { modkey = {"Mod4", "Shift"} key = "k" command = "client_swapprev" }
+  key
+  { modkey = {"Mod4", "Control"} key = "j" command = "screen_focus" arg = "+1" }
+  key
+  { modkey = {"Mod4", "Control"} key = "k" command = "screen_focus" arg = "-1" }
+  key
+  { modkey = {"Mod4"} key = "h" command = "tag_setmwfact" arg = "-0.05" }
+  key
+  { modkey = {"Mod4"} key = "l" command = "tag_setmwfact" arg = "+0.05" }
+  key
+  { modkey = {"Mod4", "Shift"} key = "h" command = "tag_setnmaster" arg = "+1" }
+  key
+  { modkey = {"Mod4", "Shift"} key = "l" command = "tag_setnmaster" arg = "-1" }
+  key
+  { modkey = {"Mod4", "Control"} key = "h" command = "tag_setncol" arg = "+1" }
+  key
+  { modkey = {"Mod4", "Control"} key = "l" command = "tag_setncol" arg = "-1" }
+  key
+  { modkey = {"Mod4"} key = "Escape" command = "tag_prev_selected" }
+  key
+  { modkey = {"Mod4"} key = "Left" command = "tag_viewprev" }
+  key
+  { modkey = {"Mod4"} key = "Right" command = "tag_viewnext" }
+  key
+  { modkey = {"Mod4"} key = "z" command = "client_togglemax" }
+  key
+  { modkey = {"Mod4", "Control"} key = "Return" command = "client_zoom" }
+  key
+  { modkey = {"Mod4", "Control"} key = "space" command = "client_togglefloating" }
+  key
+  { modkey = {"Mod4"} key = "s" command = "client_togglescratch" }
+  key
+  { modkey = {"Mod4", "Control"} key = "s" command = "client_setscratch" }
+  key
+  { modkey = {"Mod4", "Shift"} key = "c" command = "client_kill" }
+  key
+  { modkey = {"Mod4", "Shift"} key = "q" command = "quit" }
+  key
+  { modkey = {"Mod4", "Control"} key = "r" command = "restart" }
+  key
+  { modkey = {"Mod4"} key = "0" command = "tag_view" }
+  keylist
+  {
+    modkey = {"Mod4"} command = "tag_view"
+    keylist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+    arglist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+  }
+  key
+  { modkey = {"Mod4", "Control"} key = "0" command = "tag_toggleview" }
+  keylist
+  {
+    modkey = {"Mod4", "Control"}
+    command = "tag_toggleview"
+    keylist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+    arglist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+  }
+  key
+  { modkey = {"Mod4", "Shift"} key = "0" command = "client_tag" }
+  keylist
+  {
+    modkey = {"Mod4", "Shift"}
+    command = "client_tag"
+    keylist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+    arglist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+  }
+  key
+  { modkey = {"Mod4", "Shift", "Control"} key = "0" command = "client_toggletag" }
+  keylist
+  {
+    modkey = {"Mod4", "Shift", "Control"}
+    command = "client_toggletag"
+    keylist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+    arglist = { 1, 2, 3, 4, 5, 6, 7, 8, 9 }
+  }
+}
+# vim: filetype=conf
+# vim: foldmethod=manual

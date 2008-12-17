@@ -6,13 +6,19 @@ require("awful")
 require("beautiful")
 require("wicked")
 require("revelation")
+require("naughty")
+require("volumous")
+require("calendar")
+require("mocp")
+require("battery")
+require("markup")
 
+volumous.init("/home/perry/.config/awesome/icons/vol_images/", 30, 30)
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
 theme_path = "/home/perry/.config/awesome/themes/default"
 -- Initialize theme (colors).
 beautiful.init(theme_path)
-
 settings = {}
 settings.new_become_master = false
 settings.showmwfact = true
@@ -90,58 +96,28 @@ apptags = {
 use_titlebar = false
 -- }}}
 
--- {{{ -- Markup helper functions
--- Inline markup is a tad ugly, so use these functions to dynamically create markup, we hook them into
--- the beautiful namespace for clarity.
-beautiful.markup = {}
+-- {{{ -- OWN functions
 
-function beautiful.markup.bg(color, text)
-    return '<bg color="'..color..'" />'..text
-end
-
-function beautiful.markup.fg(color, text)
-    return '<span color="'..color..'">'..text..'</span>'
-end
-
-function beautiful.markup.font(font, text)
-    return '<span font_desc="'..font..'">'..text..'</span>'
-end
-
-function beautiful.markup.title(t)
-    return t
-end
-
-function beautiful.markup.title_normal(t)
-    return beautiful.title(t)
-end
-
-function beautiful.markup.title_focus(t)
-    return beautiful.markup.bg(beautiful.bg_focus, beautiful.markup.fg(beautiful.fg_focus, beautiful.markup.title(t)))
-end
-
-function beautiful.markup.title_urgent(t)
-    return beautiful.markup.bg(beautiful.bg_urgent, beautiful.markup.fg(beautiful.fg_urgent, beautiful.markup.title(t)))
-end
-
-function beautiful.markup.bold(text)
-    return '<b>'..text..'</b>'
-end
-
-function beautiful.markup.heading(text)
-    return beautiful.markup.fg(beautiful.fg_focus, beautiful.markup.bold(text))
-end
-
----- }}} 
-
--- {{{ -- PWN functions
-function mocplay() 
-  if settings.sys.musicstate == "STOP" then
-    awful.util.spawn('mocp --play') 
-  elseif settings.sys.musicstate == "PLAY" then
-    awful.util.spawn('mocp --next')
-  else 
-    awful.util.spawn('mocp --toggle-pause')
-  end
+local mwbox = nil
+function setMwbox(s)
+    print("creating box: " .. s)
+    if mwbox ~= nil then 
+        print("mwbox == " .. mwbox.box.screen)
+        naughty.destroy(mwbox) 
+        mwbox = nil
+    else
+        print("mwbox == nil")
+    end 
+    mwbox = naughty.notify({ 
+        text=s,
+        timeout = 1,
+        hover_timeout = 0.5,
+        screen = 1,
+        width = 120,
+        bg = beautiful.bg_focus
+    })
+    print("post box: ")
+    print(mwbox)
 end
 
 -- toggles wether client has titlebar or not
@@ -155,18 +131,6 @@ function toggleTitlebar(c)
     end
   end
 end
-
--- puts text on screen using osdcat
-function printOsd(text,pos,color)
-    local font='-bitstream-bitstream\\ vera\\ sans-bold-r-*-*-17-*-*-*-*-*-*-*'
-    local osdcmd='osd_cat --align=center --delay=1 --font=' .. font
-
-    -- kill any already running osd_cat
-    os.execute("kill $(/usr/bin/pgrep osd_cat) > /dev/null 2>&1 ")
-    awful.util.spawn("echo "..text..' | '..osdcmd .. " --pos=" .. pos .. " " ..  "--color=" .. color )
-end 
-
-
 -- }}}
 
 -- {{{ Tags
@@ -250,15 +214,25 @@ datewidget = widget({
     align = 'right',
 })
 
+datewidget.mouse_enter = function()
+  -- print("mouse enters datewidget")
+  add_calendar(0)
+end
+datewidget.mouse_leave = remove_calendar
+
+datewidget:buttons({ 
+  button({ }, 4, function() add_calendar(-1) end),
+  button({ }, 5, function() add_calendar(1) end), 
+})
 wicked.register(datewidget, wicked.widgets.date,
-    ' <span color="#cfcfff"> %k:%M %D\ </span>')
+   markup.fg(beautiful.fg_sb_hi, '%k:%M %D'))
 
 -- }}}
 
 -- {{{ -- CPU widgets
 cpuwidget = widget({ type = 'textbox', name = 'cpuwidget', align = 'right' })
 cpuwidget.width = 51
-wicked.register(cpuwidget, wicked.widgets.cpu, 'cpu:<span color="#cfcfff"> $1</span>')
+wicked.register(cpuwidget, wicked.widgets.cpu, 'cpu:' .. markup.fg(beautiful.fg_sb_hi, '$1'))
 
 cpugraphwidget1 = widget({ type = 'graph',
     name = 'cpugraphwidget1',
@@ -275,7 +249,7 @@ cpugraphwidget1:plot_properties_set('cpu', {
     fg = '#AEC6D8',
     fg_center = '#285577',
     fg_end = '#285577',
-    vertical_gradient = false
+    vertical_gradient = true
 })
 
 wicked.register(cpugraphwidget1, wicked.widgets.cpu, '$2', 1, 'cpu')
@@ -296,7 +270,7 @@ cpugraphwidget2:plot_properties_set('cpu', {
     fg = '#AEC6D8',
     fg_center = '#285577',
     fg_end = '#285577',
-    vertical_gradient = false
+    vertical_gradient = true
 })
 
 wicked.register(cpugraphwidget2, wicked.widgets.cpu, '$3', 1, 'cpu')
@@ -306,7 +280,7 @@ wicked.register(cpugraphwidget2, wicked.widgets.cpu, '$3', 1, 'cpu')
 memwidget = widget({ type = 'textbox', name = 'memwidget', align = 'right' })
 memwidget.width = 45
 
-wicked.register(memwidget, wicked.widgets.mem, 'mem: <span color="#cfcfff">$1</span>')
+wicked.register(memwidget, wicked.widgets.mem, 'mem:' ..  markup.fg(beautiful.fg_sb_hi,'$1'))
 -- }}}
 
 -- {{{ -- MOCP Widget
@@ -317,65 +291,6 @@ mocpwidget:buttons({
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
     button({ }, 3, function () awful.util.spawn('mocp --previous') end)
 })
--- {{{ mocp function
-iScroller = 1
-MAXCH = 15
-function mocp()
-    local np = {}
-    np.file = {}
-    np.file = io.popen('pgrep mocp')
-
-    if np.file == nil then
-        np.file:close()
-        mocpwidget.text = "moc stopped"
-        settings.sys.musicstate = "-"
-    else
-        np.file:close()
-
-        -- pgrep returned something so we can now check for play|pause
-        np.file = io.popen('mocp -Q %state')
-        np.strng = np.file:read()
-        np.file:close()
-
-        -- this just helps my keybindings work better 
-        settings.sys.musicstate = np.strng
-
-        -- this sets the symbolic prefix based on where moc is playing | (stopped or paused)
-        if np.strng == "PAUSE" or np.strng == "STOP" then
-            prefix = "|| "
-        else
-            prefix = ">> "
-        end
-
-        -- moc is runngin and playing, so grab track info
-        np.file = io.popen('mocp -Q %title')
-
-        -- some song titles include a subtitle, which i think is stupid to show
-        -- i also think track # is a stupid thing to show :P
-        np.strng = string.gsub(np.file:read(),"^%d*","")
-        np.file:close()
-        np.strng = string.gsub(np.strng,"%(.*","")
-
-        -- extract a substring, putting it after the 
-        np.rtn = string.sub(np.strng,iScroller,MAXCH+iScroller-1) 
-
-        -- if our index and MAXCH count are bigger than the string, wrap around to the beginning and
-        -- add enough to make it look circular
-        if MAXCH+iScroller > (np.strng):len() then
-            np.rtn = np.rtn .. string.sub(np.strng,1,(MAXCH+iScroller-1)-np.strng:len())
-        end
-
-        np.rtn = awful.util.escape(np.rtn)
-        mocpwidget.text = beautiful.markup.fg(beautiful.fg_normal,prefix) .. beautiful.markup.fg("#cfcfff",np.rtn) 
-
-        if iScroller <= np.strng:len() then
-            iScroller = iScroller +1
-        else
-            iScroller = 1
-        end
-    end
-end
--- }}}
 awful.hooks.timer.register (.75,mocp)
 ---}}}
 
@@ -384,68 +299,16 @@ fswidget = widget({ type = "textbox", name = "fswidget", align = "right" })
 
 function fs()
   fh = io.popen('df -h | grep -w \'sda7\\|sda5\' | awk \'{print $5}\' | tr -d \'%\'')
-  fswidget.text = '/: ' .. beautiful.markup.fg("#cfcfff",fh:read()) .. ' dat: ' .. beautiful.markup.fg("#cfcfff",fh:read())
+  fswidget.text = '/: ' .. markup.fg(beautiful.fg_sb_hi,fh:read()) .. ' dat: ' .. markup.fg(beautiful.fg_sb_hi,fh:read())
   fh:close()
 end
-
 awful.hooks.timer.register (59,fs)
 --- }}} 
 
 -- {{{ -- BATTERY 
 batterywidget = widget({ type = "textbox", name = "batterywidget", align = "right" })
 batterywidget.width = 49
-awful.hooks.timer.register(10, function ()
--- function batteryInfo()
-  -- paths to the relevant files for battery statistics and state
-  local capFile = "/proc/acpi/battery/BAT0/info"
-  local stateFile = "/proc/acpi/battery/BAT0/state"
-
-  -- open the file containg the battery's capacity, and read
-  local tmpFile = io.open(capFile)
-  local capacity = tmpFile:read("*a"):match("last full capacity:%s+(%d+)")
-  io.close(tmpFile)
-
-  -- get the current remaining batter capacity
-  tmpFile = io.open(stateFile)
-  local tCurrent = tmpFile:read("*all")
-  io.close(tmpFile)
-  local current = string.match(tCurrent,"remaining capacity:%s+(%d+)")
-
-  -- calculate remaining %
-  local battery = math.floor(((current * 100) / capacity))
-
-  -- colorize based on remaining battery chargevalue
-  if battery < 10 then
-    battery = beautiful.markup.fg("#ff0000", battery)
-
-    -- check that we arent continuosly issue the battery warning
-    if settings.sys.battwarn == false then
-        printOsd("Battery low: " .. battery, "middle", "red")
-        battwarn = true
-    end
-  elseif battery < 25 then
-    settings.sys.battwarn = false
-    battery = beautiful.markup.fg("#f8700a", battery)
-  elseif battery < 50 then
-    settings.sys.battwarn = false
-    battery = beautiful.markup.fg("#e6f21d", battery)
-  elseif battery < 75 then
-    settings.sys.battwarn = false
-    battery = beautiful.markup.fg("#00cb00", battery)
-  else
-    battery = beautiful.markup.fg("#cfcfff", battery)
-  end
-  
-  -- decide where to put the charging state indicator
-  local state = string.match(tCurrent,"charging state:%s+(%w+)")
-  if state:match("charged") then
-      batterywidget.text = "bat: "..battery
-  elseif state:match("discharging") then
-      batterywidget.text = "bat: "..battery.."-"
-  else
-      batterywidget.text = "bat: +"..battery
-  end
-end)
+awful.hooks.timer.register(1, batteryInfo)
 -- }}}
 
 ---{{{ STATUSBAR
@@ -597,9 +460,9 @@ keybinding({ modkey, "Control" }, "r", awesome.restart):add()
 keybinding({ modkey, "Shift" }, "q", awesome.quit):add()
 -- }}} 
 
--- {{{ - WM bindings
-keybinding({ modkey }, "Left", awful.tag.viewprev):add()
-keybinding({ modkey }, "Right", awful.tag.viewnext):add()
+-- {{{ - tags bindings
+keybinding({ modkey, "Mod1" }, "j", awful.tag.viewprev):add()
+keybinding({ modkey,"Mod1" }, "k", awful.tag.viewnext):add()
 keybinding({ modkey }, "Escape", awful.tag.history.restore):add()
 keybinding({ modkey }, "e", revelation.revelation ):add()
 -- }}} 
@@ -627,11 +490,29 @@ keybinding({ modkey }, "o", awful.client.movetoscreen):add()
 keybinding({ modkey }, "Tab", awful.client.focus.history.previous):add()
 keybinding({ modkey }, "u", awful.client.urgent.jumpto):add()
 keybinding({ modkey, "Shift" }, "r", function () client.focus:redraw() end):add()
+keybinding({ "Mod1" }, "Tab", function () 
+  local allclients = awful.client.visible(client.focus.screen)
+  for i,v in ipairs(allclients) do
+    if allclients[i+1] then
+      allclients[i+1]:swap(v)
+    end
+  end
+  awful.client.focus.byidx(-1)
+end):add()
 -- }}}
 
 -- {{{ - LAYOUT MANIPULATION
-keybinding({ modkey }, "l", function () awful.tag.incmwfact(0.05) printOsd('MWFact= '..awful.tag.selected().mwfact ,"middle","blue") end):add()
-keybinding({ modkey }, "h", function () awful.tag.incmwfact(-0.05) printOsd('MWFact= '..awful.tag.selected().mwfact ,"middle","blue") end):add()
+keybinding({ modkey }, "l", 
+    function () 
+        awful.tag.incmwfact(0.05) 
+        setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
+    end):add()
+keybinding({ modkey }, "h", 
+    function () 
+        awful.tag.incmwfact(-0.05) 
+        setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
+    end):add()
+
 keybinding({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end):add()
 keybinding({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end):add()
 keybinding({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end):add()
@@ -787,5 +668,4 @@ end)
 
 -- }}}
 
--- 
--- vim: set filetype=lua fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent
+-- vim:set filetype=lua fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: --

@@ -1,17 +1,25 @@
 startup_message off
 vbell off
-defscrollback 1000
+defscrollback 2048
 defutf8 on
 defflow off
 autodetach on
+hardcopydir ~/.var
+# shell zsh
+
+# message and marking color
+sorendition gK
 # attrcolor b ".I"
 # cleans screen after closing a text editor
 altscreen on
 
+# activity messages 
+activity          "activity in %n:%t [%w:%s]~"
+bell              "bell in %n:%t [%w:%s]~"
+
 # for 256 colors
 term screen-256color
 terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
-
 
 # screen -t util
 # screen -t make
@@ -21,6 +29,7 @@ select 0
 # screen -t ttyS0
 # screen -t ttyUSB0
 
+setenv DISPLAY=':0.0'
 ##### keybindings
 # escape ^^a
 bind ',' prev
