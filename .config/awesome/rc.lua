@@ -522,30 +522,36 @@ keybinding({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -
 -- }}}
 
 -- {{{ - PROMPT
-keybinding({ modkey }, "F1", function ()
-                                 awful.prompt.run({ prompt = "Run: " }, mypromptbox, awful.util.spawn, awful.completion.bash,
-os.getenv("HOME") .. "/.cache/awesome/history") end):add()
-keybinding({ modkey }, "F4", function ()
-                                 awful.prompt.run({ prompt = "Run Lua code: " }, mypromptbox, awful.eval, awful.prompt.bash,
-os.getenv("HOME") .. "/.cache/awesome/history_eval") end):add()
-keybinding({ modkey, "Ctrl" }, "i", function ()
-    if mypromptbox.text then
-        mypromptbox.text = nil
-    else
-        mypromptbox.text = nil
-        if client.focus.class then
-            mypromptbox.text = "Class: " .. client.focus.class .. " "
-        end
-        if client.focus.instance then
-            mypromptbox.text = mypromptbox.text .. "Instance: ".. client.focus.instance .. " "
-        end
-        if client.focus.role then
-            mypromptbox.text = mypromptbox.text .. "Role: ".. client.focus.role
-        end
-        mypromptbox.text = "Class: " .. client.focus.class .. " Instance: ".. client.focus.instance
+keybinding({ modkey }, "F1", 
+    function ()
+        awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," >> ") }, mypromptbox[mouse.screen], awful.util.spawn, awful.completion.bash,
+        awful.util.getdir("cache") .. "/history")
+    end):add()
 
-    end
-end):add()
+keybinding({ modkey }, "F4", 
+    function ()
+        awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," L> ") }, mypromptbox[mouse.screen], awful.util.eval, awful.prompt.bash,
+        awful.util.getdir("cache") .. "/history_eval")
+    end):add()
+    
+keybinding({ modkey, "Ctrl" }, "i", 
+    function ()
+        local s = mouse.screen
+        if mypromptbox[s].text then
+            mypromptbox[s].text = nil
+        elseif client.focus then
+            mypromptbox[s].text = nil
+            if client.focus.class then
+                mypromptbox[s].text = "Class: " .. client.focus.class .. " "
+            end
+            if client.focus.instance then
+                mypromptbox[s].text = mypromptbox[s].text .. "Instance: ".. client.focus.instance .. " "
+            end
+            if client.focus.role then
+                mypromptbox[s].text = mypromptbox[s].text .. "Role: ".. client.focus.role
+            end
+        end
+    end):add()
 
 -- }}}
 
