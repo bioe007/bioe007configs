@@ -7,13 +7,13 @@ require("beautiful")
 require("wicked")
 require("revelation")
 require("naughty")
-require("volumous")
+-- require("volumous")
 require("calendar")
 require("mocp")
 require("battery")
 require("markup")
 
-volumous.init("/home/perry/.config/awesome/icons/vol_images/", 30, 30)
+-- volumous.init("/home/perry/.config/awesome/icons/vol_images/", 30, 30)
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
 theme_path = "/home/perry/.config/awesome/themes/default"
@@ -42,21 +42,19 @@ modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts = {}
-layouts = {
-  "tile",
-  -- "tileleft",
-  "tilebottom",
-  -- "tiletop",
-  -- "fairh",
-  -- "fairv",
-  -- "magnifier",
-  "max",
-  -- "fullscreen",
-  -- "spiral",
-  "dwindle",
-  "floating"
+layouts =
+{
+    awful.layout.suit.tile,
+    -- awful.layout.suit.tile.left,
+    awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.tile.top,
+    -- awful.layout.suit.fair,
+    -- awful.layout.suit.fair.horizontal,
+    awful.layout.suit.max,
+    -- awful.layout.suit.max.fullscreen,
+    -- awful.layout.suit.magnifier,
+    awful.layout.suit.floating
 }
-
 -- Table of clients that should be set floating. The index may be either
 -- the application class or instance. The instance is useful when running
 -- a console app in a terminal like (Music on Console)
@@ -89,7 +87,8 @@ apptags = {
     ["pcb"] = { screen = 1, tag = 3 },
     ["gschem"] = { screen = 1, tag = 3 },
     ["gtkpod"] = { screen = 1, tag = 7 },
-    ["PCB_Log"] = { screen = 1, tag = 3 }
+    ["PCB_Log"] = { screen = 1, tag = 3 },
+    ["Mirage"] = { screen = 1, tag = 7 }
 }
 
 -- Define if we want to use titlebar on all applications.
@@ -102,7 +101,7 @@ local mwbox = nil
 function setMwbox(s)
     print("creating box: " .. s)
     if mwbox ~= nil then 
-        print("mwbox == " .. mwbox.box.screen)
+        -- print("mwbox == " .. mwbox.box.screen)
         naughty.destroy(mwbox) 
         mwbox = nil
     else
@@ -136,14 +135,14 @@ end
 -- {{{ Tags
 -- Define tags table.
 settings.tags = {
-    { name="w1"  , layout="tilebottom" , mwfact="0.60"} , 
-    { name="ds"  , layout="max"}       , 
-    { name="dz"  , layout="tile"       , mwfact="0.64"} , 
-    { name="web" , layout="tilebottom" , mwfact="0.65"} , 
-    { name="mal" , layout="tile"       , mwfact="0.65"} , 
-    { name="vbx" , layout="tilebottom" , mwfact="0.75"} , 
-    { name="mda" , layout="floating"   , mwfact="0.75"} , 
-    { name="off" , layout="tilebottom" , mwfact="0.75"}
+    { name="w1"  , layout=awful.layout.suit.tile.bottom, mwfact="0.60"} , 
+    { name="ds"  , layout=awful.layout.suit.max                       } , 
+    { name="dz"  , layout=awful.layout.suit.tile       , mwfact="0.64"} , 
+    { name="web" , layout=awful.layout.suit.tile.bottom, mwfact="0.65"} , 
+    { name="mal" , layout=awful.layout.suit.tile       , mwfact="0.65"} , 
+    { name="vbx" , layout=awful.layout.suit.tile.bottom, mwfact="0.75"} , 
+    { name="mda" , layout=awful.layout.suit.floating   , mwfact="0.75"} , 
+    { name="off" , layout=awful.layout.suit.tile.bottom, mwfact="0.75"}
     }
 
 tags = {}
@@ -152,10 +151,12 @@ for s = 1, screen.count() do
     tags[s] = {}
     -- Create 9 tags per screen.
     for tagnumber = 1, 8 do
-        tags[s][tagnumber] = tag({ name   = settings.tags[tagnumber].name,
-                                   layout = settings.tags[tagnumber].layout,
-                                   mwfact = settings.tags[tagnumber].mwfact
-                                 })
+        tags[s][tagnumber] = tag( settings.tags[tagnumber].name)
+        tags[s][tagnumber].layout = settings.tags[tagnumber].layout
+        -- tags[s][tagnumber] = tag({ name   = settings.tags[tagnumber].name,
+                                   -- layout = settings.tags[tagnumber].layout,
+                                   -- mwfact = settings.tags[tagnumber].mwfact
+                                 -- })
         -- Add tags to screen one by one
         tags[s][tagnumber].screen = s
     end
@@ -246,9 +247,9 @@ cpugraphwidget1.border_color = beautiful.bg_normal
 cpugraphwidget1.grow = 'left'
 
 cpugraphwidget1:plot_properties_set('cpu', {
-    fg = '#AEC6D8',
-    fg_center = '#285577',
-    fg_end = '#285577',
+    fg = '#243367',
+    fg_center ='#285577', 
+    fg_end = '#AEC6D8',
     vertical_gradient = true
 })
 
@@ -267,9 +268,9 @@ cpugraphwidget2.border_color = beautiful.bg_normal
 cpugraphwidget2.grow = 'left'
 
 cpugraphwidget2:plot_properties_set('cpu', {
-    fg = '#AEC6D8',
-    fg_center = '#285577',
-    fg_end = '#285577',
+    fg = '#243367',
+    fg_center ='#285577', 
+    fg_end = '#AEC6D8',
     vertical_gradient = true
 })
 
@@ -374,21 +375,21 @@ for s = 1, screen.count() do
 end
 
 for i = 1, keynumber do
-    keybinding({ modkey }, i,
+    key({ modkey }, i,
                    function ()
                        local screen = mouse.screen
                        if tags[screen][i] then
                            awful.tag.viewonly(tags[screen][i])
                        end
                    end):add()
-    keybinding({ modkey, "Control" }, i,
+    key({ modkey, "Control" }, i,
                    function ()
                        local screen = mouse.screen
                        if tags[screen][i] then
                            tags[screen][i].selected = not tags[screen][i].selected
                        end
                    end):add()
-    keybinding({ modkey, "Shift" }, i,
+    key({ modkey, "Shift" }, i,
                    function ()
                        if client.focus then
                            if tags[client.focus.screen][i] then
@@ -396,7 +397,7 @@ for i = 1, keynumber do
                            end
                        end
                    end):add()
-    keybinding({ modkey, "Control", "Shift" }, i,
+    key({ modkey, "Control", "Shift" }, i,
                    function ()
                        if client.focus then
                            if tags[client.focus.screen][i] then
@@ -407,90 +408,89 @@ for i = 1, keynumber do
 end
 ---}}}
 
-keybinding({ modkey }, "Left", awful.tag.viewprev):add()
-keybinding({ modkey }, "Right", awful.tag.viewnext):add()
-keybinding({ modkey }, "Escape", awful.tag.history.restore):add()
+key({ modkey }, "Left", awful.tag.viewprev):add()
+key({ modkey }, "Right", awful.tag.viewnext):add()
+key({ modkey }, "Escape", awful.tag.history.restore):add()
 
 -- {{{ - APPLICATIONS
 -- Standard program
-keybinding({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end):add()
+key({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end):add()
 
 -- application launching and controlling, Win+Alt
-keybinding({ modkey, "Mod1" },"w", function () awful.util.spawn(settings.apps.browser) end):add()
-keybinding({ modkey, "Mod1" },"m", function () awful.util.spawn(settings.apps.mail) end):add()
-keybinding({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end):add()
-keybinding({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end):add()
-keybinding({ modkey, "Mod1", "Shift" },"v", function () awful.util.spawn('VBoxSDL -vm xp2') end):add()
-keybinding({ modkey, "Mod1" },"g", function () awful.util.spawn('gschem') end):add()
--- keybinding({ modkey, "Mod1" },"p", function () awful.util.spawn('pcb') end):add()
-keybinding({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end):add()
-keybinding({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end):add()
-keybinding({ modkey, "Mod1" },"v", function () awful.util.spawn('TERM=rxvt-256color ' .. settings.apps.terminal..' -name vim -e sh -c vim') end):add()
-keybinding({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end):add()
+key({ modkey, "Mod1" },"w", function () awful.util.spawn(settings.apps.browser) end):add()
+key({ modkey, "Mod1" },"m", function () awful.util.spawn(settings.apps.mail) end):add()
+key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end):add()
+key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end):add()
+key({ modkey, "Mod1", "Shift" },"v", function () awful.util.spawn('VBoxSDL -vm xp2') end):add()
+key({ modkey, "Mod1" },"g", function () awful.util.spawn('gschem') end):add()
+-- key({ modkey, "Mod1" },"p", function () awful.util.spawn('pcb') end):add()
+key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end):add()
+key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end):add()
+key({ modkey, "Mod1" },"v", function () awful.util.spawn('TERM=rxvt-256color ' .. settings.apps.terminal..' -name vim -e sh -c vim') end):add()
+key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end):add()
 -- }}}
 
 -- {{{ - POWER
-keybinding({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end):add()
-keybinding({ modkey, "Mod1" },"s", function () 
+key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end):add()
+key({ modkey, "Mod1" },"s", function () 
   os.execute('sudo pm-suspend')
   -- os.execute('sleep 1')
   awful.util.spawn('slock')
 end):add()
-keybinding({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end):add()
-keybinding({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end):add()
+key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end):add()
+key({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end):add()
 -- }}} 
 
 -- {{{ - MEDIA
-keybinding({ modkey, "Mod1" },"p", mocplay ):add()
-keybinding({ },"XF86AudioPlay", mocplay ):add()
-keybinding({ modkey, "Mod1" },"j", mocplay ):add()
-keybinding({ modkey, "Mod1" },"k", function () awful.util.spawn('mocp --previous') end):add()
-keybinding({ "" }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +5') end):add()
-keybinding({ "" }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -5') end):add()
-keybinding({ modkey }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +1') end):add()
-keybinding({ modkey }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -1') end):add()
-keybinding({ "" },"XF86AudioMute", function () awful.util.spawn('/home/perry/.bin/volume.py') end):add()
-keybinding({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end):add()
-keybinding({ },"XF86AudioNext", mocplay ):add()
-keybinding({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end):add()
+key({ modkey, "Mod1" },"p", mocplay ):add()
+key({ },"XF86AudioPlay", mocplay ):add()
+key({ modkey, "Mod1" },"j", mocplay ):add()
+key({ modkey, "Mod1" },"k", function () awful.util.spawn('mocp --previous') end):add()
+key({ "" }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +5') end):add()
+key({ "" }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -5') end):add()
+key({ modkey }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +1') end):add()
+key({ modkey }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -1') end):add()
+key({ "" },"XF86AudioMute", function () awful.util.spawn('/home/perry/.bin/volume.py') end):add()
+key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end):add()
+key({ },"XF86AudioNext", mocplay ):add()
+key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end):add()
 -- }}} 
 
 -- {{{ - SPECIAL keys
-keybinding({ modkey, "Control" }, "r", awesome.restart):add()
-keybinding({ modkey, "Shift" }, "q", awesome.quit):add()
+key({ modkey, "Control" }, "r", awesome.restart):add()
+key({ modkey, "Shift" }, "q", awesome.quit):add()
 -- }}} 
 
 -- {{{ - tags bindings
-keybinding({ modkey, "Mod1" }, "j", awful.tag.viewprev):add()
-keybinding({ modkey,"Mod1" }, "k", awful.tag.viewnext):add()
-keybinding({ modkey }, "Escape", awful.tag.history.restore):add()
-keybinding({ modkey }, "e", revelation.revelation ):add()
+key({ modkey, "Mod1" }, "j", awful.tag.viewprev):add()
+key({ modkey,"Mod1" }, "k", awful.tag.viewnext):add()
+key({ modkey }, "Escape", awful.tag.history.restore):add()
+key({ modkey }, "e", revelation.revelation ):add()
 -- }}} 
 
 -- {{{ - CLIENT MANIPULATION
-keybinding({ modkey, "Shift" },"0", function () 
-    if client.focus.sticky then 
-        client.focus.sticky = false
-    else
-        client.focus.sticky = true
-    end
-end ):add()
+key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end):add()
+    -- = false
+    -- else
+        -- client.focus.sticky = true
+    -- end
+-- end ):add()
 
-keybinding({ modkey }, "m", awful.client.maximize):add()
-keybinding({ modkey, "Shift" }, "c", function () client.focus:kill() end):add()
-keybinding({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end):add()
-keybinding({ modkey }, "k", function () awful.client.focus.byidx(-1);  client.focus:raise() end):add()
-keybinding({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end):add()
-keybinding({ modkey, "Shift" }, "k", function () awful.client.swap.byidx(-1) end):add()
-keybinding({ modkey, "Control" }, "j", function () awful.screen.focus(1) end):add()
-keybinding({ modkey, "Control" }, "k", function () awful.screen.focus(-1) end):add()
-keybinding({ modkey, "Control" }, "space", awful.client.togglefloating):add()
-keybinding({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end):add()
-keybinding({ modkey }, "o", awful.client.movetoscreen):add()
-keybinding({ modkey }, "Tab", awful.client.focus.history.previous):add()
-keybinding({ modkey }, "u", awful.client.urgent.jumpto):add()
-keybinding({ modkey, "Shift" }, "r", function () client.focus:redraw() end):add()
-keybinding({ "Mod1" }, "Tab", function () 
+key({ modkey }, "m", awful.client.maximize):add()
+key({ modkey, "Shift" }, "c", function () client.focus:kill() end):add()
+key({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end):add()
+key({ modkey }, "k", function () awful.client.focus.byidx(-1);  client.focus:raise() end):add()
+key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end):add()
+key({ modkey, "Shift" }, "k", function () awful.client.swap.byidx(-1) end):add()
+key({ modkey, "Control" }, "j", function () awful.screen.focus(1) end):add()
+key({ modkey, "Control" }, "k", function () awful.screen.focus(-1) end):add()
+key({ modkey, "Control" }, "space", awful.client.togglefloating):add()
+key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end):add()
+key({ modkey }, "o", awful.client.movetoscreen):add()
+key({ modkey }, "Tab", awful.client.focus.history.previous):add()
+key({ modkey }, "u", awful.client.urgent.jumpto):add()
+key({ modkey, "Shift" }, "r", function () client.focus:redraw() end):add()
+key({ "Mod1" }, "Tab", function () 
   local allclients = awful.client.visible(client.focus.screen)
   for i,v in ipairs(allclients) do
     if allclients[i+1] then
@@ -502,39 +502,39 @@ end):add()
 -- }}}
 
 -- {{{ - LAYOUT MANIPULATION
-keybinding({ modkey }, "l", 
+key({ modkey }, "l", 
     function () 
         awful.tag.incmwfact(0.05) 
-        setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
+        -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
     end):add()
-keybinding({ modkey }, "h", 
+key({ modkey }, "h", 
     function () 
         awful.tag.incmwfact(-0.05) 
-        setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
+        -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
     end):add()
 
-keybinding({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end):add()
-keybinding({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end):add()
-keybinding({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end):add()
-keybinding({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end):add()
-keybinding({ modkey }, "space", function () awful.layout.inc(layouts, 1) end):add()
-keybinding({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -1) end):add()
+key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end):add()
+key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end):add()
+key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end):add()
+key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end):add()
+key({ modkey }, "space", function () awful.layout.inc(layouts, 1) end):add()
+key({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -1) end):add()
 -- }}}
 
 -- {{{ - PROMPT
-keybinding({ modkey }, "F1", 
+key({ modkey }, "F1", 
     function ()
         awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," >> ") }, mypromptbox[mouse.screen], awful.util.spawn, awful.completion.bash,
         awful.util.getdir("cache") .. "/history")
     end):add()
 
-keybinding({ modkey }, "F4", 
+key({ modkey }, "F4", 
     function ()
         awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," L> ") }, mypromptbox[mouse.screen], awful.util.eval, awful.prompt.bash,
         awful.util.getdir("cache") .. "/history_eval")
     end):add()
     
-keybinding({ modkey, "Ctrl" }, "i", 
+key({ modkey, "Ctrl" }, "i", 
     function ()
         local s = mouse.screen
         if mypromptbox[s].text then
@@ -606,7 +606,7 @@ awful.hooks.manage.register( function (c)
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
         button({ modkey }, 1, function (c) c:mouse_move() end),
-        button({ modkey }, 3, function (c) c:mouse_resize() end)
+        button({ modkey }, 3, awful.mouse.client.resize )
     })
     -- New client may not receive focus
     -- if they're not focusable, so set border anyway.
@@ -650,16 +650,16 @@ awful.hooks.manage.register( function (c)
         -- print("found urxvt")
         c.honorsizehints = false
     end
-    awful.placement.no_overlap(c)
-    awful.placement.no_offscreen(c)
+    -- awful.placement.no_overlap(c)
+    -- awful.placement.no_offscreen(c)
 end)
 
 -- Hook function to execute when arranging the screen.
 -- (tag switch, new client, etc)
 awful.hooks.arrange.register(function (screen)
-    local layout = awful.layout.get(screen)
-    if layout then
-        mylayoutbox[screen].image = image("/home/perry/.config/awesome/icons/layouts/" .. layout .. "w.png")
+    local layout = awful.layout.getname(awful.layout.get(screen))
+    if layout and beautiful["layout_" ..layout] then
+        mylayoutbox[screen].image = image(beautiful["layout_" .. layout])
     else
         mylayoutbox[screen].image = nil
     end
@@ -671,6 +671,24 @@ awful.hooks.arrange.register(function (screen)
         if c then client.focus = c end
     end
 end)
+-- Hook function to execute when arranging the screen.
+-- (tag switch, new client, etc)
+-- awful.hooks.arrange.register(function (screen)
+    -- local layout = awful.layout.get(screen)
+    -- if layout and beautiful["layout_" ..layout] then
+        -- mylayoutbox[screen].image = image(beautiful["layout_" .. layout])
+        -- image("/home/perry/.config/awesome/icons/layouts/" .. layout .. "w.png")
+    -- else
+        -- mylayoutbox[screen].image = nil
+    -- end
+
+    -- Give focus to the latest client in history if no window has focus
+    -- or if the current window is a desktop or a dock one.
+    -- if not client.focus then
+        -- local c = awful.client.focus.history.get(screen, 0)
+        -- if c then client.focus = c end
+    -- end
+-- end)
 
 -- }}}
 
