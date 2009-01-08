@@ -8,23 +8,23 @@ hardcopydir ~/.var
 # shell zsh
 
 # message and marking color
-sorendition gK
+# sorendition b0
 # attrcolor b ".I"
 # cleans screen after closing a text editor
 altscreen on
 
 # activity messages 
-activity          "activity in %n:%t [%w:%s]~"
-bell              "bell in %n:%t [%w:%s]~"
+# activity          "activity in %n:%t [%w:%s]~"
+# bell              "bell in %k:%t [%w:%s]~"
 
 # for 256 colors
 term screen-256color
 terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 
-# screen -t util
-# screen -t make
+screen -t util
+screen -t make
 # screen -t irssi irssi
-# screen -t mocp mocp
+screen -t mocp mocp
 select 0
 # screen -t ttyS0
 # screen -t ttyUSB0
