@@ -153,10 +153,7 @@ for s = 1, screen.count() do
     for tagnumber = 1, 8 do
         tags[s][tagnumber] = tag( settings.tags[tagnumber].name)
         tags[s][tagnumber].layout = settings.tags[tagnumber].layout
-        -- tags[s][tagnumber] = tag({ name   = settings.tags[tagnumber].name,
-                                   -- layout = settings.tags[tagnumber].layout,
-                                   -- mwfact = settings.tags[tagnumber].mwfact
-                                 -- })
+        -- tags[s][tagnumber] = tag({ name = settings.tags[tagnumber].name, layout = settings.tags[tagnumber].layout, mwfact = settings.tags[tagnumber].mwfact  })
         -- Add tags to screen one by one
         tags[s][tagnumber].screen = s
     end
@@ -192,7 +189,8 @@ mylayoutbox = {}
 mytaglist = {}
 mytaglist.buttons = { button({ }, 1, awful.tag.viewonly),
                       button({ modkey }, 1, awful.client.movetotag),
-                      button({ }, 3, function (tag) tag.selected = not tag.selected end),
+                      button({ }, 3, function () if instance then instance:hide() end instance = awful.menu.clients({ width=250 }) end),
+                      -- button({ }, 3, function (tag) tag.selected = not tag.selected end),
                       button({ modkey }, 3, awful.client.toggletag),
                       button({ }, 4, awful.tag.viewnext),
                       button({ }, 5, awful.tag.viewprev) }
@@ -358,7 +356,7 @@ end
 -- }}}
 
 -- {{{ Mouse bindings
-awesome.buttons({
+root.buttons({
     button({ }, 3, function () mymainmenu:toggle() end),
     button({ }, 4, awful.tag.viewnext),
     button({ }, 5, awful.tag.viewprev)
@@ -366,6 +364,8 @@ awesome.buttons({
 -- }}}
 
 -- {{{ Key bindings
+globalkeys = {}
+clientkeys = {}
 
 --{{{ Bind keyboard digits
 -- Compute the maximum number of digit we need, limited to 9
@@ -375,122 +375,126 @@ for s = 1, screen.count() do
 end
 
 for i = 1, keynumber do
-    key({ modkey }, i,
+    table.insert(globalkeys, key({ modkey }, i,
                    function ()
                        local screen = mouse.screen
                        if tags[screen][i] then
                            awful.tag.viewonly(tags[screen][i])
                        end
-                   end):add()
-    key({ modkey, "Control" }, i,
+                   end))
+    table.insert(globalkeys, key({ modkey, "Control" }, i,
                    function ()
                        local screen = mouse.screen
                        if tags[screen][i] then
                            tags[screen][i].selected = not tags[screen][i].selected
                        end
-                   end):add()
-    key({ modkey, "Shift" }, i,
+                   end))
+    table.insert(globalkeys, key({ modkey, "Shift" }, i,
                    function ()
                        if client.focus then
                            if tags[client.focus.screen][i] then
                                awful.client.movetotag(tags[client.focus.screen][i])
                            end
                        end
-                   end):add()
-    key({ modkey, "Control", "Shift" }, i,
+                   end))
+    table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
                    function ()
                        if client.focus then
                            if tags[client.focus.screen][i] then
                                awful.client.toggletag(tags[client.focus.screen][i])
                            end
                        end
-                   end):add()
+                   end))
 end
 ---}}}
 
-key({ modkey }, "Left", awful.tag.viewprev):add()
-key({ modkey }, "Right", awful.tag.viewnext):add()
-key({ modkey }, "Escape", awful.tag.history.restore):add()
+table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
+table.insert(globalkeys, key({ modkey }, "Right", awful.tag.viewnext))
+table.insert(globalkeys, key({ modkey }, "Escape", awful.tag.history.restore))
 
 -- {{{ - APPLICATIONS
 -- Standard program
-key({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end):add()
+table.insert(globalkeys, key({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end))
 
 -- application launching and controlling, Win+Alt
-key({ modkey, "Mod1" },"w", function () awful.util.spawn(settings.apps.browser) end):add()
-key({ modkey, "Mod1" },"m", function () awful.util.spawn(settings.apps.mail) end):add()
-key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end):add()
-key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end):add()
-key({ modkey, "Mod1", "Shift" },"v", function () awful.util.spawn('VBoxSDL -vm xp2') end):add()
-key({ modkey, "Mod1" },"g", function () awful.util.spawn('gschem') end):add()
+table.insert(globalkeys, key({ modkey, "Mod1" },"w", function () awful.util.spawn(settings.apps.browser) end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"m", function () awful.util.spawn(settings.apps.mail) end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end))
+table.insert(globalkeys, key({ modkey, "Mod1", "Shift" },"v", function () awful.util.spawn('VBoxSDL -vm xp2') end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"g", function () awful.util.spawn('gschem') end))
 -- key({ modkey, "Mod1" },"p", function () awful.util.spawn('pcb') end):add()
-key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end):add()
-key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end):add()
-key({ modkey, "Mod1" },"v", function () awful.util.spawn('TERM=rxvt-256color ' .. settings.apps.terminal..' -name vim -e sh -c vim') end):add()
-key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end):add()
+table.insert(globalkeys, key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"v", function () awful.util.spawn('TERM=rxvt-256color ' .. settings.apps.terminal..' -name vim -e sh -c vim') end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end))
 -- }}}
 
 -- {{{ - POWER
-key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end):add()
-key({ modkey, "Mod1" },"s", function () 
+table.insert(globalkeys, key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"s", function () 
   os.execute('sudo pm-suspend')
   -- os.execute('sleep 1')
   awful.util.spawn('slock')
-end):add()
-key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end):add()
-key({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end):add()
+end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end))
 -- }}} 
 
 -- {{{ - MEDIA
-key({ modkey, "Mod1" },"p", mocplay ):add()
-key({ },"XF86AudioPlay", mocplay ):add()
-key({ modkey, "Mod1" },"j", mocplay ):add()
-key({ modkey, "Mod1" },"k", function () awful.util.spawn('mocp --previous') end):add()
-key({ "" }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +5') end):add()
-key({ "" }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -5') end):add()
-key({ modkey }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +1') end):add()
-key({ modkey }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -1') end):add()
-key({ "" },"XF86AudioMute", function () awful.util.spawn('/home/perry/.bin/volume.py') end):add()
-key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end):add()
-key({ },"XF86AudioNext", mocplay ):add()
-key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end):add()
+table.insert(globalkeys, key({ modkey, "Mod1" },"p", mocplay ))
+table.insert(globalkeys, key({ },"XF86AudioPlay", mocplay ))
+table.insert(globalkeys, key({ modkey, "Mod1" },"j", mocplay ))
+table.insert(globalkeys, key({ modkey, "Mod1" },"k", function () awful.util.spawn('mocp --previous') end))
+table.insert(globalkeys, key({ "" }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +5') end))
+table.insert(globalkeys, key({ "" }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -5') end))
+table.insert(globalkeys, key({ modkey }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +1') end))
+table.insert(globalkeys, key({ modkey }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -1') end))
+table.insert(globalkeys, key({ "" },"XF86AudioMute", function () awful.util.spawn('/home/perry/.bin/volume.py') end))
+table.insert(globalkeys, key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end))
+table.insert(globalkeys, key({ },"XF86AudioNext", mocplay ))
+table.insert(globalkeys, key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end))
 -- }}} 
 
 -- {{{ - SPECIAL keys
-key({ modkey, "Control" }, "r", awesome.restart):add()
-key({ modkey, "Shift" }, "q", awesome.quit):add()
+table.insert(globalkeys, key({ modkey, "Control" }, "r", function ()
+                                                             mypromptbox[mouse.screen].text =
+                                                                 awful.util.escape(awful.util.restart())
+                                                          end))
+table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
 -- }}} 
 
 -- {{{ - tags bindings
-key({ modkey, "Mod1" }, "j", awful.tag.viewprev):add()
-key({ modkey,"Mod1" }, "k", awful.tag.viewnext):add()
-key({ modkey }, "Escape", awful.tag.history.restore):add()
-key({ modkey }, "e", revelation.revelation ):add()
+table.insert(globalkeys, key({ modkey, "Mod1" }, "j", awful.tag.viewprev))
+table.insert(globalkeys, key({ modkey,"Mod1" }, "k", awful.tag.viewnext))
+table.insert(globalkeys, key({ modkey }, "Escape", awful.tag.history.restore))
+table.insert(globalkeys, key({ modkey }, "e", revelation.revelation ))
 -- }}} 
 
 -- {{{ - CLIENT MANIPULATION
-key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end):add()
+table.insert(clientkeys, key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end))
     -- = false
     -- else
         -- client.focus.sticky = true
     -- end
--- end ):add()
+-- end ))
 
-key({ modkey }, "m", awful.client.maximize):add()
-key({ modkey, "Shift" }, "c", function () client.focus:kill() end):add()
-key({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end):add()
-key({ modkey }, "k", function () awful.client.focus.byidx(-1);  client.focus:raise() end):add()
-key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end):add()
-key({ modkey, "Shift" }, "k", function () awful.client.swap.byidx(-1) end):add()
-key({ modkey, "Control" }, "j", function () awful.screen.focus(1) end):add()
-key({ modkey, "Control" }, "k", function () awful.screen.focus(-1) end):add()
-key({ modkey, "Control" }, "space", awful.client.togglefloating):add()
-key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end):add()
-key({ modkey }, "o", awful.client.movetoscreen):add()
-key({ modkey }, "Tab", awful.client.focus.history.previous):add()
-key({ modkey }, "u", awful.client.urgent.jumpto):add()
-key({ modkey, "Shift" }, "r", function () client.focus:redraw() end):add()
-key({ "Mod1" }, "Tab", function () 
+table.insert(clientkeys, key({ modkey }, "m", function (c) c.maximized_horizontal = not c.maximized_horizontal
+                                                           c.maximized_vertical = not c.maximized_vertical end))
+table.insert(clientkeys, key({ modkey, "Shift" }, "c", function (c) c:kill() end))
+table.insert(clientkeys, key({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end))
+table.insert(clientkeys, key({ modkey }, "k", function () awful.client.focus.byidx(-1);  client.focus:raise() end))
+table.insert(clientkeys, key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end))
+table.insert(clientkeys, key({ modkey, "Shift" }, "k", function () awful.client.swap.byidx(-1) end))
+table.insert(clientkeys, key({ modkey, "Control" }, "j", function () awful.screen.focus(1) end))
+table.insert(clientkeys, key({ modkey, "Control" }, "k", function () awful.screen.focus(-1) end))
+table.insert(clientkeys, key({ modkey, "Control" }, "space", awful.client.togglefloating))
+table.insert(clientkeys, key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end))
+table.insert(clientkeys, key({ modkey }, "o", awful.client.movetoscreen))
+table.insert(clientkeys, key({ modkey }, "Tab", awful.client.focus.history.previous))
+table.insert(clientkeys, key({ modkey }, "u", awful.client.urgent.jumpto))
+table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end))
+table.insert(clientkeys, key({ "Mod1" }, "Tab", function () 
   local allclients = awful.client.visible(client.focus.screen)
   for i,v in ipairs(allclients) do
     if allclients[i+1] then
@@ -498,43 +502,43 @@ key({ "Mod1" }, "Tab", function ()
     end
   end
   awful.client.focus.byidx(-1)
-end):add()
+end))
 -- }}}
 
 -- {{{ - LAYOUT MANIPULATION
-key({ modkey }, "l", 
+table.insert(globalkeys, key({ modkey }, "l", 
     function () 
         awful.tag.incmwfact(0.05) 
         -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
-    end):add()
-key({ modkey }, "h", 
+    end))
+table.insert(globalkeys, key({ modkey }, "h", 
     function () 
         awful.tag.incmwfact(-0.05) 
         -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
-    end):add()
+    end))
 
-key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end):add()
-key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end):add()
-key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end):add()
-key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end):add()
-key({ modkey }, "space", function () awful.layout.inc(layouts, 1) end):add()
-key({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -1) end):add()
+table.insert(globalkeys, key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end))
+table.insert(globalkeys, key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end))
+table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end))
+table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end))
+table.insert(globalkeys, key({ modkey }, "space", function () awful.layout.inc(layouts, 1) end))
+table.insert(globalkeys, key({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -1) end))
 -- }}}
 
 -- {{{ - PROMPT
-key({ modkey }, "F1", 
+table.insert(globalkeys, key({ modkey }, "F1", 
     function ()
         awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," >> ") }, mypromptbox[mouse.screen], awful.util.spawn, awful.completion.bash,
         awful.util.getdir("cache") .. "/history")
-    end):add()
+    end))
 
-key({ modkey }, "F4", 
+table.insert(globalkeys, key({ modkey }, "F4", 
     function ()
         awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," L> ") }, mypromptbox[mouse.screen], awful.util.eval, awful.prompt.bash,
         awful.util.getdir("cache") .. "/history_eval")
-    end):add()
+    end))
     
-key({ modkey, "Ctrl" }, "i", 
+table.insert(globalkeys, key({ modkey, "Ctrl" }, "i", 
     function ()
         local s = mouse.screen
         if mypromptbox[s].text then
@@ -551,9 +555,12 @@ key({ modkey, "Ctrl" }, "i",
                 mypromptbox[s].text = mypromptbox[s].text .. "Role: ".. client.focus.role
             end
         end
-    end):add()
+    end))
 
 -- }}}
+
+-- Set keys
+root.keys(globalkeys)
 
 --- }}}
 
@@ -613,6 +620,9 @@ awful.hooks.manage.register( function (c)
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
     client.focus = c
+
+    -- Set key bindings
+    c:keys(clientkeys)
 
     -- Check if the application should be floating.
     local cls = c.class

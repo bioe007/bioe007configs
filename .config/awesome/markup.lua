@@ -4,15 +4,27 @@ require("beautiful")
 markup = {}
 
 function markup.bg(color, text)
-    return '<bg color="'..color..'" />'..text
+    if text ~= nil then
+        return '<bg color="'..color..'" />'..text
+    else
+        return "niltexthere"
+    end
 end
 
 function markup.fg(color, text)
-    return '<span color="'..color..'">'..text..'</span>'
+    if text ~= nil then
+        return '<span color="'..color..'">'..text..'</span>'
+    else
+        return "niltexthere"
+    end
 end
 
 function markup.font(font, text)
-    return '<span font_desc="'..font..'">'..text..'</span>'
+    if text ~= nil then
+        return '<span font_desc="'..font..'">'..text..'</span>'
+    else
+        return "niltexthere"
+    end
 end
 
 function markup.title(t)
