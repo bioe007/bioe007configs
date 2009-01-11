@@ -97,6 +97,14 @@ use_titlebar = false
 
 -- {{{ -- OWN functions
 
+-- function hideFloats()
+    -- local currtag = {}
+    -- local clients = {}
+    -- currtag = awful.tag.selectedlist(1)
+    -- clients = awful.client.visible(1)
+-- end
+
+
 local mwbox = nil
 function setMwbox(s)
     print("creating box: " .. s)
@@ -144,18 +152,19 @@ settings.tags = {
     { name="mda" , layout=awful.layout.suit.floating   , mwfact="0.75"} , 
     { name="off" , layout=awful.layout.suit.tile.bottom, mwfact="0.75"}
     }
-
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
     tags[s] = {}
+    
     -- Create 9 tags per screen.
-    for tagnumber = 1, 8 do
-        tags[s][tagnumber] = tag( settings.tags[tagnumber].name)
-        tags[s][tagnumber].layout = settings.tags[tagnumber].layout
-        -- tags[s][tagnumber] = tag({ name = settings.tags[tagnumber].name, layout = settings.tags[tagnumber].layout, mwfact = settings.tags[tagnumber].mwfact  })
-        -- Add tags to screen one by one
-        tags[s][tagnumber].screen = s
+    for i,tagobj in ipairs(settings.tags) do 
+
+        tags[s][i] = tag(tagobj.name)    
+        tags[s][i].screen = s
+        awful.tag.setproperty(tags[s][i] , "layout", tagobj.layout )
+        awful.tag.setproperty(tags[s][i] , "mwfact", tagobj.mwfact )
+
     end
     -- I'm sure you want to see at least one tag.
     tags[s][1].selected = true
@@ -228,6 +237,7 @@ wicked.register(datewidget, wicked.widgets.date,
 
 -- }}}
 
+print("just before cpu")
 -- {{{ -- CPU widgets
 cpuwidget = widget({ type = 'textbox', name = 'cpuwidget', align = 'right' })
 cpuwidget.width = 51
@@ -575,6 +585,7 @@ awful.hooks.focus.register(function (c)
     -- toggleTitlebar(c)
 end)
 
+print("just before focus")
 -- Hook function to execute when unfocusing a client.
 awful.hooks.unfocus.register(function (c)
     if not awful.client.ismarked(c) then
@@ -583,16 +594,19 @@ awful.hooks.unfocus.register(function (c)
     -- toggleTitlebar(c)
 end)
 
+print("just before marked")
 -- Hook function to execute when marking a client
 awful.hooks.marked.register(function (c)
     c.border_color = beautiful.border_marked
 end)
 
+print("just before unmarked")
 -- Hook function to execute when unmarking a client.
 awful.hooks.unmarked.register(function (c)
     c.border_color = beautiful.border_focus
 end)
 
+print("just before mouseenter")
 -- Hook function to execute when the mouse enters a client.
 awful.hooks.mouse_enter.register(function (c)
     -- Sloppy focus, but disabled for magnifier layout
@@ -602,6 +616,7 @@ awful.hooks.mouse_enter.register(function (c)
     end
 end)
 
+print("just before manage")
 -- Hook function to execute when a new client appears.
 awful.hooks.manage.register( function (c)
 
@@ -664,6 +679,7 @@ awful.hooks.manage.register( function (c)
     -- awful.placement.no_offscreen(c)
 end)
 
+print("just before arrange")
 -- Hook function to execute when arranging the screen.
 -- (tag switch, new client, etc)
 awful.hooks.arrange.register(function (screen)
@@ -673,14 +689,14 @@ awful.hooks.arrange.register(function (screen)
     else
         mylayoutbox[screen].image = nil
     end
-
-    -- Give focus to the latest client in history if no window has focus
+   -- Give focus to the latest client in history if no window has focus
     -- or if the current window is a desktop or a dock one.
     if not client.focus then
         local c = awful.client.focus.history.get(screen, 0)
         if c then client.focus = c end
     end
 end)
+
 -- Hook function to execute when arranging the screen.
 -- (tag switch, new client, etc)
 -- awful.hooks.arrange.register(function (screen)
