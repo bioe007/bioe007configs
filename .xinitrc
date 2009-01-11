@@ -1,0 +1,1 @@
+/home/perry/.xinitrc.awesome
