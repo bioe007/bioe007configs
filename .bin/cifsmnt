@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# cifsmnt
+# 
+if [ ! -r "/home/perry/.cifs.conf" ] ; then
+  echo "$0 : failed to read $HOME/.cifs.conf"
+  exit 1
+fi
+
+SRV='//10.1.1.16'
+MNTOPTS="credentials=/home/perry/.cifs.conf,uid=perry,gid=users,port=139"
+
+case "$1" in
+  -u )
+    echo "$0: Unmounting shares"
+    test -z "$(mount | grep phargrave)" && sudo umount /mnt/samba/phargrave 
+    test -z "$(mount | grep shared)" && sudo umount /mnt/samba/shared 
+  ;;
+  * )
+   test -z "$(mount | grep phargrave)" && sudo mount -t cifs $SRV/phargrave /mnt/samba/phargrave -o $MNTOPTS || echo "Already Mounted phargr"
+   test -z "$(mount | grep shared)" && sudo mount -t cifs $SRV/shared /mnt/samba/shared -o $MNTOPTS || echo "Already Mounted shared"
+  ;;
+esac
