@@ -54,8 +54,9 @@ alias dync="$WINECMD    ${DYNCPATH}/Dccl_cmp.exe" # dyn-c compiler
 alias man='LC_ALL=C man'
 
 # laziness
-alias v="vim"
-alias vi="vim"
+alias v="/usr/bin/vim"
+alias vi="/usr/bin/vim"
+alias vim="/home/perry/.bin/vim-start.sh"
 alias :q="exit"
 alias p="sudo pacman"
 alias y="yaourt"
