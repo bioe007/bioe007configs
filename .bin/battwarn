@@ -1,0 +1,8 @@
+#!/bin/bash
+
+kill $(/usr/bin/pgrep osd_cat) > /dev/null 2>&1
+osdcmd="osd_cat --color=red --pos=middle --align=center --delay=1 --font=-*-lucida-*-r-*-*-17-*-*-*-*-*-*-*"
+
+echo "Battery low: $1% remaing" | $osdcmd$font
+
+# vim: ft=bash

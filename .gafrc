@@ -1,0 +1,4 @@
+(component-library "${HOME}/gaf/symbols-gschem")
+(component-library "${HOME}/gaf/symbols-gschem/micro")
+(component-library "${HOME}/gaf/symbols-gschem/xtor")
+(component-library "${HOME}/gaf/symbols-gschem/logic")
