@@ -21,7 +21,7 @@ set hidden         " dont require saving to switch buffers
 
 " set for urxvt-256
 if &t_Co == 256 
-  colorscheme mine
+  colorscheme oblivion
 endif
 
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
@@ -143,7 +143,7 @@ map <f12> :Lodgeit<CR>
 ",v brings up my .vimrc
 map ,v :sp $HOME/.vimrc<CR><C-W>_
 " ,c i special for writing and reloading my colorscheme file (assumes im already editing it)
-map ,c :w<CR>:colorscheme mine<CR>
+map ,c :w<CR>:colorscheme oblivion<CR>
 ",V reload vimrc
 map <silent> ,V :source $HOME/.vimrc<CR>:filetype detect<CR>:exe ":echo 'vimrc reloaded'"<CR>
 ",r load my vim quick reference card
@@ -161,7 +161,7 @@ map <F8> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 " map <F9> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 " map <F10> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 " toggle taglist
-map <silent> ,t :TlistToggle<CR> :colorscheme mine<CR>
+map <silent> ,t :TlistToggle<CR> :colorscheme oblivion<CR>
 
 " comments
 noremap <silent> ,# :call CommentLineToEnd('# ')<CR>+
@@ -224,15 +224,9 @@ if has("gui_running")
   " set the X11 font to use
   set guifont=ProFont\ 8
 
-  " set guioptions+=bt		    " use bottom scrollbar
-
   set toolbariconsize=tiny
   "	coloring
-  " Only do this for Vim version 5.0 and later.
-  " if version >= 5
-    colorscheme darkblue		" set colors
-
-  " endif
+  colorscheme oblivion		" set colors
 
 endif
 
