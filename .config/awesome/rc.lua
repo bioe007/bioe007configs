@@ -68,6 +68,7 @@ floatapps = {
     ["Figure 1"] = true,
     ["gnplt"] = true,
     ["galculator"] = true,
+    ["Preferences"] = true,
     ["XDosEmu"] = true
 }
 
@@ -77,7 +78,6 @@ apptags = {}
 apptags = {
     ["Navigator"] = { screen = 1, tag = 4}, 
     ["Shredder"] = { screen = 1, tag = 5 },
-    ["mocp"] = { screen = 1, tag = 7 },
     ["VBoxSDL"] = { screen = 1, tag = 6 },
     ["MPlayer"] ={ screen = 1, tag = 7 },
     ["gimp"] = { screen = 1, tag = 7, titlebar = true },
@@ -196,7 +196,7 @@ mywibox = {}
 mypromptbox = {}
 mylayoutbox = {}
 mytaglist = {}
-mytaglist.buttons = { button({ }, 1, awful.tag.viewonly),
+mytaglist.buttons =  { button({ }, 1, awful.tag.viewonly),
                       button({ modkey }, 1, awful.client.movetotag),
                       button({ }, 3, function () if instance then instance:hide() end instance = awful.menu.clients({ width=250 }) end),
                       -- button({ }, 3, function (tag) tag.selected = not tag.selected end),
@@ -237,7 +237,7 @@ wicked.register(datewidget, wicked.widgets.date,
 
 -- }}}
 
-print("just before cpu")
+-- print("just before cpu")
 -- {{{ -- CPU widgets
 cpuwidget = widget({ type = 'textbox', name = 'cpuwidget', align = 'right' })
 cpuwidget.width = 51
@@ -585,7 +585,7 @@ awful.hooks.focus.register(function (c)
     -- toggleTitlebar(c)
 end)
 
-print("just before focus")
+-- print("just before focus")
 -- Hook function to execute when unfocusing a client.
 awful.hooks.unfocus.register(function (c)
     if not awful.client.ismarked(c) then
@@ -594,19 +594,19 @@ awful.hooks.unfocus.register(function (c)
     -- toggleTitlebar(c)
 end)
 
-print("just before marked")
+-- print("just before marked")
 -- Hook function to execute when marking a client
 awful.hooks.marked.register(function (c)
     c.border_color = beautiful.border_marked
 end)
 
-print("just before unmarked")
+-- print("just before unmarked")
 -- Hook function to execute when unmarking a client.
 awful.hooks.unmarked.register(function (c)
     c.border_color = beautiful.border_focus
 end)
 
-print("just before mouseenter")
+-- print("just before mouseenter")
 -- Hook function to execute when the mouse enters a client.
 awful.hooks.mouse_enter.register(function (c)
     -- Sloppy focus, but disabled for magnifier layout
@@ -616,7 +616,7 @@ awful.hooks.mouse_enter.register(function (c)
     end
 end)
 
-print("just before manage")
+-- print("just before manage")
 -- Hook function to execute when a new client appears.
 awful.hooks.manage.register( function (c)
 
@@ -642,12 +642,18 @@ awful.hooks.manage.register( function (c)
     -- Check if the application should be floating.
     local cls = c.class
     local inst = c.instance
+
     if floatapps[cls] then
         awful.titlebar.add(c, { modkey = modkey })
         c.floating = floatapps[cls]
     elseif floatapps[inst] then
         awful.titlebar.add(c, { modkey = modkey })
         c.floating = floatapps[inst]
+    end
+
+    if (string.find(c.name,"Preferences"))~=nil then
+        awful.titlebar.add(c, { modkey = modkey })
+        awful.client.floating.set(c,true)
     end
 
     -- Check application->screen/tag mappings, if the app is left
@@ -670,16 +676,15 @@ awful.hooks.manage.register( function (c)
       end
 
     -- Honor size hints: for all but terminals
-    c.honorsizehints = true
+    c.size_hints_honor = true
     if c.class == "urxvt" or c.class == "URxvt" or c.class == "Apvlv" or c.class == "apvlv" then
-        -- print("found urxvt")
-        c.honorsizehints = false
+        c.size_hints_honor = false
     end
-    -- awful.placement.no_overlap(c)
-    -- awful.placement.no_offscreen(c)
+    awful.placement.no_overlap(c)
+    awful.placement.no_offscreen(c)
 end)
 
-print("just before arrange")
+-- print("just before arrange")
 -- Hook function to execute when arranging the screen.
 -- (tag switch, new client, etc)
 awful.hooks.arrange.register(function (screen)
