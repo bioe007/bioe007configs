@@ -28,7 +28,6 @@ settings.apps.terminal = "urxvtc"
 settings.apps.browser = "firefox"
 settings.apps.mail = "thunderbird"
 settings.apps.filemgr = "pcmanfm"
-settings.apps.chat = "/home/perry/.bin/screen-start.sh"
 settings.apps.music = "mocp --server"
 settings.apps.editor = os.getenv("EDITOR") or "vim"
 editor_cmd = settings.apps.terminal .. " -e " .. settings.apps.editor
@@ -433,7 +432,6 @@ table.insert(globalkeys, key({ modkey, "Mod1" },"f", function () awful.util.spaw
 table.insert(globalkeys, key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end))
 table.insert(globalkeys, key({ modkey, "Mod1", "Shift" },"v", function () awful.util.spawn('VBoxSDL -vm xp2') end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"g", function () awful.util.spawn('gschem') end))
--- key({ modkey, "Mod1" },"p", function () awful.util.spawn('pcb') end):add()
 table.insert(globalkeys, key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"v", function () awful.util.spawn('TERM=rxvt-256color ' .. settings.apps.terminal..' -name vim -e sh -c vim') end))
@@ -642,7 +640,6 @@ awful.hooks.manage.register( function (c)
     -- Check if the application should be floating.
     local cls = c.class
     local inst = c.instance
-
     if floatapps[cls] then
         awful.titlebar.add(c, { modkey = modkey })
         c.floating = floatapps[cls]
@@ -651,37 +648,45 @@ awful.hooks.manage.register( function (c)
         c.floating = floatapps[inst]
     end
 
-    if (string.find(c.name,"Preferences"))~=nil then
-        awful.titlebar.add(c, { modkey = modkey })
-        awful.client.floating.set(c,true)
-    end
-
-    -- Check application->screen/tag mappings, if the app is left
-    -- on the current tag, set it as slave
+    -- Check application->screen/tag mappings, if the app is left on the current tag, set it as slave
     local target
-      if apptags[cls] then
+    if apptags[cls] then
         target = apptags[cls]
-      elseif apptags[inst] then
+    elseif apptags[inst] then
         target = apptags[inst]
-      end
-      -- dont move floating dialogs 
-      if c.type ~= "dialog" and target then
+    end
+    -- dont move floating dialogs 
+    if c.type ~= "dialog" and target then
         c.screen = target.screen
         awful.client.movetotag(tags[target.screen][target.tag], c)
+    elseif target then
+        target = nil
+    end
+    -- dont move floating dialogs 
+    -- if c.type ~= "dialog" and target then
+        -- c.screen = target.screen
+        -- awful.client.movetotag(tags[target.screen][target.tag], c)
 
-        -- if the new client is not moved to another tag, it becomes a slave
-        -- this assumes we dont want new apps to become master
-      elseif not settings.new_become_master then
+    -- a fix for ffx's preferences window. shoudl clean this up
+    if ( string.find( c.name,"Preferences" ) ) ~= nil then
+        awful.titlebar.add( c, { modkey = modkey } )
+        awful.client.floating.set( c,true )
+    end
+
+    if not settings.new_become_master then
         awful.client.setslave(c)
-      end
+    end
 
     -- Honor size hints: for all but terminals
-    c.size_hints_honor = true
     if c.class == "urxvt" or c.class == "URxvt" or c.class == "Apvlv" or c.class == "apvlv" then
         c.size_hints_honor = false
+    else
+        c.size_hints_honor = true
     end
+
     awful.placement.no_overlap(c)
     awful.placement.no_offscreen(c)
+
 end)
 
 -- print("just before arrange")
