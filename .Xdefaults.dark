@@ -31,7 +31,7 @@ URxvt*internalBorder:     3
 URxvt*jumpScroll:         true
 URxvt*tintColor:          grey
 URxvt*shading:            10
-URxvt*fading:             20
+URxvt*fading:             0
 !URxvt*fadeColor:          grey
 URxvt*scrollBar:          False
 !URxvt*scrollBar_floating:          scrollBar_floatingtrue
