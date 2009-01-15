@@ -26,16 +26,6 @@ endif
 
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 
-""""""""""""""""""""""""" this was for ctags.vim, but it is fail so....
-" let g:ctags_path='/usr/bin/ctags'
-" let g:ctags_statusline=1
-" let g:ctags_regenerate=0
-" let g:ctags_title=0
-" let g:ctags_args='-R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>'
-
-" set vim to chdir for each file
-" au BufEnter * if &ft != 'help' | silent! cd %:p:h | endif
-" set autochdir
 
 " load the types.vim highlighting file, if it exists
 autocmd BufRead,BufNewFile *.[ch] let fname = expand('<afile>:p:h') . '/types.vim'
@@ -212,7 +202,8 @@ imap <C-e> <Esc>eli
 imap <C-b> <Esc>bhi
 " 
 " quick search for buffer 
-map <C-b> :buffer 
+set wcm=<Tab>
+map <C-b> :buffer <Tab>
 
 if has("unix")
   set clipboard=autoselect
@@ -230,3 +221,13 @@ if has("gui_running")
 
 endif
 
+""""""""""""""""""""""""" this was for ctags.vim, but it is fail so....
+" let g:ctags_path='/usr/bin/ctags'
+" let g:ctags_statusline=1
+" let g:ctags_regenerate=0
+" let g:ctags_title=0
+" let g:ctags_args='-R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>'
+
+" set vim to chdir for each file
+" au BufEnter * if &ft != 'help' | silent! cd %:p:h | endif
+" set autochdir
