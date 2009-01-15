@@ -498,7 +498,7 @@ table.insert(clientkeys, key({ modkey, "Control" }, "k", function () awful.scree
 table.insert(clientkeys, key({ modkey, "Control" }, "space", awful.client.togglefloating))
 table.insert(clientkeys, key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end))
 table.insert(clientkeys, key({ modkey }, "o", awful.client.movetoscreen))
-table.insert(clientkeys, key({ modkey }, "Tab", awful.client.focus.history.previous))
+table.insert(clientkeys, key({ modkey }, "Tab", function() awful.client.focus.history.previous(); client.focus:raise() end ))
 table.insert(clientkeys, key({ modkey }, "u", awful.client.urgent.jumpto))
 table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end))
 table.insert(clientkeys, key({ "Mod1" }, "Tab", function () 
