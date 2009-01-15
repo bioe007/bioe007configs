@@ -61,7 +61,6 @@ layouts =
 floatapps = {}
 floatapps = {
     ["MPlayer"] = true,
-    ["pinentry"] = true,
     ["gimp"] = true,
     ["Gnuplot"] = true,
     ["Figure 1"] = true,
@@ -617,6 +616,12 @@ end)
 -- print("just before manage")
 -- Hook function to execute when a new client appears.
 awful.hooks.manage.register( function (c)
+    -- If we are not managing this application at startup,
+    -- move it to the screen where the mouse is.
+    -- We only do it for filtered windows (i.e. no dock, etc).
+    if not startup and awful.client.focus.filter(c) then
+        c.screen = mouse.screen
+    end
 
     if use_titlebar then
         -- Add a titlebar
@@ -634,51 +639,49 @@ awful.hooks.manage.register( function (c)
     c.border_color = beautiful.border_normal
     client.focus = c
 
-    -- Set key bindings
-    c:keys(clientkeys)
 
     -- Check if the application should be floating.
     local cls = c.class
     local inst = c.instance
     if floatapps[cls] then
+        awful.client.floating.set(c, floatapps[cls])
         awful.titlebar.add(c, { modkey = modkey })
-        c.floating = floatapps[cls]
     elseif floatapps[inst] then
+        awful.client.floating.set(c, floatapps[inst])
         awful.titlebar.add(c, { modkey = modkey })
-        c.floating = floatapps[inst]
-    end
-
-    -- Check application->screen/tag mappings, if the app is left on the current tag, set it as slave
-    local target
-    if apptags[cls] then
-        target = apptags[cls]
-    elseif apptags[inst] then
-        target = apptags[inst]
-    end
-    -- dont move floating dialogs 
-    if c.type ~= "dialog" and target then
-        c.screen = target.screen
-        awful.client.movetotag(tags[target.screen][target.tag], c)
-    elseif target then
-        target = nil
-    end
-    -- dont move floating dialogs 
-    -- if c.type ~= "dialog" and target then
-        -- c.screen = target.screen
-        -- awful.client.movetotag(tags[target.screen][target.tag], c)
-
-    -- a fix for ffx's preferences window. shoudl clean this up
-    if ( string.find( c.name,"Preferences" ) ) ~= nil then
+    elseif ( string.find( c.name,"Preferences" ) ) ~= nil then
+        -- a fix for ffx's preferences window. should clean this up
         awful.titlebar.add( c, { modkey = modkey } )
         awful.client.floating.set( c,true )
     end
+
+    -- Check application->screen/tag mappings, if the app is left on the current tag, set it as slave
+    -- do not move any dialog windows
+    local target
+    if c.type ~= "dialog" then
+        if apptags[cls] then
+            target = apptags[cls]
+        elseif apptags[inst] then
+            target = apptags[inst]
+        end
+        if target ~= nil then
+            c.screen = target.screen
+            awful.client.movetotag(tags[target.screen][target.tag], c)
+        end
+    end
+
+    -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
+    client.focus = c
+
+    -- Set key bindings
+    c:keys(clientkeys)
 
     if not settings.new_become_master then
         awful.client.setslave(c)
     end
 
     -- Honor size hints: for all but terminals
-    if c.class == "urxvt" or c.class == "URxvt" or c.class == "Apvlv" or c.class == "apvlv" then
+    if c.class == "urxvt" or c.class == "URxvt" then -- or c.class == "XDosEmu" then
         c.size_hints_honor = false
     else
         c.size_hints_honor = true
@@ -706,25 +709,6 @@ awful.hooks.arrange.register(function (screen)
         if c then client.focus = c end
     end
 end)
-
--- Hook function to execute when arranging the screen.
--- (tag switch, new client, etc)
--- awful.hooks.arrange.register(function (screen)
-    -- local layout = awful.layout.get(screen)
-    -- if layout and beautiful["layout_" ..layout] then
-        -- mylayoutbox[screen].image = image(beautiful["layout_" .. layout])
-        -- image("/home/perry/.config/awesome/icons/layouts/" .. layout .. "w.png")
-    -- else
-        -- mylayoutbox[screen].image = nil
-    -- end
-
-    -- Give focus to the latest client in history if no window has focus
-    -- or if the current window is a desktop or a dock one.
-    -- if not client.focus then
-        -- local c = awful.client.focus.history.get(screen, 0)
-        -- if c then client.focus = c end
-    -- end
--- end)
 
 -- }}}
 
