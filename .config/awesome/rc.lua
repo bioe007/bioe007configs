@@ -95,14 +95,15 @@ use_titlebar = false
 
 -- {{{ -- OWN functions
 
--- function hideFloats()
-    -- local currtag = {}
-    -- local clients = {}
-    -- currtag = awful.tag.selectedlist(1)
-    -- clients = awful.client.visible(1)
--- end
+function hideFloats()
+    local currtag = {}
+    local clients = {}
+    currtag = awful.tag.selectedlist(1)
+    clients = awful.client.visible(1)
+end
 
 
+-- {{{ setMwbox - someday this may work :(
 local mwbox = nil
 function setMwbox(s)
     print("creating box: " .. s)
@@ -124,7 +125,9 @@ function setMwbox(s)
     print("post box: ")
     print(mwbox)
 end
+---}}}
 
+--{{{ toggleTitlebar :: add a titlebar
 -- toggles wether client has titlebar or not
 function toggleTitlebar(c)
   if awful.layout.get(c.screen) == "floating" then 
@@ -136,6 +139,8 @@ function toggleTitlebar(c)
     end
   end
 end
+-- }}}
+
 -- }}}
 
 -- {{{ Tags
@@ -204,8 +209,8 @@ mytaglist.buttons =  { button({ }, 1, awful.tag.viewonly),
 mytasklist = {}
 mytasklist.buttons = { button({ }, 1, function (c) client.focus = c; c:raise() end),
                        button({ }, 3, function () awful.menu.clients({ width=250 }) end),
-                       button({ }, 4, function () awful.client.focus.byidx(1) end),
-                       button({ }, 5, function () awful.client.focus.byidx(-1) end) }
+                       button({ }, 4, function () awful.client.focus.byidx(1); client.focus:raise() end),
+                       button({ }, 5, function () awful.client.focus.byidx(-1); client.focus:raise() end) }
 
 widget_spacer_l = widget({type = "textbox", name = "widget_spacer", align = "left" })
 widget_spacer_l.width = 5 
@@ -465,9 +470,9 @@ table.insert(globalkeys, key({ },"XF86AudioStop", function () awful.util.spawn('
 
 -- {{{ - SPECIAL keys
 table.insert(globalkeys, key({ modkey, "Control" }, "r", function ()
-                                                             mypromptbox[mouse.screen].text =
-                                                                 awful.util.escape(awful.util.restart())
-                                                          end))
+    mypromptbox[mouse.screen].text =
+    awful.util.escape(awful.util.restart())
+end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
 -- }}} 
 
@@ -479,28 +484,36 @@ table.insert(globalkeys, key({ modkey }, "e", revelation.revelation ))
 -- }}} 
 
 -- {{{ - CLIENT MANIPULATION
-table.insert(clientkeys, key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end))
-    -- = false
-    -- else
-        -- client.focus.sticky = true
-    -- end
--- end ))
+hiddenClient = nil
+table.insert(clientkeys, key({modkey, "Shift"},"q", function ()
+    local c = client.focus()
 
-table.insert(clientkeys, key({ modkey }, "m", function (c) c.maximized_horizontal = not c.maximized_horizontal
+    if hiddenClient == nil then
+        hiddenClient= c
+        c.hide = true
+    else
+        c.hide = false
+        hiddenClient = nil
+    end
+end))
+
+table.insert(clientkeys, key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end)) -- show client on all tags
+table.insert(clientkeys, key({ modkey }, "m", function (c) c.maximized_horizontal = not c.maximized_horizontal         -- maximize client
                                                            c.maximized_vertical = not c.maximized_vertical end))
-table.insert(clientkeys, key({ modkey, "Shift" }, "c", function (c) c:kill() end))
-table.insert(clientkeys, key({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end))
+table.insert(clientkeys, key({ modkey, "Shift" }, "c", function (c) c:kill() end))                                      -- kill client
+table.insert(clientkeys, key({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end))       -- change focus
 table.insert(clientkeys, key({ modkey }, "k", function () awful.client.focus.byidx(-1);  client.focus:raise() end))
-table.insert(clientkeys, key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end))
+table.insert(clientkeys, key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end))     -- change order
 table.insert(clientkeys, key({ modkey, "Shift" }, "k", function () awful.client.swap.byidx(-1) end))
-table.insert(clientkeys, key({ modkey, "Control" }, "j", function () awful.screen.focus(1) end))
+table.insert(clientkeys, key({ modkey, "Control" }, "j", function () awful.screen.focus(1) end))        -- switch monitor focus
 table.insert(clientkeys, key({ modkey, "Control" }, "k", function () awful.screen.focus(-1) end))
-table.insert(clientkeys, key({ modkey, "Control" }, "space", awful.client.togglefloating))
-table.insert(clientkeys, key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end))
-table.insert(clientkeys, key({ modkey }, "o", awful.client.movetoscreen))
-table.insert(clientkeys, key({ modkey }, "Tab", function() awful.client.focus.history.previous(); client.focus:raise() end ))
-table.insert(clientkeys, key({ modkey }, "u", awful.client.urgent.jumpto))
-table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end))
+table.insert(clientkeys, key({ modkey, "Control" }, "space", awful.client.togglefloating))              -- toggle client float
+table.insert(clientkeys, key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end))  -- switch focused client with master
+table.insert(clientkeys, key({ modkey }, "o", awful.client.movetoscreen))   -- switch client to other screen
+table.insert(clientkeys, key({ modkey }, "Tab", function() awful.client.focus.history.previous(); client.focus:raise() end )) -- toggle client focus history
+table.insert(clientkeys, key({ modkey }, "u", awful.client.urgent.jumpto))      -- jump to urgent clients
+table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end))		-- redraw clients
+-- cycle client focus and position
 table.insert(clientkeys, key({ "Mod1" }, "Tab", function () 
   local allclients = awful.client.visible(client.focus.screen)
   for i,v in ipairs(allclients) do
