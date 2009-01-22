@@ -71,16 +71,21 @@ if [ "$TERM" = "linux" ]; then
     # We're on the system console or maybe telnetting in
     PS1="\[\e[32;1m\]\u@\H \\$ \[\e[0m\]"
 elif [ "$(pgrep vim | grep -cw "$PPID")" -gt "0" ] ; then 
-    PS1="\e]0;VIMSHELL \j:\w\a\e[37;1m\]\\$\[\e[0m\] "
+    PS1="\e]0;VIMSHELL \j:\w\a\e[35;1m\]\\$\[\e[0m\] "
     clear
     echo 'you are in vimshell'
     # if xinit is running, assume in an xterm 
     if [[ "$(pgrep xinit)" ]] ; then
       TERM="rxvt-256color"
     fi
+elif [ "$TERM" = "screen-256color" ]; then
+    # in screen PS2 never really gets updated
+    # PS1="\e]2;screen \e[36;1m\]\j:\w\a\\$\[\e[0m\] "
+    # PS1="\[\e]2;screen\e[36;1m\]\j:\w\\$\[\e[0m\] "
+    PS1="\[\e]0;SCREEN \a\e[34;6m\]\j \e[0m\]\e[34;1m\]\W\e[0m\]\e[36;1m\] \\$\[\e[0m\] "
 else
     # We're not on the console, assume an x session
-    PS1="\[\e]2;\j:\w\a\e[37;1m\]\\$\[\e[0m\] "
+    PS1="\[\e]2;\j:\w\a\e[35;1m\]\\$\[\e[0m\] "
     TERM="rxvt-256color"
 fi
 # 
