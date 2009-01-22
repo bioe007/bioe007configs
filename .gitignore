@@ -101,4 +101,8 @@ sandbox
 .gegl-0.0
 .mc
 .macromedia
-.links.htoprc.config/gtk-2.0/gtkfilechooser.ini
+.links.htoprc.config/gtk-2.0/gtkfilechooser.ini.config/transmission/
+.config/xarchiver
+.gconfd
+.htoprc
+
