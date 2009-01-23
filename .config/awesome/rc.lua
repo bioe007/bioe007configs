@@ -8,6 +8,7 @@ require("wicked")
 require("revelation")
 require("naughty")
 -- require("volumous")
+require("shifty")
 require("calendar")
 require("mocp")
 require("battery")
@@ -58,6 +59,7 @@ layouts =
 -- the application class or instance. The instance is useful when running
 -- a console app in a terminal like (Music on Console)
 --    xterm -name mocp -e mocp
+--[[ commented so i can try SHIFTY
 floatapps = {}
 floatapps = {
     ["MPlayer"] = true,
@@ -68,7 +70,7 @@ floatapps = {
     ["galculator"] = true,
     ["Preferences"] = true,
     ["XDosEmu"] = true
-}
+} 
 
 -- Applications to be moved to a pre-defined tag by class or instance.
 -- Use the screen and tags indices.
@@ -88,7 +90,7 @@ apptags = {
     ["PCB_Log"] = { screen = 1, tag = 3 },
     ["Mirage"] = { screen = 1, tag = 7 }
 }
-
+-- end of comment out for SHIFTY ]]--
 -- Define if we want to use titlebar on all applications.
 use_titlebar = false
 -- }}}
@@ -145,6 +147,7 @@ end
 
 -- {{{ Tags
 -- Define tags table.
+--[[ commented so i can try SHIFTY
 settings.tags = {
     { name="w1"  , layout=awful.layout.suit.tile.bottom, mwfact="0.60"} , 
     { name="ds"  , layout=awful.layout.suit.max                       } , 
@@ -173,6 +176,7 @@ for s = 1, screen.count() do
     tags[s][1].selected = true
 end
 -- }}}
+-- end of comment out for SHIFTY ]]--
 
 -- {{{ Wibox & WIDGETS
 -- Create a laucher widget and a main menu
