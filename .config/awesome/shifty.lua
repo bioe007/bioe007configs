@@ -490,6 +490,7 @@ function getpos(pos, switch)
     return v
 end
 
+-- init :: search shifty.config.tags for initial set of tags to open
 function init()
     for i, j in pairs(config.tags) do
         if j.init then add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) end

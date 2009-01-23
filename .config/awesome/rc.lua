@@ -96,26 +96,28 @@ use_titlebar = false
 -- }}}
 --[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
-    ["w1"] = { layout = awful.layout.suit.tile.bottom, init = true, position = 1, screen = 1, spawn = settings.apps.terminal, mwfact = 0.644 },
-    ["ds"] = { persist = true, position = 2,                                        },
-    ["dz"] = { nopopup = true, leave_kills = true,                                  },
-    ["web"] = { exclusive = true, solitary = true, position = 4, spawn = settings.apps.browser },
-    ["mail"] = { exclusive = true, solitary = true, position = 5, spawn = settings.apps.mail },
-    ["vbx"] = { exclusive = true, solitary = true, position = 6,                  },
-    ["media"] = { layout = "float",   },
-    ["office"] = { rel_index = 1, layout = "tile"                                      },
+    ["w1"] =     { layout = awful.layout.suit.tile.bottom, init = true, position = 1, screen = 1, spawn = settings.apps.terminal, mwfact = "0.944" } ,
+    ["ds"] =     { persist = true, position = 2,                                                                                                 } ,
+    ["dz"] =     { nopopup = true, leave_kills = true,                                                                                           } ,
+    ["web"] =    { exclusive = true, solitary = true, position = 4, spawn = settings.apps.browser                                                } ,
+    ["mail"] =   { exclusive = true, solitary = true, position = 5, spawn = settings.apps.mail                                                   } ,
+    ["vbx"] =    { exclusive = true, solitary = true, position = 6,                                                                              } ,
+    ["media"] =  { layout = "float",                                                                                                             } ,
+    ["office"] = { rel_index = 1, layout = "tile"                                                                                                } ,
 }
 
 shifty.config.apps = {
-        { match = {"Navigator.*",               }, tag = "web",                        },
-        { match = {"pcb","gschem","PCB_Log"     }, tag = "dz",            },
-        { match = {"VBox.*"                     }, tag = "vbx",                       },
-        { match = {"Mplayer.*","Mirage","gimp","gtkpod","Ufraw" }, tag = "media",         nopopup = true, },
-
+        { match = {"Navigator"                                } , tag = "web",                           } ,
+        { match = {"Shredder.*"                                 } , tag = "mail",                          } ,
+        { match = {"OpenOffice.*"                               } , tag = "office",                        } ,
+        { match = {"pcb","gschem","PCB_Log"                     } , tag = "dz",                            } ,
+        { match = {"acroread","Apvlv"                           } , tag = "ds",                            } ,
+        { match = {"VBox.*"                                     } , tag = "vbx",                           } ,
+        { match = {"Mplayer.*","Mirage","gimp","gtkpod","Ufraw" } , tag = "media",         nopopup = true, } ,
 }
 
 shifty.config.defaults = {
-  layout = "tilebottom", ncol = 1, 
+  layout = awful.layout.suit.tile.bottom, ncol = 1, 
   run = function(tag) naughty.notify({ text = tag.name }) end,
 }
 
