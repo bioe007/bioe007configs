@@ -31,7 +31,7 @@ settings.apps.mail = "thunderbird"
 settings.apps.filemgr = "pcmanfm"
 settings.apps.music = "mocp --server"
 settings.apps.editor = os.getenv("EDITOR") or "vim"
-editor_cmd = settings.apps.terminal .. " -e " .. settings.apps.editor
+settings.apps.editor_cmd = settings.apps.terminal .. " -e " .. settings.apps.editor
 
 settings.sys = {}
 settings.sys.battwarn = false
@@ -94,6 +94,35 @@ apptags = {
 -- Define if we want to use titlebar on all applications.
 use_titlebar = false
 -- }}}
+--[[ {{{ SHIFTY related stuff ]]--
+shifty.config.tags = {
+    ["w1"] = { layout = awful.layout.suit.tile.bottom, init = true, position = 1, screen = 1, spawn = settings.apps.terminal, mwfact = 0.644 },
+    ["ds"] = { persist = true, position = 2,                                        },
+    ["dz"] = { nopopup = true, leave_kills = true,                                  },
+    ["web"] = { exclusive = true, solitary = true, position = 4, spawn = settings.apps.browser },
+    ["mail"] = { exclusive = true, solitary = true, position = 5, spawn = settings.apps.mail },
+    ["vbx"] = { exclusive = true, solitary = true, position = 6,                  },
+    ["media"] = { layout = "float",   },
+    ["office"] = { rel_index = 1, layout = "tile"                                      },
+}
+
+shifty.config.apps = {
+        { match = {"Navigator.*",               }, tag = "web",                        },
+        { match = {"pcb","gschem","PCB_Log"     }, tag = "dz",            },
+        { match = {"VBox.*"                     }, tag = "vbx",                       },
+        { match = {"Mplayer.*","Mirage","gimp","gtkpod","Ufraw" }, tag = "media",         nopopup = true, },
+
+}
+
+shifty.config.defaults = {
+  layout = "tilebottom", ncol = 1, 
+  run = function(tag) naughty.notify({ text = tag.name }) end,
+}
+
+shifty.init()
+-- added for SHIFTY ]]--
+
+-- }}} 
 
 -- {{{ -- OWN functions
 
@@ -182,7 +211,7 @@ end
 -- Create a laucher widget and a main menu
 myawesomemenu = {
    { "manual", settings.apps.terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
+   { "edit config", settings.apps.editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
    { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
@@ -388,46 +417,67 @@ clientkeys = {}
 -- Compute the maximum number of digit we need, limited to 9
 keynumber = 0
 for s = 1, screen.count() do
-   keynumber = math.min(9, math.max(#tags[s], keynumber));
+   keynumber = math.min(9, math.max(#shifty.tags[s], keynumber));
 end
 
 for i = 1, keynumber do
     table.insert(globalkeys, key({ modkey }, i,
                    function ()
                        local screen = mouse.screen
-                       if tags[screen][i] then
-                           awful.tag.viewonly(tags[screen][i])
+                       if shifty.tags[screen][i] then
+                           awful.tag.viewonly(shifty.tags[screen][i])
                        end
                    end))
     table.insert(globalkeys, key({ modkey, "Control" }, i,
                    function ()
                        local screen = mouse.screen
-                       if tags[screen][i] then
-                           tags[screen][i].selected = not tags[screen][i].selected
+                       if shifty.tags[screen][i] then
+                           shifty.tags[screen][i].selected = not shifty.tags[screen][i].selected
                        end
                    end))
     table.insert(globalkeys, key({ modkey, "Shift" }, i,
                    function ()
                        if client.focus then
-                           if tags[client.focus.screen][i] then
-                               awful.client.movetotag(tags[client.focus.screen][i])
+                           if shifty.tags[client.focus.screen][i] then
+                               awful.client.movetotag(shifty.tags[client.focus.screen][i])
                            end
                        end
                    end))
     table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
                    function ()
                        if client.focus then
-                           if tags[client.focus.screen][i] then
-                               awful.client.toggletag(tags[client.focus.screen][i])
+                           if shifty.tags[client.focus.screen][i] then
+                               awful.client.toggletag(shifty.tags[client.focus.screen][i])
                            end
                        end
                    end))
 end
 ---}}}
 
-table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
-table.insert(globalkeys, key({ modkey }, "Right", awful.tag.viewnext))
-table.insert(globalkeys, key({ modkey }, "Escape", awful.tag.history.restore))
+--[[ added for SHIFTY ]]--
+table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "j",          shifty.prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "k",       shifty.next))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "j",          shifty.shift_prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "k",       shifty.shift_next))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "h",          shifty.send_prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "l",       shifty.send_next))
+table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "r",                 shifty.rename))
+table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "w",                 shifty.del))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "t",                 shifty.add))
+table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "t",                 function() shifty.add({ nopopup = true }) end))
+
+for i=1, 9 do
+  table.insert(globalkeys, key({ modkey }, i,
+          function () local t =  shifty.getpos(i, true) end))
+  table.insert(globalkeys, key({ modkey, "Control" }, i,
+          function () local t = shifty.getpos(i); t.selected = not t.selected end))
+  table.insert(globalkeys, key({ modkey, "Shift" }, i,
+          function () if client.focus then awful.client.movetotag(shifty.getpos(i, true)) end end))
+  table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
+          function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
+end
+-- added for SHIFTY ]]--
+
 
 -- {{{ - APPLICATIONS
 -- Standard program
@@ -480,7 +530,9 @@ end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
 -- }}} 
 
--- {{{ - tags bindings
+-- {{{ - TAGS BINDINGS
+table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
+table.insert(globalkeys, key({ modkey }, "Right", awful.tag.viewnext))
 table.insert(globalkeys, key({ modkey, "Mod1" }, "j", awful.tag.viewprev))
 table.insert(globalkeys, key({ modkey,"Mod1" }, "k", awful.tag.viewnext))
 table.insert(globalkeys, key({ modkey }, "Escape", awful.tag.history.restore))
@@ -516,7 +568,7 @@ table.insert(clientkeys, key({ modkey, "Control" }, "Return", function () client
 table.insert(clientkeys, key({ modkey }, "o", awful.client.movetoscreen))   -- switch client to other screen
 table.insert(clientkeys, key({ modkey }, "Tab", function() awful.client.focus.history.previous(); client.focus:raise() end )) -- toggle client focus history
 table.insert(clientkeys, key({ modkey }, "u", awful.client.urgent.jumpto))      -- jump to urgent clients
-table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end))		-- redraw clients
+-- table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end))		-- redraw clients
 -- cycle client focus and position
 table.insert(clientkeys, key({ "Mod1" }, "Tab", function () 
   local allclients = awful.client.visible(client.focus.screen)
@@ -660,13 +712,13 @@ awful.hooks.manage.register( function (c)
     -- Check if the application should be floating.
     local cls = c.class
     local inst = c.instance
-    if floatapps[cls] then
-        awful.client.floating.set(c, floatapps[cls])
-        awful.titlebar.add(c, { modkey = modkey })
-    elseif floatapps[inst] then
-        awful.client.floating.set(c, floatapps[inst])
-        awful.titlebar.add(c, { modkey = modkey })
-    elseif ( string.find( c.name,"Preferences" ) ) ~= nil then
+    --[[  if floatapps[cls] then -- comment for SHIFTY
+        -- awful.client.floating.set(c, floatapps[cls])
+        -- awful.titlebar.add(c, { modkey = modkey })
+    -- elseif floatapps[inst] then
+        -- awful.client.floating.set(c, floatapps[inst])
+        -- awful.titlebar.add(c, { modkey = modkey }) -- end comment for SHIFTY ]]--
+    if ( string.find( c.name,"Preferences" ) ) ~= nil then
         -- a fix for ffx's preferences window. should clean this up
         awful.titlebar.add( c, { modkey = modkey } )
         awful.client.floating.set( c,true )
@@ -675,7 +727,7 @@ awful.hooks.manage.register( function (c)
     -- Check application->screen/tag mappings, if the app is left on the current tag, set it as slave
     -- do not move any dialog windows
     local target
-    if c.type ~= "dialog" then
+    --[[ if c.type ~= "dialog" then -- comment for SHIFTY
         if apptags[cls] then
             target = apptags[cls]
         elseif apptags[inst] then
@@ -685,7 +737,7 @@ awful.hooks.manage.register( function (c)
             c.screen = target.screen
             awful.client.movetotag(tags[target.screen][target.tag], c)
         end
-    end
+    end --end comment for SHIFTY ]]--
 
     -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
     client.focus = c
