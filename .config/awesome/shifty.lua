@@ -25,6 +25,7 @@ local pairs = pairs
 local io = io
 local tostring = tostring
 local tonumber = tonumber
+local print = print
 
 module("shifty")
 
@@ -42,14 +43,21 @@ for s = 1, screen.count() do tags[s] = {} end
 local data = otable()
 
 
+-- matches string 'name' to return a tag object? 
+-- ok, seems to work
 function name2tag(name, scr)
+    print("name2tag parm: name= " .. name .. " scr=" .. scr) -- debug
     local a, b = scr or 1, scr or screen.count()
     for s = a, b do
+
+        if tags[s] == nil then print("tags[s] is nil") end -- debug:w
+
         for i, t in ipairs(tags[s]) do
             if name == t.name then
-            return t end
+            print("found name " .. t.name .. " value is "); return t end -- print is debug
         end
     end
+    print("couldnt match name on scr") -- debug
 end
 
 function tag2index(tag)
@@ -268,6 +276,7 @@ function match(c)
     local role = c.role
     local typ = c.type
 
+    print("shifty: 279: client name: " .. c.name) -- debug
     -- try matching client to config.apps
     for i, a in ipairs(config.apps) do
         if a.match then
@@ -278,6 +287,7 @@ function match(c)
                     (cls and cls:find(w)) or
                     (typ and typ:find(w))
                 then
+                    print("shifty: match 290: got match " .. w ) -- debug
                     if a.tag and config.tags[a.tag] and config.tags[a.tag].screen then
                         target_screen = config.tags[a.tag].screen
                     elseif a.screen then
@@ -285,7 +295,8 @@ function match(c)
                     else
                         target_screen = c.screen
                     end
-                    if a.tag then target_tag = a.tag end
+                    print("shifty:match: 298: target_screen= " .. target_screen) -- debug
+                    if a.tag then target_tag = a.tag; print("target_tag= ".. target_tag) end
                     if a.float then c.floating = a.float end
                     if a.geometry then c:fullgeometry(a.geometry) end
                     if a.slave then awful.client.setslave(c) end
@@ -301,7 +312,7 @@ function match(c)
     -- if not matched or matches currently selected, see if we can leave at the current tag
     local sel = awful.tag.selected(c.screen)
     if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
-        if not (data[sel].exclusive or data[sel].solitary) or intrusive then return end
+        if not (data[sel].exclusive or data[sel].solitary) or intrusive then print("shifty:315 leaving on current tag"); return end -- debug here
     end
 
     -- if still unmatched, try guessing the tag
@@ -312,15 +323,19 @@ function match(c)
     -- get/create target tag and move the client
     if target_tag then
         target = name2tag(target_tag, target_screen)
+        if target == nil then print("shifty: 327 target is nil") end -- debug
+        print("got target_tag " .. target_tag) -- debug
         if not target or (data[target].solitary and #target:clients() > 0 and not intrusive) then
             target = add({ name = target_tag, noswitch = true, matched = true, screen = target_screen }) end
-        awful.client.movetotag(target_tag, c)
+        local ttargt = tag2index(target)
+        awful.client.movetotag(target, c)
     end
     if target_screen and c.screen ~= target_screen then c.screen = target_screen end
 
     -- if target different from current tag, switch unless nopopup
     if target and (not (data[target].nopopup or nopopup) and target ~= sel) then
         awful.tag.viewonly(target)
+        print("errorfind  " .. target_tag) -- debug
     end
 end
 
