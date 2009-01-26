@@ -40,10 +40,12 @@ settings.sys.musicstate = ""
 -- Default modkey.
 modkey = "Mod4"
 
+-- Define if we want to use titlebar on all applications.
+use_titlebar = false
+
 -- Table of layouts to cover with awful.layout.inc, order matters.
 layouts = {}
-layouts =
-{
+layouts = {
     awful.layout.suit.tile,
     -- awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
@@ -55,76 +57,41 @@ layouts =
     -- awful.layout.suit.magnifier,
     awful.layout.suit.floating
 }
--- Table of clients that should be set floating. The index may be either
--- the application class or instance. The instance is useful when running
--- a console app in a terminal like (Music on Console)
---    xterm -name mocp -e mocp
---[[ commented so i can try SHIFTY
-floatapps = {}
-floatapps = {
-    ["MPlayer"] = true,
-    ["gimp"] = true,
-    ["Gnuplot"] = true,
-    ["Figure 1"] = true,
-    ["gnplt"] = true,
-    ["galculator"] = true,
-    ["Preferences"] = true,
-    ["XDosEmu"] = true
-} 
 
--- Applications to be moved to a pre-defined tag by class or instance.
--- Use the screen and tags indices.
-apptags = {}
-apptags = {
-    ["Navigator"] = { screen = 1, tag = 4}, 
-    ["Shredder"] = { screen = 1, tag = 5 },
-    ["VBoxSDL"] = { screen = 1, tag = 6 },
-    ["MPlayer"] ={ screen = 1, tag = 7 },
-    ["gimp"] = { screen = 1, tag = 7, titlebar = true },
-    ["OpenOffice"] = { screen = 1, tag = 8 },
-    ["acroread"] = { screen = 1, tag = 2 },
-    ["Apvlv"] = { screen = 1, tag = 2 },
-    ["pcb"] = { screen = 1, tag = 3 },
-    ["gschem"] = { screen = 1, tag = 3 },
-    ["gtkpod"] = { screen = 1, tag = 7 },
-    ["PCB_Log"] = { screen = 1, tag = 3 },
-    ["Mirage"] = { screen = 1, tag = 7 }
-}
--- end of comment out for SHIFTY ]]--
--- Define if we want to use titlebar on all applications.
-use_titlebar = false
--- }}}
 --[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.tile.bottom, init = true, position = 1, screen = 1, spawn = settings.apps.terminal, mwfact = "0.944" } ,
-    ["ds"] =     { persist = true, position = 2,                                                                                                 } ,
-    ["dz"] =     { nopopup = true, leave_kills = true,                                                                                           } ,
-    ["web"] =    { exclusive = true, solitary = true, position = 4, spawn = settings.apps.browser                                                } ,
-    ["mail"] =   { exclusive = true, solitary = true, position = 5, spawn = settings.apps.mail                                                   } ,
-    ["vbx"] =    { exclusive = true, solitary = true, position = 6,                                                                              } ,
-    ["media"] =  { layout = "float",                                                                                                             } ,
-    ["office"] = { rel_index = 1, layout = "tile"                                                                                                } ,
+    ["w1"] =     { layout = awful.layout.suit.tile.bottom, init = true, position = 1, screen = 1, exclusive  = false } ,
+    ["ds"] =     { persist = true, nopopup = false                                                                   } ,
+    ["dz"] =     { nopopup = true, leave_kills = true,                                                               } ,
+    ["web"] =    { exclusive = true, solitary = true, spawn = settings.apps.browser                                  } ,
+    ["mail"] =   { exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
+    ["vbx"] =    { exclusive = true, solitary = true,                                                                } ,
+    ["media"] =  { layout = "float",                                                                                 } ,
+    ["office"] = { rel_index = 1, layout = "tile"                                                                    } ,
 }
 
 shifty.config.apps = {
-        { match = {"Navigator"                                } , tag = "web",                           } ,
-        { match = {"Shredder.*"                                 } , tag = "mail",                          } ,
-        { match = {"OpenOffice.*"                               } , tag = "office",                        } ,
-        { match = {"pcb","gschem","PCB_Log"                     } , tag = "dz",                            } ,
-        { match = {"acroread","Apvlv"                           } , tag = "ds",                            } ,
-        { match = {"VBox.*"                                     } , tag = "vbx",                           } ,
-        { match = {"Mplayer.*","Mirage","gimp","gtkpod","Ufraw" } , tag = "media",         nopopup = true, } ,
+         { match = { "Navigator","Vimperator"                              } , tag = "web"                            } ,
+         { match = { "Shredder.*"                                          } , tag = "mail",                          } ,
+         { match = { "OpenOffice.*"                                        } , tag = "office",                        } ,
+         { match = { "pcb","gschem","PCB_Log"                              } , tag = "dz",                            } ,
+         { match = { "acroread","Apvlv"                                    } , tag = "ds",                            } ,
+         { match = { "VBox.*"                                              } , tag = "vbx",                           } ,
+         { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw"          } , tag = "media",         nopopup = true, } ,
+         { match = { "XDosEmu", "MPlayer", "gimp", "Gnuplot", "galculator" } , float = true                           } ,
 }
 
 shifty.config.defaults = {
   layout = awful.layout.suit.tile.bottom, ncol = 1, 
-  run = function(tag) naughty.notify({ text = tag.name }) end,
+ floatBars=true,
+ run = function(tag) naughty.notify({ text = tag.name }) end,
 }
 
 shifty.init()
 -- added for SHIFTY ]]--
 
 -- }}} 
+-- }}}
 
 -- {{{ -- OWN functions
 
@@ -502,7 +469,6 @@ table.insert(globalkeys, key({ modkey, "Mod1" },"i", function () awful.util.spaw
 table.insert(globalkeys, key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"s", function () 
   os.execute('sudo pm-suspend')
-  -- os.execute('sleep 1')
   awful.util.spawn('slock')
 end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end))
@@ -701,8 +667,10 @@ awful.hooks.manage.register( function (c)
     -- Add mouse bindings
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
-        button({ modkey }, 1, function (c) awful.mouse.client.move() end),
-        button({ modkey }, 3, awful.mouse.client.resize )
+        button({ modkey }, 2, function (c) awful.mouse.client.move() end),
+        button({ modkey }, 3, awful.mouse.client.resize ),
+        -- button({ modkey, "Shift" }, 1, function (c) revelation.revelation()
+            -- end )
     })
     -- New client may not receive focus
     -- if they're not focusable, so set border anyway.
@@ -714,32 +682,11 @@ awful.hooks.manage.register( function (c)
     -- Check if the application should be floating.
     local cls = c.class
     local inst = c.instance
-    --[[  if floatapps[cls] then -- comment for SHIFTY
-        -- awful.client.floating.set(c, floatapps[cls])
-        -- awful.titlebar.add(c, { modkey = modkey })
-    -- elseif floatapps[inst] then
-        -- awful.client.floating.set(c, floatapps[inst])
-        -- awful.titlebar.add(c, { modkey = modkey }) -- end comment for SHIFTY ]]--
     if ( string.find( c.name,"Preferences" ) ) ~= nil then
         -- a fix for ffx's preferences window. should clean this up
         awful.titlebar.add( c, { modkey = modkey } )
         awful.client.floating.set( c,true )
     end
-
-    -- Check application->screen/tag mappings, if the app is left on the current tag, set it as slave
-    -- do not move any dialog windows
-    local target
-    --[[ if c.type ~= "dialog" then -- comment for SHIFTY
-        if apptags[cls] then
-            target = apptags[cls]
-        elseif apptags[inst] then
-            target = apptags[inst]
-        end
-        if target ~= nil then
-            c.screen = target.screen
-            awful.client.movetotag(tags[target.screen][target.tag], c)
-        end
-    end --end comment for SHIFTY ]]--
 
     -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
     client.focus = c
