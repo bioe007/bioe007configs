@@ -3,6 +3,10 @@
 --
 -- http://awesome.naquadah.org/wiki/index.php?title=Shifty
 
+-- errata noted:
+-- W: awesome: luaA_dofunction:317: error running function: /usr/share/awesome/lib/awful/tag.lua:77: bad argument #3 to '?' (boolean expected, got nil)
+--      - pressing mod+esc to flip to previous tag after creating a new one.
+--      this 'merges' the two tags instead of flipping back to it
 -- package env
 
 local tag = tag
@@ -297,9 +301,9 @@ function match(c)
                     end
                     print("shifty:match: 298: target_screen= " .. target_screen) -- debug
                     if a.tag then target_tag = a.tag; print("target_tag= ".. target_tag) end
-                    if a.float then
-                        print("client to float: " .. w); 
-                        awful.client.floating.set( c, true) -- deug
+                    if a.float then  -- set client floating
+                        print("client to float: " .. w)  -- debug
+                        awful.client.floating.set( c, true)
                         if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
                             awful.titlebar.add( c, { modkey = modkey } )
                         end
@@ -343,7 +347,6 @@ function match(c)
     -- if target different from current tag, switch unless nopopup
     if target and (not (data[target].nopopup or nopopup) and target ~= sel) then
         awful.tag.viewonly(target)
-        print("errorfind  " .. target_tag) -- debug
     end
 end
 
