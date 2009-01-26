@@ -9,8 +9,8 @@ bg_normal     = #4e6274
 bg_focus      = #839ab1
 bg_urgent     = #288ef6
 
-fg_normal     = #111145
-fg_focus      = #ffffff
+fg_normal     = #a8a8dd
+fg_focus      = #cfffff
 fg_urgent     = #ffaaaa
 
 ## specific 
@@ -44,9 +44,8 @@ titlebar_bg_normal = #4e6274
 taglist_squares = true
 taglist_squares_sel = /usr/share/awesome/themes/default/taglist/squarefw.png
 taglist_squares_unsel = /usr/share/awesome/themes/default/taglist/squarew.png
-tasklist_floating_icon = /usr/share/awesome/themes/default/tasklist/floatingw.png
 
-tasklist_floating_icon = /usr/share/awesome/themes/default/tasklist/floatingw.png
+tasklist_floating_icon = /home/perry/.config/awesome/icons/float.gif
 
 # You can add as many variables as
 # you wish and access them by using
