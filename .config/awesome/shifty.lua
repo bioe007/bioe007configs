@@ -299,10 +299,13 @@ function match(c)
                     if a.tag then target_tag = a.tag; print("target_tag= ".. target_tag) end
                     if a.float then
                         print("client to float: " .. w); 
-                        awful.client.floating.set( c, true) end -- deug
+                        awful.client.floating.set( c, true) -- deug
                         if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
                             awful.titlebar.add( c, { modkey = modkey } )
                         end
+                        awful.placement.no_overlap(c)
+                        awful.placement.no_offscreen(c)
+                    end
                     if a.geometry then c:fullgeometry(a.geometry) end
                     if a.slave then awful.client.setslave(c) end
                     if a.nopopup then nopopup = true end
