@@ -297,7 +297,12 @@ function match(c)
                     end
                     print("shifty:match: 298: target_screen= " .. target_screen) -- debug
                     if a.tag then target_tag = a.tag; print("target_tag= ".. target_tag) end
-                    if a.float then c.floating = a.float end
+                    if a.float then
+                        print("client to float: " .. w); 
+                        awful.client.floating.set( c, true) end -- deug
+                        if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
+                            awful.titlebar.add( c, { modkey = modkey } )
+                        end
                     if a.geometry then c:fullgeometry(a.geometry) end
                     if a.slave then awful.client.setslave(c) end
                     if a.nopopup then nopopup = true end
