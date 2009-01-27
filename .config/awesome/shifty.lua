@@ -369,7 +369,7 @@ function match(c)
     -- if not matched or matches currently selected, see if we can leave at the current tag
     local sel = awful.tag.selected(c.screen)
     if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
-        if not (data[sel].exclusive or data[sel].solitary) or intrusive then 
+        if not (data[sel].exclusive or data[sel].solitary) or intrusive or typ == "dialog" then 
             -- print("shifty:315 leaving on current tag") -- debug here
             return
         end 
