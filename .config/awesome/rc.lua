@@ -1,6 +1,5 @@
 -- just helps troubleshooting when re-loading rc.lua (see output on console) 
 print("Entered rc.lua: " .. os.time())
-
 -- Include awesome libraries, with lots of useful function!
 require("awful")
 require("beautiful")
@@ -14,6 +13,7 @@ require("mocp")
 require("battery")
 require("markup")
 
+print("cachedir= " .. awful.util.getdir("cache"))
 -- volumous.init("/home/perry/.config/awesome/themes/bio/vol_images/", 30, 30)
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
@@ -56,8 +56,8 @@ layouts = {
 
 --[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.vile.bottom, mwfact=0.64, init = true, position = 1, screen = 1, exclusive  = false } ,
-    ["ds"] =     { persist = true, nopopup = false                                                                   } ,
+    ["w1"] =     { layout = awful.layout.suit.vile.bottom, mwfact=0.60, init = true, position = 1, screen = 1, exclusive  = false } ,
+    ["ds"] =     { persist = false, nopopup = false, layout = awful.layout.suit.max , exclusive = false              } ,
     ["dz"] =     { nopopup = true, leave_kills = true,                                                               } ,
     ["web"] =    { exclusive = true, solitary = true, spawn = settings.apps.browser                                  } ,
     ["mail"] =   { exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
@@ -561,9 +561,7 @@ table.insert(globalkeys, key({ modkey, "Shift" }, "h", function () awful.tag.inc
 table.insert(globalkeys, key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end))
 table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end))
 table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end))
-table.insert(globalkeys, key({ modkey }, "space", function () 
-    print("trying space key\n")
-    print(awful.layout.inc(layouts, 1)) end))
+table.insert(globalkeys, key({ modkey }, "space", function () awful.layout.inc(layouts, 1) end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -1) end))
 -- }}}
 
