@@ -89,19 +89,6 @@ function next() viewidx(1) end
 function prev() viewidx(-1) end
 
 function rename(tag, prefix, no_selectall, initial)
-
-        
-    -- now use a wibox to show tag fill in prompt box
-    -- would like to get screen.x,y but idk if they exist :)
-    local scrgeo = screen[mouse.screen].workarea
-    print("scrgeo.x,y = " ..scrgeo.width.. ", ".. scrgeo.y) -- debug
-    local geometry = {x = ((scrgeo.width-230)/2), y = (scrgeo.height/2 - 50/2), width=230, height=50}
-    local tbox = wibox({position="floating",fg="#ffffff",ontop = true})
-    tbox:geometry(geometry)
-    tbox.screen = 1
-    local prmptbx = widget({type = "textbox", align = "left"})
-    tbox.widgets = prmptbx
-
     local theme = beautiful.get()
     local scr = (tag and tag.screen) or mouse.screen or 1
 
@@ -109,17 +96,38 @@ function rename(tag, prefix, no_selectall, initial)
     local bg = nil
     local text = prefix or t.name or ""
     local before = t.name
+
+    local prmptbx
+    -- use a wibox to show tag fill in prompt box
+    if taglist == nil then
+        local scrgeo = screen[mouse.screen].workarea
+        local geometry = {x = ((scrgeo.width-230)/2), y = (scrgeo.height/2 - 50/2), width=230, height=50}
+        local tbox = wibox({position="floating",fg="#ffffff",ontop = true})
+        tbox:geometry(geometry)
+        tbox.screen = mouse.screen
+        local prmptbx = widget({type = "textbox", align = "left"})
+        tbox.widgets = prmptbx
+    else
+        -- a taglist has been assigned to shifty, so use it instead
+        prmptbx = taglist[scr][tag2index(t) * 2]
+    end
+
     if t == awful.tag.selected(scr) then bg = theme.bg_focus or '#535d6c'
         else bg = theme.bg_normal or '#222222' end
 
         -- had some errors with the former prompt = argument, pango markup
         -- error.. idk, yea its ugly now but works
     awful.prompt.run(
-        { fg_cursor = "orange", bg_cursor = bg, ul_cursor = "single",
+        { fg_cursor = "orange", bg_cursor = "green", ul_cursor = "single",
         text = text, selectall = not no_selectall,  },
-        -- prmptbx,
-        taglist[scr][tag2index(t) * 2],
-        function (name) if name:len() > 0 then t.name = name; tbox.screen = nil end end, -- is this the proper way to delete the wibox?
+        prmptbx,
+        function (name) if name:len() > 0 then 
+            t.name = name; 
+            if tbox ~= nil then 
+                tbox.screen = nil 
+            end 
+        end
+        end, -- is this the proper way to delete the wibox?
         awful.completion.generic,
         awful.util.getdir("cache") .. "/history_tags", nil,
         function ()
@@ -130,7 +138,7 @@ function rename(tag, prefix, no_selectall, initial)
                 set(t)
             end
             awful.hooks.user.call("tags", scr)
-            tbox.screen = nil   -- is this the proper way to delete the wibox?
+            if tbox ~= nil then tbox.screen = nil end   -- is this the proper way to delete the wibox?
         end
     )
 
@@ -390,6 +398,7 @@ function match(c)
 end
 
 function taglist_label(t, args)
+    print("taglist label ")
     if not args then args = {} end
     local theme = beautiful.get()
     local fg_focus = args.fg_focus or theme.taglist_fg_focus or theme.fg_focus
@@ -426,17 +435,20 @@ function taglist_label(t, args)
         end
     end
     if bg_color and fg_color then
-        text = "<bg "..background.." color='"..bg_color.."'/> <span color='"..awful.util.color_strip_alpha(fg_color).."'>"..awful.util.escape(t.name).."</span> "
+        text = "< " .. background.." color='"..bg_color.."'/> <span color='"..awful.util.color_strip_alpha(fg_color).."'>"..awful.util.escape(t.name).."</span> "
+        -- text = awful.util.escape(t.name)
     else
-        text = "<bg "..background.." />"..awful.util.escape(t.name).." "
+        -- text = "<bg "..background.." />"..awful.util.escape(t.name).." "
+        text = " "..awful.util.escape(t.name).. " "
     end
-    print("pango text= " .. text)
     return text, bg_color
 end
 
 function taglist_new(scr, label, buttons)
+    print("taglist new ")
     local w = {}
     local function taglist_update (screen)
+        print("taglist update ")
         -- Return right now if we do not care about this screen
         if scr ~= screen then return end
         local tags = tags[screen]
