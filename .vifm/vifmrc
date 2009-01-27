@@ -65,10 +65,10 @@ RIGHT_WINDOW_SORT_TYPE=1
 # of the .o files from the directory listing. LWIN_INVERT=0
 # would show only the .o files
 
-LWIN_FILTER=\.o$
-LWIN_INVERT=1
-RWIN_FILTER=\.o$
-RWIN_INVERT=1
+LWIN_FILTER=*
+LWIN_INVERT=0
+RWIN_FILTER=*
+RWIN_INVERT=0
 
 # If you installed the vim.txt help file change this to 1.
 # If would rather use a plain text help file set this to 0.
