@@ -398,7 +398,6 @@ function match(c)
 end
 
 function taglist_label(t, args)
-    print("taglist label ")
     if not args then args = {} end
     local theme = beautiful.get()
     local fg_focus = args.fg_focus or theme.taglist_fg_focus or theme.fg_focus
@@ -445,10 +444,11 @@ function taglist_label(t, args)
 end
 
 function taglist_new(scr, label, buttons)
-    print("taglist new ")
+    local theme = beautiful.get()
     local w = {}
-    local function taglist_update (screen)
-        print("taglist update ")
+    local function taglist_update (screen) 
+        -- awful.widget.taglist_update(screen,taglist,taglist.label,taglist.buttons,taglist) 
+    -- end
         -- Return right now if we do not care about this screen
         if scr ~= screen then return end
         local tags = tags[screen]
@@ -481,6 +481,13 @@ function taglist_new(scr, label, buttons)
                 end
                 if not data[tags[(k+1)/2]].notext then
                     w[k+1].text = a
+                    if tags[(k+1)/2].selected then
+                        print("selected: shifty 483")
+                        w[k+1].bg = theme.bg_focus
+                    else
+                        w[k+1].bg = theme.bg_normal
+
+                    end
                 else
                     w[k+1].text = ""
                 end
