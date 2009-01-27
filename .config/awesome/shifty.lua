@@ -50,18 +50,20 @@ local data = otable()
 -- matches string 'name' to return a tag object? 
 -- ok, seems to work
 function name2tag(name, scr)
-    print("name2tag parm: name= " .. name .. " scr=" .. scr) -- debug
+    -- print("name2tag parm: name= " .. name .. " scr=" .. scr) -- debug
     local a, b = scr or 1, scr or screen.count()
     for s = a, b do
 
-        if tags[s] == nil then print("tags[s] is nil") end -- debug:w
+        -- if tags[s] == nil then print("tags[s] is nil") end -- debug:w
 
         for i, t in ipairs(tags[s]) do
             if name == t.name then
-            print("found name " .. t.name .. " value is "); return t end -- print is debug
+                -- print("found name " .. t.name .. " value is ") -- debug
+                return t 
+            end 
         end
     end
-    print("couldnt match name on scr") -- debug
+    -- print("couldnt match name on scr") -- debug
 end
 
 function tag2index(tag)
@@ -168,7 +170,8 @@ function set(t, args)
     end
 
     -- set tag attributes
-    t.layout = args.layout or preset.layout or config.defaults.layout
+    layout = args.layout or preset.layout or config.defaults.layout
+    print("tried setproperty: " .. name)
     t.mwfact = args.mwfact or preset.mwfact or config.defaults.mwfact or t.mwfact
     t.nmaster = args.nmaster or preset.nmaster or config.defaults.nmaster or t.nmaster
     t.ncol = args.ncol or preset.ncol or config.defaults.ncol or t.ncol
@@ -184,6 +187,7 @@ function set(t, args)
     data[t].position = select{ args.position, preset.position, guessed_position, data[t].position }
     data[t].skip_taglist = select{ args.skip_taglist, preset.skip_taglist, data[t].skip_taglist }
     data[t].icon = select{ args.icon and image(args.icon), preset.icon and image(preset.icon), data[t].icon, config.defaults.icon and image(config.defaults.icon) }
+    awful.tag.setproperty(t, "layout", layout)
 
     -- calculate desired taglist index
     local index = args.index or preset.index or config.defaults.index
@@ -280,7 +284,7 @@ function match(c)
     local role = c.role
     local typ = c.type
 
-    print("shifty: 279: client name: " .. c.name) -- debug
+    -- print("shifty: 279: client name: " .. c.name) -- debug
     -- try matching client to config.apps
     for i, a in ipairs(config.apps) do
         if a.match then
@@ -291,7 +295,7 @@ function match(c)
                     (cls and cls:find(w)) or
                     (typ and typ:find(w))
                 then
-                    print("shifty: match 290: got match " .. w ) -- debug
+                    -- print("shifty: match 290: got match " .. w ) -- debug
                     if a.tag and config.tags[a.tag] and config.tags[a.tag].screen then
                         target_screen = config.tags[a.tag].screen
                     elseif a.screen then
@@ -299,10 +303,13 @@ function match(c)
                     else
                         target_screen = c.screen
                     end
-                    print("shifty:match: 298: target_screen= " .. target_screen) -- debug
-                    if a.tag then target_tag = a.tag; print("target_tag= ".. target_tag) end
+                    -- print("shifty:match: 298: target_screen= " .. target_screen) -- debug
+                    if a.tag then
+                        target_tag = a.tag
+                        -- print("target_tag= ".. target_tag) -- debug
+                    end
                     if a.float then  -- set client floating
-                        print("client to float: " .. w)  -- debug
+                        -- print("client to float: " .. w)  -- debug
                         awful.client.floating.set( c, true)
                         if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
                             awful.titlebar.add( c, { modkey = modkey } )
@@ -324,7 +331,10 @@ function match(c)
     -- if not matched or matches currently selected, see if we can leave at the current tag
     local sel = awful.tag.selected(c.screen)
     if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
-        if not (data[sel].exclusive or data[sel].solitary) or intrusive then print("shifty:315 leaving on current tag"); return end -- debug here
+        if not (data[sel].exclusive or data[sel].solitary) or intrusive then 
+            -- print("shifty:315 leaving on current tag") -- debug here
+            return
+        end 
     end
 
     -- if still unmatched, try guessing the tag
@@ -335,8 +345,8 @@ function match(c)
     -- get/create target tag and move the client
     if target_tag then
         target = name2tag(target_tag, target_screen)
-        if target == nil then print("shifty: 327 target is nil") end -- debug
-        print("got target_tag " .. target_tag) -- debug
+        -- if target == nil then print("shifty: 327 target is nil") end -- debug
+        -- print("got target_tag " .. target_tag) -- debug
         if not target or (data[target].solitary and #target:clients() > 0 and not intrusive) then
             target = add({ name = target_tag, noswitch = true, matched = true, screen = target_screen }) end
         local ttargt = tag2index(target)
@@ -519,7 +529,9 @@ end
 -- init :: search shifty.config.tags for initial set of tags to open
 function init()
     for i, j in pairs(config.tags) do
-        if j.init then add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) end
+        if j.init then 
+            add({ name = i, persist = true, 
+            screen = j.screen, layout = awful.layout.suit.vile, mwfact = j.mwfact }) end
     end
 end
 
