@@ -44,11 +44,15 @@ modkey = "Mod4"
 use_titlebar = false
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
-layouts = {}
+-- layouts = {}
 layouts = {
-    awful.layout.suit.tile,
+    awful.layout.suit.vile,
+    awful.layout.suit.vile.left,
+    awful.layout.suit.vile.bottom,
+    awful.layout.suit.vile.top,
+    -- awful.layout.suit.tile,
     -- awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.tile.bottom,
     -- awful.layout.suit.tile.top,
     -- awful.layout.suit.fair,
     -- awful.layout.suit.fair.horizontal,
@@ -60,14 +64,14 @@ layouts = {
 
 --[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.tile.bottom, init = true, position = 1, screen = 1, exclusive  = false } ,
+    ["w1"] =     { layout = awful.layout.suit.vile.bottom, init = true, position = 1, screen = 1, exclusive  = false } ,
     ["ds"] =     { persist = true, nopopup = false                                                                   } ,
     ["dz"] =     { nopopup = true, leave_kills = true,                                                               } ,
     ["web"] =    { exclusive = true, solitary = true, spawn = settings.apps.browser                                  } ,
     ["mail"] =   { exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
     ["vbx"] =    { exclusive = true, solitary = true,                                                                } ,
     ["media"] =  { layout = "float",                                                                                 } ,
-    ["office"] = { rel_index = 1, layout = "tile"                                                                    } ,
+    ["office"] = { rel_index = 1, layout = "vile"                                                                    } ,
 }
 
 shifty.config.apps = {
@@ -82,7 +86,7 @@ shifty.config.apps = {
 }
 
 shifty.config.defaults = {
-  layout = awful.layout.suit.tile.bottom, ncol = 1, 
+  -- layout = awful.layout.suit.vile.bottom, ncol = 1, 
  floatBars=true,
  run = function(tag) naughty.notify({ text = tag.name }) end,
 }
@@ -333,7 +337,7 @@ for s = 1, screen.count() do
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = widget({ type = "imagebox", align = "left" })
-    mylayoutbox[s].image = image("/home/perry/.config/awesome/icons/layouts/tilew.png")
+    -- mylayoutbox[s].image = image("/home/perry/.config/awesome/icons/layouts/tilew.png")
     mylayoutbox[s]:buttons({ button({ }, 1, function () awful.layout.inc(layouts, 1) end),
                              button({ }, 3, function () awful.layout.inc(layouts, -1) end),
                              button({ }, 4, function () awful.layout.inc(layouts, 1) end),
@@ -565,7 +569,9 @@ table.insert(globalkeys, key({ modkey, "Shift" }, "h", function () awful.tag.inc
 table.insert(globalkeys, key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end))
 table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end))
 table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end))
-table.insert(globalkeys, key({ modkey }, "space", function () awful.layout.inc(layouts, 1) end))
+table.insert(globalkeys, key({ modkey }, "space", function () 
+    print("trying space key\n")
+    print(awful.layout.inc(layouts, 1)) end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -1) end))
 -- }}}
 
