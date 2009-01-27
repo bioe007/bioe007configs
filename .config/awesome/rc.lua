@@ -39,6 +39,7 @@ settings.sys.musicstate = ""
 
 -- Default modkey.
 modkey = "Mod4"
+mytaglist = {}
 
 -- Define if we want to use titlebar on all applications.
 use_titlebar = false
@@ -82,8 +83,6 @@ shifty.config.defaults = {
  floatBars=true,
  run = function(tag) naughty.notify({ text = tag.name }) end,
 }
-
-shifty.init()
 -- added for SHIFTY ]]--
 
 -- }}} 
@@ -196,7 +195,6 @@ mysystray = widget({ type = "systray", align = "right" })
 mywibox = {}
 mypromptbox = {}
 mylayoutbox = {}
-mytaglist = {}
 mytaglist.buttons =  { button({ }, 1, awful.tag.viewonly),
                       button({ modkey }, 1, awful.client.movetotag),
                       button({ }, 3, function () if instance then instance:hide() end instance = awful.menu.clients({ width=250 }) end),
@@ -335,8 +333,8 @@ for s = 1, screen.count() do
                              button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                              button({ }, 5, function () awful.layout.inc(layouts, -1) end) })
     -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
-
+    -- mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
+    mytaglist[s] = shifty.taglist_new(s, shifty.taglist_label, mytaglist.buttons)
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist.new(function(c)
                                                   return awful.widget.tasklist.label.currenttags(c, s)
@@ -364,6 +362,8 @@ for s = 1, screen.count() do
 end
 -- }}}
 
+shifty.taglist = mytaglist
+shifty.init()
 -- }}}
 
 -- {{{ Mouse bindings
