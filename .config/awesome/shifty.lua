@@ -29,7 +29,7 @@ local pairs = pairs
 local io = io
 local tostring = tostring
 local tonumber = tonumber
-local print = print
+local print = print -- only here for debugging
 local wibox = wibox
 
 module("shifty")
@@ -90,9 +90,12 @@ function prev() viewidx(-1) end
 
 function rename(tag, prefix, no_selectall, initial)
 
+        
     -- now use a wibox to show tag fill in prompt box
     -- would like to get screen.x,y but idk if they exist :)
-    local geometry = {x = 640, y = 330, width=230, height=50}
+    local scrgeo = screen[mouse.screen].workarea
+    print("scrgeo.x,y = " ..scrgeo.width.. ", ".. scrgeo.y) -- debug
+    local geometry = {x = ((scrgeo.width-230)/2), y = (scrgeo.height/2 - 50/2), width=230, height=50}
     local tbox = wibox({position="floating",fg="#ffffff",ontop = true})
     tbox:geometry(geometry)
     tbox.screen = 1
@@ -114,7 +117,8 @@ function rename(tag, prefix, no_selectall, initial)
     awful.prompt.run(
         { fg_cursor = "orange", bg_cursor = bg, ul_cursor = "single",
         text = text, selectall = not no_selectall,  },
-        prmptbx,
+        -- prmptbx,
+        taglist[scr][tag2index(t) * 2],
         function (name) if name:len() > 0 then t.name = name; tbox.screen = nil end end, -- is this the proper way to delete the wibox?
         awful.completion.generic,
         awful.util.getdir("cache") .. "/history_tags", nil,
@@ -130,7 +134,6 @@ function rename(tag, prefix, no_selectall, initial)
         end
     )
 
-    -- tbox.screen = nil
 end
 
 function send(idx)
@@ -425,8 +428,9 @@ function taglist_label(t, args)
     if bg_color and fg_color then
         text = "<bg "..background.." color='"..bg_color.."'/> <span color='"..awful.util.color_strip_alpha(fg_color).."'>"..awful.util.escape(t.name).."</span> "
     else
-        text = " <bg "..background.." />"..awful.util.escape(t.name).." "
+        text = "<bg "..background.." />"..awful.util.escape(t.name).." "
     end
+    print("pango text= " .. text)
     return text, bg_color
 end
 
