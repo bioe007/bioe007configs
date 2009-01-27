@@ -30,6 +30,7 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local print = print
+local wibox = wibox
 
 module("shifty")
 
@@ -88,8 +89,19 @@ function next() viewidx(1) end
 function prev() viewidx(-1) end
 
 function rename(tag, prefix, no_selectall, initial)
+
+    -- now use a wibox to show tag fill in prompt box
+    -- would like to get screen.x,y but idk if they exist :)
+    local geometry = {x = 640, y = 330, width=230, height=50}
+    local tbox = wibox({position="floating",fg="#ffffff",ontop = true})
+    tbox:geometry(geometry)
+    tbox.screen = 1
+    local prmptbx = widget({type = "textbox", align = "left"})
+    tbox.widgets = prmptbx
+
     local theme = beautiful.get()
     local scr = (tag and tag.screen) or mouse.screen or 1
+
     local t = tag or awful.tag.selected(scr)
     local bg = nil
     local text = prefix or t.name or ""
@@ -97,16 +109,14 @@ function rename(tag, prefix, no_selectall, initial)
     if t == awful.tag.selected(scr) then bg = theme.bg_focus or '#535d6c'
         else bg = theme.bg_normal or '#222222' end
 
-    awful.prompt.run({
-        fg_cursor = "orange",
-        bg_cursor = bg,
-        ul_cursor = "single",
-        text = text,
-        selectall = not no_selectall,
-        prompt = '<bg color="'..bg..'" /> ' },
-        taglist[scr][tag2index(t) * 2],
-        function (name) if name:len() > 0 then t.name = name end end,
-        completion,
+        -- had some errors with the former prompt = argument, pango markup
+        -- error.. idk, yea its ugly now but works
+    awful.prompt.run(
+        { fg_cursor = "orange", bg_cursor = bg, ul_cursor = "single",
+        text = text, selectall = not no_selectall,  },
+        prmptbx,
+        function (name) if name:len() > 0 then t.name = name; tbox.screen = nil end end, -- is this the proper way to delete the wibox?
+        awful.completion.generic,
         awful.util.getdir("cache") .. "/history_tags", nil,
         function ()
             if initial and t.name == before then
@@ -116,8 +126,11 @@ function rename(tag, prefix, no_selectall, initial)
                 set(t)
             end
             awful.hooks.user.call("tags", scr)
+            tbox.screen = nil   -- is this the proper way to delete the wibox?
         end
     )
+
+    -- tbox.screen = nil
 end
 
 function send(idx)
@@ -170,13 +183,19 @@ function set(t, args)
     end
 
     -- set tag attributes
-    t.screen = args.screen or preset.screen or t.screen or mouse.screen
-    t.name = name
+    -- t.name = name
+    t.screen = args.screen or preset.screen or t.screen or mouse.screen -- using .setproperty() seems to break name2index
+    -- scr = args.screen or preset.screen or t.screen or mouse.screen
     
     layout = args.layout or preset.layout or config.defaults.layout
+    if layout == nil then
+        -- have to have a layout, or else change layout by idx fails later?
+        layout = awful.layout.suit.vile
+    end
     mwfact = args.mwfact or preset.mwfact or config.defaults.mwfact or t.mwfact
     nmaster = args.nmaster or preset.nmaster or config.defaults.nmaster or t.nmaster
     ncol = args.ncol or preset.ncol or config.defaults.ncol or t.ncol
+
     data[t].matched = select{ args.matched, data[t].matched }
     data[t].notext = select{ args.notext, preset.notext, data[t].notext, config.defaults.notext }
     data[t].exclusive = select{ args.exclusive, preset.exclusive, data[t].exclusive, config.defaults.exclusive }
@@ -189,17 +208,17 @@ function set(t, args)
     data[t].icon = select{ args.icon and image(args.icon), preset.icon and image(preset.icon), data[t].icon, config.defaults.icon and image(config.defaults.icon) }
 
     -- new using setproperty way
+    awful.tag.setproperty(t, "name", name)
     awful.tag.setproperty(t, "layout", layout)
     awful.tag.setproperty(t, "mwfact", mwfact)
     awful.tag.setproperty(t, "nmaster", nmaster)
     awful.tag.setproperty(t, "ncol", ncol)
     -- awful.tag.setproperty(t, "screen", scr)
-    -- awful.tag.setproperty(t, "name", name)
 
     -- calculate desired taglist index
     local index = args.index or preset.index or config.defaults.index
     local rel_index = args.rel_index or preset.rel_index or config.defaults.rel_index
-    local sel = awful.tag.selected(t.screen)
+    local sel = awful.tag.selected(scr)
     local sel_idx = (sel and tag2index(sel)) or 0 --TODO: what happens with rel_idx if no tags selected
     local t_idx = tag2index(t)
     local limit = (not t_idx and #tags[t.screen] + 1) or #tags[t.screen]
@@ -356,7 +375,7 @@ function match(c)
         -- print("got target_tag " .. target_tag) -- debug
         if not target or (data[target].solitary and #target:clients() > 0 and not intrusive) then
             target = add({ name = target_tag, noswitch = true, matched = true, screen = target_screen }) end
-        local ttargt = tag2index(target)
+        local ttargt = tag2index(target)  -- debug
         awful.client.movetotag(target, c)
     end
     if target_screen and c.screen ~= target_screen then c.screen = target_screen end
@@ -537,8 +556,8 @@ end
 function init()
     for i, j in pairs(config.tags) do
         if j.init then 
-            add({ name = i, persist = true, 
-            screen = j.screen, layout = awful.layout.suit.vile, mwfact = j.mwfact }) end
+            add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) 
+        end
     end
 end
 
