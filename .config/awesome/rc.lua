@@ -14,10 +14,10 @@ require("mocp")
 require("battery")
 require("markup")
 
--- volumous.init("/home/perry/.config/awesome/icons/vol_images/", 30, 30)
+-- volumous.init("/home/perry/.config/awesome/themes/bio/vol_images/", 30, 30)
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
-theme_path = "/home/perry/.config/awesome/themes/default"
+theme_path = "/home/perry/.config/awesome/themes/bio/theme"
 -- Initialize theme (colors).
 beautiful.init(theme_path)
 settings = {}
@@ -47,31 +47,23 @@ use_titlebar = false
 -- layouts = {}
 layouts = {
     awful.layout.suit.vile,
-    awful.layout.suit.vile.left,
     awful.layout.suit.vile.bottom,
-    awful.layout.suit.vile.top,
-    -- awful.layout.suit.tile,
-    -- awful.layout.suit.tile.left,
-    -- awful.layout.suit.tile.bottom,
-    -- awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair,
-    -- awful.layout.suit.fair.horizontal,
+    -- awful.layout.suit.fair,  -- is fair broken?
     awful.layout.suit.max,
-    -- awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier,
+    awful.layout.suit.magnifier,
     awful.layout.suit.floating
 }
 
 --[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.vile.bottom, init = true, position = 1, screen = 1, exclusive  = false } ,
+    ["w1"] =     { layout = awful.layout.suit.vile.bottom, mwfact=0.64, init = true, position = 1, screen = 1, exclusive  = false } ,
     ["ds"] =     { persist = true, nopopup = false                                                                   } ,
     ["dz"] =     { nopopup = true, leave_kills = true,                                                               } ,
     ["web"] =    { exclusive = true, solitary = true, spawn = settings.apps.browser                                  } ,
     ["mail"] =   { exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
     ["vbx"] =    { exclusive = true, solitary = true,                                                                } ,
-    ["media"] =  { layout = "float",                                                                                 } ,
-    ["office"] = { rel_index = 1, layout = "vile"                                                                    } ,
+    ["media"] =  { layout = awful.layout.suit.float,                                                                                 } ,
+    ["office"] = { rel_index = 1, layout = awful.layout.suit.vile                                                                    } ,
 }
 
 shifty.config.apps = {
@@ -193,7 +185,7 @@ mymainmenu = awful.menu.new({ items = { { "awesome", myawesomemenu, "/usr/share/
                                         { "open terminal", terminal } }
                            })
 
-mylauncher = awful.widget.launcher({ image = "/home/perry/.config/awesome/icons/awesome48.png",
+mylauncher = awful.widget.launcher({ image = "/home/perry/.config/awesome/themes/bio/awesome48.png",
                                      menu = mymainmenu })
 
 -- Create a systray
@@ -337,7 +329,7 @@ for s = 1, screen.count() do
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = widget({ type = "imagebox", align = "left" })
-    -- mylayoutbox[s].image = image("/home/perry/.config/awesome/icons/layouts/tilew.png")
+    -- mylayoutbox[s].image = image("/home/perry/.config/awesome/themes/bio/layouts/tilew.png")
     mylayoutbox[s]:buttons({ button({ }, 1, function () awful.layout.inc(layouts, 1) end),
                              button({ }, 3, function () awful.layout.inc(layouts, -1) end),
                              button({ }, 4, function () awful.layout.inc(layouts, 1) end),
