@@ -98,14 +98,15 @@ function rename(tag, prefix, no_selectall, initial)
     local before = t.name
 
     local prmptbx
-    -- use a wibox to show tag fill in prompt box
+    -- use a wibox to show tag fill in prompt box in case user hasnt defined
+    -- taglist
     if taglist == nil then
         local scrgeo = screen[mouse.screen].workarea
         local geometry = {x = ((scrgeo.width-230)/2), y = (scrgeo.height/2 - 50/2), width=230, height=50}
-        local tbox = wibox({position="floating",fg="#ffffff",ontop = true})
+        local tbox = wibox({position="floating",fg=theme.fg_focus or "#ffffff",ontop = true})
         tbox:geometry(geometry)
         tbox.screen = mouse.screen
-        local prmptbx = widget({type = "textbox", align = "left"})
+        prmptbx = widget({type = "textbox", align = "left"})
         tbox.widgets = prmptbx
     else
         -- a taglist has been assigned to shifty, so use it instead
@@ -354,12 +355,12 @@ function match(c)
                         awful.placement.no_overlap(c)
                         awful.placement.no_offscreen(c)
                     end
-                    if a.geometry then c:fullgeometry(a.geometry) end
-                    if a.slave then awful.client.setslave(c) end
-                    if a.nopopup then nopopup = true end
-                    if a.intrusive then intrusive = true end
-                    if a.fullscreen then c.fullscreen = a.fullscreen end
-                    if a.honorsizehints then c.honorsizehints = a.honorsizehints end
+                    if a.geometry ~=nil then c:fullgeometry(a.geometry) end
+                    if a.slave ~=nil then awful.client.setslave(c) end
+                    if a.nopopup ~=nil then nopopup = true end
+                    if a.intrusive ~=nil then intrusive = true end
+                    if a.fullscreen ~=nil then c.fullscreen = a.fullscreen end
+                    if a.honorsizehints ~=nil then c.honorsizehints = a.honorsizehints end
                 end
             end
         end
@@ -482,7 +483,7 @@ function taglist_new(scr, label, buttons)
                 if not data[tags[(k+1)/2]].notext then
                     w[k+1].text = a
                     if tags[(k+1)/2].selected then
-                        print("selected: shifty 483")
+                        -- print("selected: shifty 483")
                         w[k+1].bg = theme.bg_focus
                     else
                         w[k+1].bg = theme.bg_normal
