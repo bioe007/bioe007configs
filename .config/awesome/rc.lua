@@ -336,7 +336,6 @@ for s = 1, screen.count() do
     -- mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
     -- mytaglist[s] = shifty.taglist_new(s, shifty.taglist_label, mytaglist.buttons)
     mytaglist[s] = shifty.taglist_new(s, awful.widget.taglist.label.all, mytaglist.buttons)
-    print("rclua:338: create mytaglist")
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist.new(function(c)
                                                   return awful.widget.tasklist.label.currenttags(c, s)
