@@ -170,13 +170,13 @@ function set(t, args)
     end
 
     -- set tag attributes
-    layout = args.layout or preset.layout or config.defaults.layout
-    print("tried setproperty: " .. name)
-    t.mwfact = args.mwfact or preset.mwfact or config.defaults.mwfact or t.mwfact
-    t.nmaster = args.nmaster or preset.nmaster or config.defaults.nmaster or t.nmaster
-    t.ncol = args.ncol or preset.ncol or config.defaults.ncol or t.ncol
     t.screen = args.screen or preset.screen or t.screen or mouse.screen
     t.name = name
+    
+    layout = args.layout or preset.layout or config.defaults.layout
+    mwfact = args.mwfact or preset.mwfact or config.defaults.mwfact or t.mwfact
+    nmaster = args.nmaster or preset.nmaster or config.defaults.nmaster or t.nmaster
+    ncol = args.ncol or preset.ncol or config.defaults.ncol or t.ncol
     data[t].matched = select{ args.matched, data[t].matched }
     data[t].notext = select{ args.notext, preset.notext, data[t].notext, config.defaults.notext }
     data[t].exclusive = select{ args.exclusive, preset.exclusive, data[t].exclusive, config.defaults.exclusive }
@@ -187,7 +187,14 @@ function set(t, args)
     data[t].position = select{ args.position, preset.position, guessed_position, data[t].position }
     data[t].skip_taglist = select{ args.skip_taglist, preset.skip_taglist, data[t].skip_taglist }
     data[t].icon = select{ args.icon and image(args.icon), preset.icon and image(preset.icon), data[t].icon, config.defaults.icon and image(config.defaults.icon) }
+
+    -- new using setproperty way
     awful.tag.setproperty(t, "layout", layout)
+    awful.tag.setproperty(t, "mwfact", mwfact)
+    awful.tag.setproperty(t, "nmaster", nmaster)
+    awful.tag.setproperty(t, "ncol", ncol)
+    -- awful.tag.setproperty(t, "screen", scr)
+    -- awful.tag.setproperty(t, "name", name)
 
     -- calculate desired taglist index
     local index = args.index or preset.index or config.defaults.index
