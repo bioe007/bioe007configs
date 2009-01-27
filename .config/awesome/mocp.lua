@@ -6,6 +6,8 @@ local hooks = require("awful.hooks")
 local util = require("awful.util")
 local awbeautiful = require("beautiful")
 
+-- module("mocscroll")
+
 -- easier way to check|run mocp
 function mocplay() 
   if settings.sys.musicstate == "STOP" then
@@ -18,9 +20,13 @@ function mocplay()
 end
 
 -- {{{ mocp widget, scrolls text
-local iScroller = 1
-local MAXCH = 15
-local mocInterval = 0.75
+-- settings = {}
+-- settings.iScroller = 1
+-- settings.MAXCH = 15
+-- settings.mocInterval = 0.75
+iScroller = 1
+MAXCH = 15
+mocInterval = 0.75
 function mocp()
     local np = {}
     np.file = {}
