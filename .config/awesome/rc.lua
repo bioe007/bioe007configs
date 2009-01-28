@@ -57,13 +57,13 @@ layouts = {
 
 --[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.vile.bottom, mwfact=0.60, init = true, position = 1, screen = 1, exclusive  = false } ,
-    ["ds"] =     { persist = false, nopopup = false, layout = awful.layout.suit.max , exclusive = false              } ,
-    ["dz"] =     { nopopup = true, leave_kills = true,                                                               } ,
-    ["web"] =    { exclusive = true, solitary = true, spawn = settings.apps.browser                                  } ,
-    ["mail"] =   { exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
-    ["vbx"] =    { exclusive = true, solitary = true,                                                                } ,
-    ["media"] =  { layout = awful.layout.suit.float,                                                                                 } ,
+    ["w1"] =     { layout = awful.layout.suit.vile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
+    ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, persist = false, nopopup = false,               } ,
+    ["dz"] =     { layout = awful.layout.suit.vile,         mwfact=0.64, exclusive = false, nopopup = true, leave_kills = true,                                                               } ,
+    ["web"] =    { layout = awful.layout.suit.vile.bottom,  mwfact=0.65, exclusive = true , solitary = true, spawn = settings.apps.browser                                  } ,
+    ["mail"] =   { layout = awful.layout.suit.vile.bottom,  mwfact=0.55, exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
+    ["vbx"] =    { layout = awful.layout.suit.vile.bottom,  mwfact=0.75, exclusive = true , solitary = true,                                                                } ,
+    ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false,                                                           } ,
     ["office"] = { rel_index = 1, layout = awful.layout.suit.vile                                                                    } ,
 }
 
@@ -79,9 +79,10 @@ shifty.config.apps = {
 }
 
 shifty.config.defaults = {
-  -- layout = awful.layout.suit.vile.bottom, ncol = 1, 
- floatBars=true,
- run = function(tag) naughty.notify({ text = tag.name }) end,
+    layout = awful.layout.suit.vile.bottom, ncol = 1, floatBars=true,
+    run = function(tag) 
+        naughty.notify({ text = markup.fg( beautiful.fg_focus, markup.font("monospace", "Shifty Created: "..tag.name)) }) 
+    end,
 }
 -- added for SHIFTY ]]--
 
