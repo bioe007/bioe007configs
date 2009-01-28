@@ -3,10 +3,20 @@
 --
 -- http://awesome.naquadah.org/wiki/index.php?title=Shifty
 
--- errata noted:
--- W: awesome: luaA_dofunction:317: error running function: /usr/share/awesome/lib/awful/tag.lua:77: bad argument #3 to '?' (boolean expected, got nil)
+-- this version of shifty has been modified by bioe007
+-- (perry<dot>hargrave[at]gmail[dot]com)
+--
+-- TODO:
+-- * W: awesome: luaA_dofunction:317: error running function: /usr/share/awesome/lib/awful/tag.lua:77: bad argument #3 to '?' (boolean expected, got nil)
 --      - pressing mod+esc to flip to previous tag after creating a new one.
 --      this 'merges' the two tags instead of flipping back to it
+-- * fix tag squares
+-- * move all data table settings to awful.tag.setproperty|getproperty
+-- * prompt coloring is bad
+-- * finish backup prompt (for people who forget to add the shifty.taglist, or who dont
+--      want the prompt on the taglist
+-- * fix new tags are always created (in taglist) adjacent to the first tag
+--
 -- package env
 
 local tag = tag
@@ -94,6 +104,7 @@ function rename(tag, prefix, no_selectall, initial)
 
     local t = tag or awful.tag.selected(scr)
     local bg = nil
+    local fg = nil
     local text = prefix or t.name or ""
     local before = t.name
 
@@ -113,13 +124,19 @@ function rename(tag, prefix, no_selectall, initial)
         prmptbx = taglist[scr][tag2index(t) * 2]
     end
 
-    if t == awful.tag.selected(scr) then bg = theme.bg_focus or '#535d6c'
-        else bg = theme.bg_normal or '#222222' end
+    if t == awful.tag.selected(scr) then 
+        prmptbx.bg = theme.bg_focus or '#535d6c'
+        fg = theme.fg_focus or '#ffffff'
+        -- text = "<fg color="..fg..text..""
+    else 
+        prmptbx.bg = theme.bg_normal or '#222222'
+        fg = theme.fg_focus or '#ffffff'
+    end
 
-        -- had some errors with the former prompt = argument, pango markup
-        -- error.. idk, yea its ugly now but works
+    -- had some errors with the former prompt = argument, pango markup
+    -- error.. idk, yea its ugly now but works
     awful.prompt.run(
-        { fg_cursor = "orange", bg_cursor = "green", ul_cursor = "single",
+        { fg_cursor = "orange", ul_cursor = "single",
         text = text, selectall = not no_selectall,  },
         prmptbx,
         function (name) if name:len() > 0 then 
