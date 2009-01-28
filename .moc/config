@@ -238,9 +238,9 @@ PlaylistNumbering	= yes
 # Layout1 = "playlist:0,0,100%,10 directory:0,10,100%,FILL"
 #
 # Default configuration:
-Layout1		= "directory:0,0,30%,100% playlist:30%,0,70%,100%"
+Layout1		= "directory:0,0,100%,40% playlist:0,40%,100%,60%"
 Layout2		= "directory:0,0,100%,100% playlist:0,0,100%,100%"
-Layout3		= "directory:0,0,100%,40% playlist:0,40%,100%,60%"
+Layout3		= "directory:0,0,30%,100% playlist:30%,0,70%,100%"
 
 # When the song changes, should the menu be scrolled so that the currently
 # played file is visible?
