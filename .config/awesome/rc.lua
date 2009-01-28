@@ -222,10 +222,7 @@ datewidget = widget({
     align = 'right',
 })
 
-datewidget.mouse_enter = function()
-  -- print("mouse enters datewidget")
-  add_calendar(0)
-end
+datewidget.mouse_enter = function() add_calendar(0) end
 datewidget.mouse_leave = remove_calendar
 
 datewidget:buttons({ 
@@ -389,37 +386,36 @@ end
 
 for i = 1, keynumber do
     table.insert(globalkeys, key({ modkey }, i,
-                   function ()
-                       local screen = mouse.screen
-                       if shifty.tags[screen][i] then
-                           awful.tag.viewonly(shifty.tags[screen][i])
-                       end
-                   end))
+    function ()
+        local screen = mouse.screen
+        if shifty.tags[screen][i] then
+            awful.tag.viewonly(shifty.tags[screen][i])
+        end
+    end))
     table.insert(globalkeys, key({ modkey, "Control" }, i,
-                   function ()
-                       local screen = mouse.screen
-                       if shifty.tags[screen][i] then
-                           shifty.tags[screen][i].selected = not shifty.tags[screen][i].selected
-                       end
-                   end))
+    function ()
+        local screen = mouse.screen
+        if shifty.tags[screen][i] then
+            shifty.tags[screen][i].selected = not shifty.tags[screen][i].selected
+        end
+    end))
     table.insert(globalkeys, key({ modkey, "Shift" }, i,
-                   function ()
-                       if client.focus then
-                           if shifty.tags[client.focus.screen][i] then
-                               awful.client.movetotag(shifty.tags[client.focus.screen][i])
-                           end
-                       end
-                   end))
+    function ()
+        if client.focus then
+            if shifty.tags[client.focus.screen][i] then
+                awful.client.movetotag(shifty.tags[client.focus.screen][i])
+            end
+        end
+    end))
     table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
-                   function ()
-                       if client.focus then
-                           if shifty.tags[client.focus.screen][i] then
-                               awful.client.toggletag(shifty.tags[client.focus.screen][i])
-                           end
-                       end
-                   end))
+    function ()
+        if client.focus then
+            if shifty.tags[client.focus.screen][i] then
+                awful.client.toggletag(shifty.tags[client.focus.screen][i])
+            end
+        end
+    end))
 end
----}}}
 
 --[[ added for SHIFTY ]]--
 table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "j",          shifty.prev))
@@ -445,6 +441,7 @@ for i=1, 9 do
 end
 -- added for SHIFTY ]]--
 
+---}}}
 
 -- {{{ - APPLICATIONS
 -- Standard program
@@ -607,8 +604,6 @@ root.keys(globalkeys)
 --- }}}
 
 -- {{{ Hooks
-
-
 -- Hook function to execute when focusing a client.
 awful.hooks.focus.register(function (c)
     if not awful.client.ismarked(c) then
@@ -617,7 +612,6 @@ awful.hooks.focus.register(function (c)
     -- toggleTitlebar(c)
 end)
 
--- print("just before focus")
 -- Hook function to execute when unfocusing a client.
 awful.hooks.unfocus.register(function (c)
     if not awful.client.ismarked(c) then
@@ -626,19 +620,16 @@ awful.hooks.unfocus.register(function (c)
     -- toggleTitlebar(c)
 end)
 
--- print("just before marked")
 -- Hook function to execute when marking a client
 awful.hooks.marked.register(function (c)
     c.border_color = beautiful.border_marked
 end)
 
--- print("just before unmarked")
 -- Hook function to execute when unmarking a client.
 awful.hooks.unmarked.register(function (c)
     c.border_color = beautiful.border_focus
 end)
 
--- print("just before mouseenter")
 -- Hook function to execute when the mouse enters a client.
 awful.hooks.mouse_enter.register(function (c)
     -- Sloppy focus, but disabled for magnifier layout
@@ -648,7 +639,6 @@ awful.hooks.mouse_enter.register(function (c)
     end
 end)
 
--- print("just before manage")
 -- Hook function to execute when a new client appears.
 awful.hooks.manage.register( function (c)
     -- If we are not managing this application at startup,
@@ -665,7 +655,7 @@ awful.hooks.manage.register( function (c)
     -- Add mouse bindings
     c:buttons({
         button({ }, 1, function (c) client.focus = c; c:raise() end),
-        button({ modkey }, 2, function (c) awful.mouse.client.move() end),
+        button({ modkey }, 1, function (c) awful.mouse.client.move() end),
         button({ modkey }, 3, awful.mouse.client.resize ),
         -- button({ modkey, "Shift" }, 1, function (c) revelation.revelation()
             -- end )
@@ -675,7 +665,6 @@ awful.hooks.manage.register( function (c)
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
     client.focus = c
-
 
     -- Check if the application should be floating.
     local cls = c.class
@@ -708,9 +697,7 @@ awful.hooks.manage.register( function (c)
 
 end)
 
--- print("just before arrange")
--- Hook function to execute when arranging the screen.
--- (tag switch, new client, etc)
+-- Hook function to execute when arranging the screen (tag switch, new client, etc)
 awful.hooks.arrange.register(function (screen)
     local layout = awful.layout.getname(awful.layout.get(screen))
     if layout and beautiful["layout_" ..layout] then
