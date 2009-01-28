@@ -641,8 +641,7 @@ end)
 
 -- Hook function to execute when a new client appears.
 awful.hooks.manage.register( function (c)
-    -- If we are not managing this application at startup,
-    -- move it to the screen where the mouse is.
+    -- If we are not managing this application at startup, move it to the screen where the mouse is.
     -- We only do it for filtered windows (i.e. no dock, etc).
     if not startup and awful.client.focus.filter(c) then
         c.screen = mouse.screen
@@ -692,8 +691,17 @@ awful.hooks.manage.register( function (c)
         c.size_hints_honor = true
     end
 
-    awful.placement.no_overlap(c)
-    awful.placement.no_offscreen(c)
+    local cgeo = c:geometry()
+    local txt = "client: " .. c.name .. " c.geometry.x= " ..cgeo.x.. " c.geometry.y= " ..cgeo.y
+    print(txt) 
+    txt = "screen: wa.x= " ..screen[mouse.screen].workarea.x.. " wa.y= " ..screen[mouse.screen].workarea.y .. "\r"
+    print(txt) 
+
+    -- awful.placement.no_overlap(c)
+    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
+    if awful.client.floating.get(c) then
+        awful.client.moveresize(10,43,0,0,c)
+    end
 
 end)
 
