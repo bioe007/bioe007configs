@@ -26,6 +26,8 @@ border_marked = #0000f0
 
 # calendar settings
 calendar_w = 160
+calendar_fg = #cfffff
+calendar_bg = #4e6274
 
 menu_height = 15
 menu_width = 100
