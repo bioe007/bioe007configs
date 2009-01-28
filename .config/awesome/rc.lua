@@ -691,12 +691,6 @@ awful.hooks.manage.register( function (c)
         c.size_hints_honor = true
     end
 
-    local cgeo = c:geometry()
-    local txt = "client: " .. c.name .. " c.geometry.x= " ..cgeo.x.. " c.geometry.y= " ..cgeo.y
-    print(txt) 
-    txt = "screen: wa.x= " ..screen[mouse.screen].workarea.x.. " wa.y= " ..screen[mouse.screen].workarea.y .. "\r"
-    print(txt) 
-
     -- awful.placement.no_overlap(c)
     awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
     if awful.client.floating.get(c) then
