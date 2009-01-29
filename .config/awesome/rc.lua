@@ -15,6 +15,7 @@ require("markup")
 
 print("cachedir= " .. awful.util.getdir("cache"))
 -- volumous.init("/home/perry/.config/awesome/themes/bio/vol_images/", 30, 30)
+
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
 theme_path = "/home/perry/.config/awesome/themes/bio/theme"
@@ -47,8 +48,8 @@ use_titlebar = false
 -- Table of layouts to cover with awful.layout.inc, order matters.
 -- layouts = {}
 layouts = {
-    awful.layout.suit.vile,
-    awful.layout.suit.vile.bottom,
+    awful.layout.suit.tile,
+    awful.layout.suit.tile.bottom,
     -- awful.layout.suit.fair,  -- is fair broken?
     awful.layout.suit.max,
     awful.layout.suit.magnifier,
@@ -57,14 +58,14 @@ layouts = {
 
 --[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.vile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
-    ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, persist = false, nopopup = false,               } ,
-    ["dz"] =     { layout = awful.layout.suit.vile,         mwfact=0.64, exclusive = false, nopopup = true, leave_kills = true,                                                               } ,
-    ["web"] =    { layout = awful.layout.suit.vile.bottom,  mwfact=0.65, exclusive = true , solitary = true, spawn = settings.apps.browser                                  } ,
-    ["mail"] =   { layout = awful.layout.suit.vile.bottom,  mwfact=0.55, exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
-    ["vbx"] =    { layout = awful.layout.suit.vile.bottom,  mwfact=0.75, exclusive = true , solitary = true,                                                                } ,
+    ["w1"] =     { layout = awful.layout.suit.tile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
+    ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
+    ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, nopopup = true, leave_kills = true,                                                               } ,
+    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, spawn = settings.apps.browser                                  } ,
+    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
+    ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true,                                                                } ,
     ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false,                                                           } ,
-    ["office"] = { rel_index = 1, layout = awful.layout.suit.vile                                                                    } ,
+    ["office"] = { rel_index = 1, layout = awful.layout.suit.tile                                                                    } ,
 }
 
 shifty.config.apps = {
@@ -79,9 +80,9 @@ shifty.config.apps = {
 }
 
 shifty.config.defaults = {
-    layout = awful.layout.suit.vile.bottom, ncol = 1, floatBars=true,
+    layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
     run = function(tag) 
-        naughty.notify({ text = markup.fg( beautiful.fg_focus, markup.font("monospace", "Shifty Created: "..tag.name)) }) 
+        naughty.notify({ text = markup.fg( beautiful.fg_focus, markup.font("monospace", "Shifty Created: "..shifty.tag2index(tag).." : "..tag.name)) }) 
     end,
 }
 -- added for SHIFTY ]]--
@@ -138,39 +139,6 @@ end
 -- }}}
 
 -- }}}
-
--- {{{ Tags
--- Define tags table.
---[[ commented so i can try SHIFTY
-settings.tags = {
-    { name="w1"  , layout=awful.layout.suit.tile.bottom, mwfact="0.60"} , 
-    { name="ds"  , layout=awful.layout.suit.max                       } , 
-    { name="dz"  , layout=awful.layout.suit.tile       , mwfact="0.64"} , 
-    { name="web" , layout=awful.layout.suit.tile.bottom, mwfact="0.65"} , 
-    { name="mal" , layout=awful.layout.suit.tile       , mwfact="0.65"} , 
-    { name="vbx" , layout=awful.layout.suit.tile.bottom, mwfact="0.75"} , 
-    { name="mda" , layout=awful.layout.suit.floating   , mwfact="0.75"} , 
-    { name="off" , layout=awful.layout.suit.tile.bottom, mwfact="0.75"}
-    }
-tags = {}
-for s = 1, screen.count() do
-    -- Each screen has its own tag table.
-    tags[s] = {}
-    
-    -- Create 9 tags per screen.
-    for i,tagobj in ipairs(settings.tags) do 
-
-        tags[s][i] = tag(tagobj.name)    
-        tags[s][i].screen = s
-        awful.tag.setproperty(tags[s][i] , "layout", tagobj.layout )
-        awful.tag.setproperty(tags[s][i] , "mwfact", tagobj.mwfact )
-
-    end
-    -- I'm sure you want to see at least one tag.
-    tags[s][1].selected = true
-end
--- }}}
--- end of comment out for SHIFTY ]]--
 
 -- {{{ Wibox & WIDGETS
 -- Create a laucher widget and a main menu
@@ -361,6 +329,7 @@ for s = 1, screen.count() do
 end
 -- }}}
 
+-- shifty initialization needs to go after the taglist has been created
 shifty.taglist = mytaglist
 shifty.init()
 -- }}}
