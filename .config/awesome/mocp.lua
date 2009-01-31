@@ -4,9 +4,94 @@ local io = io
 local string = string
 local hooks = require("awful.hooks")
 local util = require("awful.util")
-local awbeautiful = require("beautiful")
+local beautiful = require("beautiful")
+local mocbox = nil
 
 -- module("mocscroll")
+
+function mocstate()
+
+    local np = {}
+    np.file = {}
+    np.file = io.popen('pgrep mocp')
+
+    if np.file == nil then
+        np.file:close()
+        mocpwidget.text = "moc stopped"
+        settings.sys.musicstate = "-"
+        mocInterval = 2
+        return false
+    else
+        np.file:close()
+
+        -- pgrep returned something so we can now check for play|pause
+        np.file = io.popen('mocp -Q %state')
+        np.strng = np.file:read()
+        np.file:close()
+
+        settings.sys.musicstate = np.strng
+        return np.strng
+    end
+end
+
+function moctitle(delim)
+
+    local eol = delim or " "
+    local np = {}
+
+    -- grab artist
+    np.file = io.popen('mocp -Q %artist')
+    np.artist = np.file:read() .. ":" .. eol
+    np.file:close()
+
+    -- grab song
+    np.file = io.popen('mocp -Q %song')
+    np.song = np.file:read() .. eol
+    np.file:close()
+
+    -- return for widget text
+    if not delim then return np.artist..np.song end
+
+    -- get time, etc for notify
+    np.file = io.popen('mocp -Q %album')
+    np.strng = "Artist: "..np.artist.."Song:   "..np.song.."Album:  "..np.file:read()..eol
+    np.file:close()
+
+    np.file = io.popen('mocp -Q %ct')
+    np.strng = np.strng.."Time:   "..np.file:read() .." [ " 
+    np.file:close()
+
+    np.file = io.popen('mocp -Q %tt')
+    np.strng = np.strng..np.file:read() .." ]" 
+    np.file:close()
+
+    return np.strng
+end
+
+-- 
+function mocnotify(args)
+    print("mocnotify")
+
+    if mocbox ~= nil then
+        naughty.destroy(mocbox)
+    end
+
+    local np = {}
+    np.state = nil
+    np.strng = ""
+    np.state = mocstate()
+    if np.state == false then
+        return
+    else
+        np.strng = moctitle("\n")
+    end
+    np.strng = markup.fg( beautiful.fg_focus, markup.font("monospace", np.strng.."  "))  
+    print(np.strng)
+    mocbox = naughty.notify({ title = markup.font("monospace","Now Playing:"),
+        text = np.strng, hover_timeout = 2,
+        icon = "/usr/share/icons/gnome/24x24/actions/edia-playback-start.png", icon_size = 24,
+        run = function() mocplay(); mocnotify() end})
+end
 
 -- easier way to check|run mocp
 function mocplay() 
@@ -29,21 +114,13 @@ MAXCH = 15
 mocInterval = 0.75
 function mocp()
     local np = {}
-    np.file = {}
-    np.file = io.popen('pgrep mocp')
 
-    if np.file == nil then
-        np.file:close()
+    np.strng = mocstate()
+    if not np.strng then
         mocpwidget.text = "moc stopped"
         settings.sys.musicstate = "-"
-        mocInterval = 2
+        return
     else
-        np.file:close()
-
-        -- pgrep returned something so we can now check for play|pause
-        np.file = io.popen('mocp -Q %state')
-        np.strng = np.file:read()
-        np.file:close()
 
         -- this just helps my keybindings work better 
         settings.sys.musicstate = np.strng
@@ -57,16 +134,8 @@ function mocp()
             mocInterval = 0.75
         end
 
-        -- moc is runngin and playing, so grab track info
-        np.file = io.popen('mocp -Q %title')
-
-        -- some song titles include a subtitle, which i think is stupid to show
-        -- i also think track # is a stupid thing to show :P
-        np.strng = string.gsub(np.file:read(),"^%d*","")
-        np.file:close()
-        np.strng = string.gsub(np.strng,"%(.*","")
-
         -- extract a substring, putting it after the 
+        np.strng = moctitle()
         np.rtn = string.sub(np.strng,iScroller,MAXCH+iScroller-1) 
 
         -- if our index and MAXCH count are bigger than the string, wrap around to the beginning and
