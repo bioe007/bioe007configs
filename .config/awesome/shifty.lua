@@ -38,7 +38,6 @@ local pairs = pairs
 local io = io
 local tostring = tostring
 local tonumber = tonumber
-local print = print -- only here for debugging
 local wibox = wibox
 module("shifty")
 
@@ -379,8 +378,6 @@ function match(c)
                         if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
                             awful.titlebar.add( c, { modkey = modkey } )
                         end
-                        -- awful.placement.no_overlap(c)
-                        -- awful.placement.no_offscreen(c)
                     end
                     if a.geometry ~=nil then c:fullgeometry(a.geometry) end
                     if a.slave ~=nil then awful.client.setslave(c) end
