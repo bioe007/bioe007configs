@@ -61,8 +61,8 @@ shifty.config.tags = {
     ["w1"] =     { layout = awful.layout.suit.tile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
     ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
     ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, nopopup = true, leave_kills = true,                                                               } ,
-    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, position = 4, spawn = settings.apps.browser  } ,
-    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false,position = 5, spawn = settings.apps.mail     } ,
+    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, spawn = settings.apps.browser  } ,
+    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false,spawn = settings.apps.mail     } ,
     ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true,                                                                } ,
     ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false,                                                           } ,
     ["office"] = { rel_index = 1, layout = awful.layout.suit.tile                                                                    } ,
@@ -77,7 +77,7 @@ shifty.config.apps = {
          { match = { "VBox.*","VirtualBox.*"                               } , tag = "vbx",                           } ,
          { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw"          } , tag = "media",         nopopup = true, } ,
          { match = { "XDosEmu", "MPlayer", "gimp", "Gnuplot", "galculator" } , float = true                           } ,
-         { match = { "VirtualBox"                               } , float = true,                           } ,
+         { match = { "VirtualBox","glxgears",                              } , float = true,                           } ,
 }
 
 shifty.config.defaults = {
@@ -645,6 +645,10 @@ awful.hooks.manage.register( function (c)
         awful.client.floating.set( c,true )
     end
 
+    if c.name == "glxgears" then 
+        awful.client.floating.set( c,true )
+        awful.titlebar.add( c, { modkey = modkey } )
+    end
     -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
     client.focus = c
 
