@@ -33,7 +33,6 @@ local mouse = mouse
 local capi = { hooks = hooks, client = client }
 local beautiful = require("beautiful")
 local awful = require("awful")
-local image = image
 local otable = otable
 local pairs = pairs
 local io = io
@@ -116,6 +115,8 @@ function rename(tag, prefix, no_selectall, initial)
         prmptbx = taglist[scr][tag2index(t) * 2]
     end
 
+    -- had some errors with the former inline pango markup
+    -- pango markup no longer takes the <bg color= .. argument so set it here,
     if t == awful.tag.selected(scr) then 
         bg = theme.bg_focus or '#535d6c'
         fg = theme.fg_urgent or '#ffffff'
@@ -125,7 +126,6 @@ function rename(tag, prefix, no_selectall, initial)
     end
     text = '<span color="'..fg..'">'..text..'</span>'
 
-    -- had some errors with the former prompt = argument, pango markup
     awful.prompt.run(
         { fg_cursor = fg, bg_cursor = bg, ul_cursor = "single",
         prompt = text, selectall = not no_selectall,  },
@@ -137,7 +137,7 @@ function rename(tag, prefix, no_selectall, initial)
             end 
         end
         end, 
-        awful.completion.generic,
+        completion,
         awful.util.getdir("cache") .. "/history_tags", nil,
         function ()
             if initial and t.name == before then
@@ -203,10 +203,9 @@ function set(t, args)
         if num then guessed_position = tonumber(name:sub(1,1)) end
     end
 
-    -- set tag attributes
-    -- t.name = name
+    -- set tag attributes 
+    -- FIXME: ? can t.screen not be set with setproperty? seems to break
     t.screen = args.screen or preset.screen or t.screen or mouse.screen -- using .setproperty() seems to break name2index
-    -- scr = args.screen or preset.screen or t.screen or mouse.screen
     
     layout = args.layout or preset.layout or config.defaults.layout
     if layout == nil then
@@ -218,22 +217,39 @@ function set(t, args)
     ncol = args.ncol or preset.ncol or config.defaults.ncol or t.ncol
 
     -- new using setproperty way
-    awful.tag.setproperty(t,"matched", select{ args.matched, awful.tag.getproperty(t,"matched") } )
-    awful.tag.setproperty(t,"notext", select{ args.notext, preset.notext, awful.tag.getproperty(t,"notext"), config.defaults.notext })
-    awful.tag.setproperty(t,"exclusive", select{ args.exclusive, preset.exclusive, awful.tag.getproperty(t,"exclusive"), config.defaults.exclusive })
-    awful.tag.setproperty(t,"persist", select{ args.persist, preset.persist, awful.tag.getproperty(t,"persist"), config.defaults.persist })
-    awful.tag.setproperty(t,"nopopup", select{ args.nopopup, preset.nopopup, awful.tag.getproperty(t,"nopopup"), config.defaults.nopopup })
-    awful.tag.setproperty(t,"leave_kills", select{ args.leave_kills, preset.leave_kills, awful.tag.getproperty(t,"leave_kills"), config.defaults.leave_kills })
-    awful.tag.setproperty(t,"solitary", select{ args.solitary, preset.solitary, awful.tag.getproperty(t,"solitary"), config.defaults.solitary })
-    awful.tag.setproperty(t,"position", select{ args.position, preset.position, guessed_position, awful.tag.getproperty(t,"position" )})
-    awful.tag.setproperty(t,"skip_taglist", select{ args.skip_taglist, preset.skip_taglist, awful.tag.getproperty(t,"skip_taglist") })
-    awful.tag.setproperty(t,"icon", select{ args.icon and image(args.icon), preset.icon and image(preset.icon), awful.tag.getproperty(t,"icon"), config.defaults.icon and image(config.defaults.icon) })
+    awful.tag.setproperty(t,"matched", 
+                            select{ args.matched, awful.tag.getproperty(t,"matched") } )
+    awful.tag.setproperty(t,"notext", 
+                            select{ args.notext, preset.notext, 
+                                    awful.tag.getproperty(t,"notext"), config.defaults.notext })
+    awful.tag.setproperty(t,"exclusive", 
+                            select{ args.exclusive, preset.exclusive, 
+                                    awful.tag.getproperty(t,"exclusive"), config.defaults.exclusive })
+    awful.tag.setproperty(t,"persist", 
+                            select{ args.persist, preset.persist, 
+                                    awful.tag.getproperty(t,"persist"), config.defaults.persist })
+    awful.tag.setproperty(t,"nopopup", 
+                            select{ args.nopopup, preset.nopopup, 
+                                    awful.tag.getproperty(t,"nopopup"), config.defaults.nopopup })
+    awful.tag.setproperty(t,"leave_kills", 
+                            select{ args.leave_kills, preset.leave_kills, 
+                                    awful.tag.getproperty(t,"leave_kills"), config.defaults.leave_kills })
+    awful.tag.setproperty(t,"solitary", 
+                            select{ args.solitary, preset.solitary, 
+                                    awful.tag.getproperty(t,"solitary"), config.defaults.solitary })
+    awful.tag.setproperty(t,"position", 
+                            select{ args.position, preset.position, 
+                                    guessed_position, awful.tag.getproperty(t,"position" )})
+    awful.tag.setproperty(t,"skip_taglist", 
+                            select{ args.skip_taglist, preset.skip_taglist, awful.tag.getproperty(t,"skip_taglist") })
+    awful.tag.setproperty(t,"icon", 
+                            select{ args.icon and image(args.icon), preset.icon and image(preset.icon),
+                                    awful.tag.getproperty(t,"icon"), config.defaults.icon and image(config.defaults.icon) })
     awful.tag.setproperty(t, "name", name)
     awful.tag.setproperty(t, "layout", layout)
     awful.tag.setproperty(t, "mwfact", mwfact)
     awful.tag.setproperty(t, "nmaster", nmaster)
     awful.tag.setproperty(t, "ncol", ncol)
-    -- awful.tag.setproperty(t, "screen", scr)
 
     -- calculate desired taglist index
     local index = args.index or preset.index or config.defaults.index
@@ -288,7 +304,6 @@ function add(args)
 
     -- initialize a new tag object and its data structure
     local t = tag( name )
-    -- data[t] = {}
     awful.tag.setproperty(t,"initial", true)
 
     -- apply tag settings
@@ -308,19 +323,27 @@ function add(args)
 end
 
 function del(tag)
-    local scr = (tag and tag.screen) or mouse.screen or 1
+    -- should a tag ever be deleted if #tags[scr] < 1 ?
+    local scr = mouse.screen or 1
     local sel = awful.tag.selected(scr)
     local t = tag or sel
     local idx = tag2index(t)
-    if #(t:clients()) > 0 then return end
-    index_cache[t.name] = idx
-    table.remove(tags[scr], idx)
-    t.screen = nil
-    t = nil
-    -- awful.tag.setproperty(t,"screen", nil)
-    if t == sel and #tags[scr] > 0 then
-        awful.tag.history.restore(scr)
-        if not awful.tag.selected(scr) then awful.tag.viewonly(tags[scr][awful.util.cycle(#tags[scr], idx - 1)])  end
+
+    if #tags[scr] > 1 then
+        -- don't wipe tags if active clients on them?
+        if #(t:clients()) > 0 then return end
+
+        index_cache[t.name] = idx
+
+        if t == sel and #tags[scr] > 0 then
+            awful.tag.history.restore(scr)
+            if not awful.tag.selected(scr) then awful.tag.viewonly(tags[scr][awful.util.cycle(#tags[scr], idx - 1)])  end
+        end
+
+        table.remove(tags[scr], idx)
+        t.screen = nil
+        t = nil
+        awful.tag.history.update(scr)
     end
 end
 
@@ -396,129 +419,6 @@ function match(c)
     if target and (not (awful.tag.getproperty(target,"nopopup") or nopopup) and target ~= sel) then
         awful.tag.viewonly(target)
     end
-end
-
-function taglist_label(t, args)
-    if not args then args = {} end
-    local theme = beautiful.get()
-    local fg_focus = args.fg_focus or theme.taglist_fg_focus or theme.fg_focus
-    local bg_focus = args.bg_focus or theme.taglist_bg_focus or theme.bg_focus
-    local fg_urgent = args.fg_urgent or theme.taglist_fg_urgent or theme.fg_urgent
-    local bg_urgent = args.bg_urgent or theme.taglist_bg_urgent or theme.bg_urgent
-    local taglist_squares_sel = args.squares_sel or theme.taglist_squares_sel
-    local taglist_squares_unsel = args.squares_unsel or theme.taglist_squares_unsel
-    local taglist_squares_resize = theme.taglist_squares_resize or args.squares_resize or "true"
-    local text
-    local background = ""
-    local sel = capi.client.focus
-    local bg_color = nil
-    local fg_color = nil
-    if t.selected then
-        bg_color = bg_focus
-        fg_color = fg_focus
-    end
-    if sel and sel:tags()[t] then
-        if taglist_squares_sel then
-            background = "resize=\"" .. taglist_squares_resize .. "\" image=\"" .. taglist_squares_sel .. "\""
-        end
-    else
-        local cls = t:clients()
-        if #cls > 0 and taglist_squares_unsel then
-            background = "resize=\"" .. taglist_squares_resize .. "\" image=\"" .. taglist_squares_unsel .. "\""
-        end
-        for k, c in ipairs(cls) do
-            if c.urgent then
-                if bg_urgent then bg_color = bg_urgent end
-                if fg_urgent then fg_color = fg_urgent end
-                break
-            end
-        end
-    end
-    if bg_color and fg_color then
-        text = "< " .. background.." color='"..bg_color.."'/> <span color='"..awful.util.color_strip_alpha(fg_color).."'>"..awful.util.escape(t.name).."</span> "
-        -- text = awful.util.escape(t.name)
-    else
-        -- text = "<bg "..background.." />"..awful.util.escape(t.name).." "
-        text = " "..awful.util.escape(t.name).. " "
-    end
-    return text, bg_color
-end
-
-function taglist_new(scr, label, buttons)
-    local theme = beautiful.get()
-    local w = {}
-    local function taglist_update (screen) 
-        -- awful.widget.taglist_update(screen,taglist,taglist.label,taglist.buttons,taglist) 
-    -- end
-        -- Return right now if we do not care about this screen
-        if scr ~= screen then return end
-        local tags = tags[screen]
-        -- Hack: if it has been registered as a widget in a wibox,
-        -- it's w.len since __len meta does not work on table until Lua 5.2.
-        -- Otherwise it's standard #w.
-        local len = (w.len or #w)/2
-        -- Add more widgets
-        if len < #tags then
-            for i = 2*len + 1, 2*#tags, 2 do
-                w[i] = widget({ type = "imagebox", name = "taglisti" .. i })
-                w[i+1] = widget({ type = "textbox", name = "taglist" .. i })
-            end
-        -- Remove widgets
-        elseif len > #tags then
-            for i = 2*#tags + 1, 2*len, 2 do
-                w[i] = nil
-                w[i+1] = nil
-            end
-        end
-        -- Update widgets text
-        for k = 1, 2*#tags, 2 do
-            local a, b = label(tags[(k+1)/2])
-            if not awful.tag.getproperty(tags[(k+1)/2],"skip_taglist") then
-                if awful.tag.getproperty(tags[(k+1)/2]) and awful.tag.getproperty(tags[(k+1)/2],"icon") then
-                    w[k].image = awful.tag.getproperty(tags[(k+1)/2],"icon")
-                    w[k].bg = b
-                else
-                    w[k].image = nil
-                end
-                if not awful.tag.getproperty(tags[(k+1)/2],"notext") then
-                    w[k+1].text = a
-                    if tags[(k+1)/2].selected then -- == awful.tag.selected(mouse.screen) then
-                        w[k+1].bg = theme.bg_focus
-                    else
-                        w[k+1].bg = theme.bg_normal
-                    end
-                else
-                    w[k+1].text = ""
-                end
-            else
-                w[k+1].text = ""
-                w[k].image = nil
-            end
-            if buttons then
-                -- Replace press function by a new one calling with tags as
-                -- argument.
-                -- This is done here because order of tags can change
-                local mbuttons = {}
-                for kb, b in ipairs(buttons) do
-                    -- Copy object
-                    mbuttons[kb] = button(b)
-                    mbuttons[kb].press = function () b.press(tags[(k+1)/2]) end
-                end
-                w[k]:buttons(mbuttons)
-                w[k+1]:buttons(mbuttons)
-            end
-        end
-    end
-    awful.hooks.arrange.register(taglist_update)
-    awful.hooks.tags.register(taglist_update)
-    awful.hooks.tagged.register(function (c, tag) taglist_update(c.screen) end)
-    awful.hooks.property.register(function (c, prop)
-        if c.screen == scr and prop == "urgent" then
-            taglist_update(c.screen)
-        end
-    end)
-    taglist_update(scr)
-    return w
 end
 
 function sweep()
