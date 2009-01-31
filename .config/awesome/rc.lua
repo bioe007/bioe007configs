@@ -61,8 +61,8 @@ shifty.config.tags = {
     ["w1"] =     { layout = awful.layout.suit.tile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
     ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
     ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, nopopup = true, leave_kills = true,                                                               } ,
-    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, spawn = settings.apps.browser                                  } ,
-    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false, spawn = settings.apps.mail                                   } ,
+    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, position = 4, spawn = settings.apps.browser  } ,
+    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false,position = 5, spawn = settings.apps.mail     } ,
     ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true,                                                                } ,
     ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false,                                                           } ,
     ["office"] = { rel_index = 1, layout = awful.layout.suit.tile                                                                    } ,
@@ -74,9 +74,10 @@ shifty.config.apps = {
          { match = { "OpenOffice.*"                                        } , tag = "office",                        } ,
          { match = { "pcb","gschem","PCB_Log"                              } , tag = "dz",                            } ,
          { match = { "acroread","Apvlv"                                    } , tag = "ds",                            } ,
-         { match = { "VBox.*"                                              } , tag = "vbx",                           } ,
+         { match = { "VBox.*","VirtualBox.*"                               } , tag = "vbx",                           } ,
          { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw"          } , tag = "media",         nopopup = true, } ,
          { match = { "XDosEmu", "MPlayer", "gimp", "Gnuplot", "galculator" } , float = true                           } ,
+         { match = { "VirtualBox"                               } , float = true,                           } ,
 }
 
 shifty.config.defaults = {
@@ -265,6 +266,7 @@ mocpwidget:buttons({
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
     button({ }, 3, function () awful.util.spawn('mocp --previous') end)
 })
+mocpwidget.mouse_enter = function() mocnotify("entered") end
 awful.hooks.timer.register (.75,mocp)
 ---}}}
 
@@ -301,7 +303,7 @@ for s = 1, screen.count() do
     -- Create a taglist widget
     -- mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
     -- mytaglist[s] = shifty.taglist_new(s, shifty.taglist_label, mytaglist.buttons)
-    mytaglist[s] = shifty.taglist_new(s, awful.widget.taglist.label.all, mytaglist.buttons)
+    mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist.new(function(c)
                                                   return awful.widget.tasklist.label.currenttags(c, s)
@@ -654,7 +656,7 @@ awful.hooks.manage.register( function (c)
     end
 
     -- Honor size hints: for all but terminals
-    if c.class == "urxvt" or c.class == "URxvt" then -- or c.class == "XDosEmu" then
+    if c.class == "urxvt" or c.class == "URxvt" then
         c.size_hints_honor = false
     else
         c.size_hints_honor = true
@@ -686,4 +688,8 @@ end)
 
 -- }}}
 
+-- local hks = awful.hooks.gethooks() 
+-- for i,h in pairs(hks[h].[i]) do
+    -- print("hook name " .. h)
+-- end
 -- vim:set filetype=lua fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: --
