@@ -54,7 +54,7 @@ function moctitle(delim)
 
     -- get time, etc for notify
     np.file = io.popen('mocp -Q %album')
-    np.strng = "Artist: "..np.artist.."Song:   "..np.song.."Album:  "..np.file:read()..eol
+    np.strng = "Artist: "..string.gsub(np.artist,":","").."Song:   "..np.song.."Album:  "..np.file:read()..eol
     np.file:close()
 
     np.file = io.popen('mocp -Q %ct')
