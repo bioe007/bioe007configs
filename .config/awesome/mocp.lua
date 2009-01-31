@@ -70,7 +70,6 @@ end
 
 -- 
 function mocnotify(args)
-    print("mocnotify")
 
     if mocbox ~= nil then
         naughty.destroy(mocbox)
@@ -86,7 +85,6 @@ function mocnotify(args)
         np.strng = moctitle("\n")
     end
     np.strng = markup.fg( beautiful.fg_focus, markup.font("monospace", np.strng.."  "))  
-    print(np.strng)
     mocbox = naughty.notify({ title = markup.font("monospace","Now Playing:"),
         text = np.strng, hover_timeout = 2,
         icon = "/usr/share/icons/gnome/24x24/actions/edia-playback-start.png", icon_size = 24,
