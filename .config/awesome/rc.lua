@@ -262,9 +262,9 @@ wicked.register(memwidget, wicked.widgets.mem, 'mem:' ..  markup.fg(beautiful.fg
 mocpwidget = widget({ type = 'textbox', name = 'mocpwidget', align = 'right'})
 mocpwidget.width = 112
 mocpwidget:buttons({
-    button({ }, 1, mocplay ),
+    button({ }, 1, function () mocplay(); mocnotify() end ),
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
-    button({ }, 3, function () awful.util.spawn('mocp --previous') end)
+    button({ }, 3, function () awful.util.spawn('mocp --previous'); mocnotify() end)
 })
 mocpwidget.mouse_enter = function() mocnotify("entered") end
 awful.hooks.timer.register (.75,mocp)
@@ -444,8 +444,8 @@ table.insert(globalkeys, key({ modkey, "Mod1" },"l", function () awful.util.spaw
 -- {{{ - MEDIA
 table.insert(globalkeys, key({ modkey, "Mod1" },"p", mocplay ))
 table.insert(globalkeys, key({ },"XF86AudioPlay", mocplay ))
-table.insert(globalkeys, key({ modkey, "Mod1" },"j", mocplay ))
-table.insert(globalkeys, key({ modkey, "Mod1" },"k", function () awful.util.spawn('mocp --previous') end))
+table.insert(globalkeys, key({ modkey, "Ctrl" },"j", function() mocplay(); mocnotify() end ))
+table.insert(globalkeys, key({ modkey, "Ctrl" },"k", function () awful.util.spawn('mocp --previous');mocnotify() end))
 table.insert(globalkeys, key({ "" }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +5') end))
 table.insert(globalkeys, key({ "" }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -5') end))
 table.insert(globalkeys, key({ modkey }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +1') end))
