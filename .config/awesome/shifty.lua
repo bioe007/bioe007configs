@@ -111,7 +111,7 @@ function rename(tag, prefix, no_selectall, initial)
         tbox.widgets = prmptbx
     else
         -- a taglist has been assigned to shifty, so use it instead
-        prmptbx = taglist[scr][tag2index(t) * 2]
+        prmptbx = taglist[scr][tag2index(t)*2]
     end
 
     -- had some errors with the former inline pango markup
@@ -281,16 +281,6 @@ function set(t, args)
         table.insert(tags[t.screen], idx, t)
     end
 
-
-    -- if set()ting upon tag creation, spawn/run
-    if awful.tag.getproperty(t,"initial") then
-        local spawn = args.spawn or preset.spawn
-        local run = args.run or preset.run or config.defaults.run
-        if spawn and not awful.tag.getproperty(t,"matched") then awful.util.spawn(spawn, scr) end
-        if run then run(t) end
-        awful.tag.setproperty(t,"initial", nil)
-    end
-
     -- refresh taglist and return
     awful.hooks.user.call("tags", t.screen)
     return t
@@ -308,6 +298,12 @@ function add(args)
     -- apply tag settings
     set(t, args)
 
+    if config.tags[name] ~= nil then
+        local spawn = config.tags[name].spawn or config.defaults.spawn or nil
+    end
+    local run = args.run or config.defaults.run
+    if spawn and args.matched ~= true then awful.util.spawn(spawn, scr) end
+    if run then run(t) end
     -- unless forbidden or if first tag on the screen, show the tag
     if not (awful.tag.getproperty(t,"nopopup") or args.noswitch) or #tags[scr] == 1 then awful.tag.viewonly(t) end
 
