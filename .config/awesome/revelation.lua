@@ -22,6 +22,7 @@ local capi =
     mouse = mouse,
     screen = screen
 }
+local print = print
 --- Exposé implementation
 module("revelation")
 
@@ -35,14 +36,14 @@ layout = {}
 -- @param t The tag to do revelation on.
 -- @param n The number of clients to reveal.
 function layout.default (t, n)
-    awful.tag.setproperty(t,"layout",awful.layout.suit.tile )
-    local columns = math.floor(math.sqrt(n))
-
-    if columns > 1 then
-        awful.tag.setmwfact(1 / columns, t )
-        awful.tag.setncol( columns - 1, t)
-    end
-    awful.tag.setnmaster(n / columns, t)
+    awful.tag.setproperty(t,"layout",awful.layout.suit.fair )
+    -- local columns = math.floor(math.sqrt(n))
+-- 
+    -- if columns > 1 then
+        -- awful.tag.setmwfact(1 / columns, t )
+        -- awful.tag.setncol( columns - 1, t)
+    -- end
+    -- awful.tag.setnmaster(n / columns, t)
 end
 
 function clients(class, s)
@@ -75,7 +76,8 @@ end
 -- Arrow keys move focus, Return selects, Escape cancels.
 -- Ignores modifiers.
 function keyboardhandler (restore)
-    return function (mod, key)
+    return function (mod, key, event)
+      if event ~= "press" then return true end
                 -- translate vim-style home keys to directions
                 if key == "j" or key == "k" or key == "h" or key == "l" then
                   if key == "j" then
@@ -99,6 +101,7 @@ function keyboardhandler (restore)
                     return false
                 elseif key == "Left" or key == "Right" or
                     key == "Up" or key == "Down" then
+                    print(key)
                     awful.client.focus.bydirection(key:lower())
                 end
                 return true
