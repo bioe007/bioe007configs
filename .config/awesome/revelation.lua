@@ -22,7 +22,6 @@ local capi =
     mouse = mouse,
     screen = screen
 }
-local print = print
 --- Exposé implementation
 module("revelation")
 
@@ -101,7 +100,6 @@ function keyboardhandler (restore)
                     return false
                 elseif key == "Left" or key == "Right" or
                     key == "Up" or key == "Down" then
-                    print(key)
                     awful.client.focus.bydirection(key:lower())
                 end
                 return true
