@@ -3,19 +3,17 @@
 -- @author Julien Danjou &lt;julien@danjou.info&gt;
 -- @copyright 2008 Espen Wiborg, Julien Danjou
 -- @release v3.1-rc3-14-gc7ee83f
+-- 
+-- note: rewritten by Perry Hargrave perry)dot(hargrave)at(gmail.com
+-- note: this is a version of revelation.lua modified for awesome 3.1.223+
+--
 ---------------------------------------------------------------------------
-
 local math = math
 local table = table
 local pairs = pairs
 local button = button
 local otable = otable
 local awful = awful
--- {
-    -- tag = require("awful.tag"),
-    -- client = require("awful.client")
--- 
--- }
 local capi =
 {
     tag = tag,
