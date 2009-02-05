@@ -14,7 +14,6 @@ local pairs = pairs
 local button = button
 local otable = otable
 local awful = awful
-local widget = widget
 local capi =
 {
     tag = tag,
@@ -23,12 +22,8 @@ local capi =
     mouse = mouse,
     screen = screen
 }
-local wibox = wibox
 --- Exposé implementation
 module("revelation")
-
--- Layout functions
-layout = {}
 
 function clients(class, s)
     local clients
@@ -56,22 +51,6 @@ function selectfn(restore)
            end
 end
 
-function revnotify(c)
-
-  if revbox ~= nil then revbox.screen = nil end
-
-  revbox = {}
-  revbox = widget({type = "textbox", align = "left"})
-  local scrgeo = capi.screen[capi.mouse.screen].workarea
-  local boxgeo = {x = ((scrgeo.width-230)/2), y=(scrgeo.height-50)/2, width=230,height=50}
-
-  revbox.w = wibox({position="floating", ontop = true})
-  revbox:geometry(boxgeo)
-  revbox.screen = capi.mouse.screen
-
-  revbox.w.text = awful.util.escape(c.name)
-
-end
 --- Returns keyboardhandler.
 -- Arrow keys move focus, Return selects, Escape cancels.
 -- Ignores modifiers.
@@ -102,7 +81,6 @@ function keyboardhandler (restore)
                 elseif key == "Left" or key == "Right" or
                     key == "Up" or key == "Down" then
                     awful.client.focus.bydirection(key:lower())
-                    -- revnotify(capi.client.focus)
                 end
                 return true
            end
@@ -115,7 +93,6 @@ end
 function revelation(class, fn, s)
     local screen = s or capi.mouse.screen
     local layout_fn = fn or layout.default
-    -- local data = otable()
 
     local t = awful.tag.selected()
 
@@ -133,7 +110,6 @@ function revelation(class, fn, s)
     end
 
     awful.tag.setproperty(t,"layout",awful.layout.suit.fair )
-    -- layout_fn(t, #allc)
 
     t:clients(allc)
 
