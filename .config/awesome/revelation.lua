@@ -92,8 +92,6 @@ end
 -- @param s The screen to consider clients of, or nil for "current screen".
 function revelation(class, fn, s)
     local screen = s or capi.mouse.screen
-    local layout_fn = fn or layout.default
-
     local t = awful.tag.selected()
 
     local oset = {}
