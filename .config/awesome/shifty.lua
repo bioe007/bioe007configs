@@ -39,6 +39,7 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local wibox = wibox
+local print = print
 module("shifty")
 
 tags = {}
@@ -111,7 +112,7 @@ function rename(tag, prefix, no_selectall, initial)
         tbox.widgets = prmptbx
     else
         -- a taglist has been assigned to shifty, so use it instead
-        prmptbx = taglist[scr][tag2index(t)*2]
+        prmptbx = awful.widget.taglist.gettag(t)
     end
 
     -- had some errors with the former inline pango markup
