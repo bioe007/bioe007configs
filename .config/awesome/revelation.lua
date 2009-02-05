@@ -14,6 +14,7 @@ local pairs = pairs
 local button = button
 local otable = otable
 local awful = awful
+local widget = widget
 local capi =
 {
     tag = tag,
@@ -22,28 +23,12 @@ local capi =
     mouse = mouse,
     screen = screen
 }
+local wibox = wibox
 --- Exposé implementation
 module("revelation")
 
 -- Layout functions
 layout = {}
-
---- The default layout function for revelation
--- Tries to arrange clients in an approximated square grid, by
--- calculating c = floor(sqrt(n)) and arranging for c columns in a
--- tile layout.
--- @param t The tag to do revelation on.
--- @param n The number of clients to reveal.
-function layout.default (t, n)
-    awful.tag.setproperty(t,"layout",awful.layout.suit.fair )
-    -- local columns = math.floor(math.sqrt(n))
--- 
-    -- if columns > 1 then
-        -- awful.tag.setmwfact(1 / columns, t )
-        -- awful.tag.setncol( columns - 1, t)
-    -- end
-    -- awful.tag.setnmaster(n / columns, t)
-end
 
 function clients(class, s)
     local clients
@@ -71,6 +56,22 @@ function selectfn(restore)
            end
 end
 
+function revnotify(c)
+
+  if revbox ~= nil then revbox.screen = nil end
+
+  revbox = {}
+  revbox = widget({type = "textbox", align = "left"})
+  local scrgeo = capi.screen[capi.mouse.screen].workarea
+  local boxgeo = {x = ((scrgeo.width-230)/2), y=(scrgeo.height-50)/2, width=230,height=50}
+
+  revbox.w = wibox({position="floating", ontop = true})
+  revbox:geometry(boxgeo)
+  revbox.screen = capi.mouse.screen
+
+  revbox.w.text = awful.util.escape(c.name)
+
+end
 --- Returns keyboardhandler.
 -- Arrow keys move focus, Return selects, Escape cancels.
 -- Ignores modifiers.
@@ -101,6 +102,7 @@ function keyboardhandler (restore)
                 elseif key == "Left" or key == "Right" or
                     key == "Up" or key == "Down" then
                     awful.client.focus.bydirection(key:lower())
+                    -- revnotify(capi.client.focus)
                 end
                 return true
            end
@@ -130,7 +132,8 @@ function revelation(class, fn, s)
         return
     end
 
-    layout_fn(t, #allc)
+    awful.tag.setproperty(t,"layout",awful.layout.suit.fair )
+    -- layout_fn(t, #allc)
 
     t:clients(allc)
 
