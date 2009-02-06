@@ -50,7 +50,7 @@ use_titlebar = false
 layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.tile.bottom,
-    -- awful.layout.suit.fair,  -- is fair broken?
+    -- awful.layout.suit.fair, 
     awful.layout.suit.max,
     awful.layout.suit.magnifier,
     awful.layout.suit.floating
@@ -61,8 +61,8 @@ shifty.config.tags = {
     ["w1"] =     { layout = awful.layout.suit.tile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
     ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
     ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, nopopup = true, leave_kills = true,                                                               } ,
-    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, spawn = settings.apps.browser  } ,
-    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false,spawn = settings.apps.mail     } ,
+    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, position = 4, spawn = settings.apps.browser  } ,
+    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false,position = 5,spawn = settings.apps.mail     } ,
     ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true,                                                                } ,
     ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false,                                                           } ,
     ["office"] = { rel_index = 1, layout = awful.layout.suit.tile                                                                    } ,
@@ -389,16 +389,16 @@ for i = 1, keynumber do
 end
 
 --[[ added for SHIFTY ]]--
-table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "j",          shifty.prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "k",       shifty.next))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "j",          shifty.shift_prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "k",       shifty.shift_next))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "h",          shifty.send_prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "l",       shifty.send_next))
-table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "r",                 shifty.rename))
-table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "w",                 shifty.del))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "t",                 shifty.add))
-table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "t",                 function() shifty.add({ nopopup = true }) end))
+table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "j", shifty.prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "k",   shifty.next))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "j",     shifty.shift_prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "k",     shifty.shift_next))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "h",     shifty.send_prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "l",     shifty.send_next))
+table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "r",  shifty.rename))
+table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "w", shifty.del))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "t",     shifty.add))
+table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "t", function() shifty.add({ nopopup = true }) end))
 
 for i=1, 9 do
   table.insert(globalkeys, key({ modkey }, i,
@@ -580,7 +580,6 @@ awful.hooks.focus.register(function (c)
     if not awful.client.ismarked(c) then
         c.border_color = beautiful.border_focus
     end
-    -- toggleTitlebar(c)
 end)
 
 -- Hook function to execute when unfocusing a client.
@@ -588,7 +587,6 @@ awful.hooks.unfocus.register(function (c)
     if not awful.client.ismarked(c) then
         c.border_color = beautiful.border_normal
     end
-    -- toggleTitlebar(c)
 end)
 
 -- Hook function to execute when marking a client
@@ -634,7 +632,6 @@ awful.hooks.manage.register( function (c)
     -- if they're not focusable, so set border anyway.
     c.border_width = beautiful.border_width
     c.border_color = beautiful.border_normal
-    client.focus = c
 
     -- Check if the application should be floating.
     local cls = c.class
@@ -692,8 +689,16 @@ end)
 
 -- }}}
 
--- local hks = awful.hooks.gethooks() 
--- for i,h in pairs(hks[h].[i]) do
+-- local hks = awful.hooks.registered() 
+-- for i,h in pairs(hks) do
     -- print("hook name " .. h)
+-- end
+-- hks = nil
+
+-- print("calling findhook")
+-- if findhook("timer","fs")==true then 
+    -- print("found fs: ")
+-- else
+    -- print("not found")
 -- end
 -- vim:set filetype=lua fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: --
