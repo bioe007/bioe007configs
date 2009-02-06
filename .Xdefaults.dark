@@ -10,7 +10,6 @@ URxvt*matcher.button:   1
 URxvt*urlLauncher:      firefox
 /* places a hardcopy in home dir when print is pressed */
 URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
-URxvt*urgentOnBell:     true
 
 ! {{{ mark-and-yank
 URxvt.keysym.M-u: perl:mark-yank-urls:activate_mark_mode
@@ -29,6 +28,7 @@ Rxvt*font:               xft:Terminus:pixelsize=12:autohint=true
 Rxvt*boldFont:           xft:Terminus:bold:pixelsize=12:bold:autohint=true
 URxvt*internalBorder:     3
 URxvt*jumpScroll:         true
+URxvt*scrollTtyOutput:      false
 URxvt*tintColor:          grey
 URxvt*shading:            10
 URxvt*fading:             0
