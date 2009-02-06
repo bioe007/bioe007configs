@@ -46,7 +46,7 @@ function moctitle(delim)
 
     -- grab song
     np.file = io.popen('mocp -Q %song')
-    np.song = np.file:read() .. eol
+    np.song =string.gsub( string.gsub(np.file:read(),"^%d*",""),"%(.*","") .. eol
     np.file:close()
 
     -- return for widget text
@@ -69,11 +69,16 @@ function moctitle(delim)
 end
 
 -- 
-function mocnotify(args)
-
+function notdestroy()
     if mocbox ~= nil then
         naughty.destroy(mocbox)
+        mocbox = nil
     end
+end
+
+function mocnotify(args)
+
+    notdestroy()
 
     local np = {}
     np.state = nil
@@ -86,7 +91,7 @@ function mocnotify(args)
     end
     np.strng = markup.fg( beautiful.fg_focus, markup.font("monospace", np.strng.."  "))  
     mocbox = naughty.notify({ title = markup.font("monospace","Now Playing:"),
-        text = np.strng, hover_timeout = 2,
+        text = np.strng, hover_timeout = 0.5,
         icon = "/usr/share/icons/gnome/24x24/actions/edia-playback-start.png", icon_size = 24,
         run = function() mocplay(); mocnotify() end})
 end
