@@ -39,7 +39,6 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local wibox = wibox
-local print = print
 module("shifty")
 
 tags = {}
@@ -99,21 +98,7 @@ function rename(tag, prefix, no_selectall, initial)
     local text = prefix or t.name or ""
     local before = t.name
 
-    local prmptbx
-    -- use a wibox to show tag fill in prompt box in case user hasnt defined
-    -- taglist
-    if taglist == nil then
-        local scrgeo = screen[mouse.screen].workarea
-        local geometry = {x = ((scrgeo.width-230)/2), y = (scrgeo.height/2 - 50/2), width=230, height=50}
-        local tbox = wibox({position="floating",fg=theme.fg_focus or "#ffffff",ontop = true})
-        tbox:geometry(geometry)
-        tbox.screen = mouse.screen
-        prmptbx = widget({type = "textbox", align = "left"})
-        tbox.widgets = prmptbx
-    else
-        -- a taglist has been assigned to shifty, so use it instead
-        prmptbx = awful.widget.taglist.gettag(t)
-    end
+    local prmptbx = awful.widget.taglist.gettag(t)
 
     -- had some errors with the former inline pango markup
     -- pango markup no longer takes the <bg color= .. argument so set it here,
@@ -132,9 +117,6 @@ function rename(tag, prefix, no_selectall, initial)
         prmptbx,
         function (name) if name:len() > 0 then 
             t.name = name; 
-            if tbox ~= nil then 
-                tbox.screen = nil -- is this the proper way to delete the wibox?
-            end 
         end
         end, 
         completion,
@@ -147,7 +129,6 @@ function rename(tag, prefix, no_selectall, initial)
                 set(t)
             end
             awful.hooks.user.call("tags", scr)
-            if tbox ~= nil then tbox.screen = nil end   -- is this the proper way to delete the wibox?
         end
     )
 
