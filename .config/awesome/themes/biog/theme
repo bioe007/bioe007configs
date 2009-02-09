@@ -5,29 +5,32 @@
 font          = Profont 8
 # font          = DejaVu Sans Mono 8
 
-bg_normal     = #3f4f2b
-bg_focus      = #81906d
+bg_normal     = #aeac71
+bg_focus      = #dad8af
 bg_urgent     = #288ef6
 
-fg_normal     = #d47a04
-fg_focus      = #f7fbaf
+fg_normal     = #626432
+fg_focus      = #3f4627
 fg_urgent     = #ffaaaa
 
 ## specific 
-fg_sb_hi     = #f7fbaf
+fg_sb_hi     = #3f4627
 fg_batt_mid  = #00cb00
 fg_batt_low  = #e6f21d
 fg_batt_crit = #f8700a
 
+widg_cpu0 = #c87511
+widg_cpu1 = #ea8707 
+widg_cpu2 = #AEC6D8
 border_width  = 1
 border_normal = #00000000
-border_focus  = #f8ad4b
+border_focus  = #dad8af
 border_marked = #0000f0
 
 # calendar settings
 calendar_w = 160
-calendar_fg = #cfffff
-calendar_bg = #4e6274
+calendar_fg = #aeac71
+calendar_bg = #626432
 
 menu_height = 15
 menu_width = 100
@@ -39,10 +42,10 @@ menu_width = 100
 # titlebar_[bg|fg]_[normal|focus]
 # Example:
 #taglist_bg_focus = #ff0000
-titlebar_bg_focus = #3f4f2b
-titlebar_bg_normal = #81906d
-titlebar_fg_focus = #d47a04
-titlebar_fg_normal = #9c5800
+titlebar_bg_focus = #dad8af
+titlebar_bg_normal = #aeac71
+titlebar_fg_focus = #3f4627
+titlebar_fg_normal = #3f4627
 
 # Display the taglist squares
 taglist_squares = true
@@ -65,14 +68,14 @@ titlebar_close_button_normal = /home/perry/.config/awesome/themes/biog/titlebar/
 titlebar_close_button_focus = /home/perry/.config/awesome/themes/biog/titlebar/close-active.png
 
 # You can use your own layout icons like this:
-layout_dwindle = /home/perry/.config/awesome/themes/biog/layouts/dwindlew.png
-layout_fairh = /home/perry/.config/awesome/themes/biog/layouts/fairhw.png
-layout_fairv = /home/perry/.config/awesome/themes/biog/layouts/fairvw.png
-layout_floating = /home/perry/.config/awesome/themes/biog/layouts/floatingw.png
-layout_magnifier = /home/perry/.config/awesome/themes/biog/layouts/magnifierw.png
-layout_max = /home/perry/.config/awesome/themes/biog/layouts/maxw.png
-layout_spiral = /home/perry/.config/awesome/themes/biog/layouts/spiralw.png
-layout_tilebottom = /home/perry/.config/awesome/themes/biog/layouts/tilebottomw.png
-layout_tileleft = /home/perry/.config/awesome/themes/biog/layouts/tileleftw.png
-layout_tile = /home/perry/.config/awesome/themes/biog/layouts/tilew.png
-layout_tiletop = /home/perry/.config/awesome/themes/biog/layouts/tiletopw.png
+layout_dwindle = /home/perry/.config/awesome/themes/biog/layouts/dwindle.png
+layout_fairh = /home/perry/.config/awesome/themes/biog/layouts/fairh.png
+layout_fairv = /home/perry/.config/awesome/themes/biog/layouts/fairv.png
+layout_floating = /home/perry/.config/awesome/themes/biog/layouts/floating.png
+layout_magnifier = /home/perry/.config/awesome/themes/biog/layouts/magnifier.png
+layout_max = /home/perry/.config/awesome/themes/biog/layouts/max.png
+layout_spiral = /home/perry/.config/awesome/themes/biog/layouts/spiral.png
+layout_tilebottom = /home/perry/.config/awesome/themes/biog/layouts/tilebottom.png
+layout_tileleft = /home/perry/.config/awesome/themes/biog/layouts/tileleft.png
+layout_tile = /home/perry/.config/awesome/themes/biog/layouts/tile.png
+layout_tiletop = /home/perry/.config/awesome/themes/biog/layouts/tiletop.png
