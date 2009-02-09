@@ -90,10 +90,12 @@ function mocnotify(args)
         np.strng = moctitle("\n")
     end
     np.strng = markup.fg( beautiful.fg_focus, markup.font("monospace", np.strng.."  "))  
-    mocbox = naughty.notify({ title = markup.font("monospace","Now Playing:"),
+    mocbox = naughty.notify({ 
+        title = markup.font("monospace","Now Playing:"),
         text = np.strng, hover_timeout = 0.5,
-        icon = "/usr/share/icons/gnome/24x24/actions/edia-playback-start.png", icon_size = 24,
-        run = function() mocplay(); mocnotify() end})
+        -- icon = "/usr/share/icons/gnome/24x24/actions/edia-playback-start.png", icon_size = 24,
+        run = function() mocplay(); mocnotify() end
+    })
 end
 
 -- easier way to check|run mocp
