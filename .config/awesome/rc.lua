@@ -18,7 +18,8 @@ print("cachedir= " .. awful.util.getdir("cache"))
 
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
-theme_path = "/home/perry/.config/awesome/themes/bio/theme"
+theme_path = "/home/perry/.config/awesome/themes/biog/theme"
+icon_path = "/home/perry/.config/awesome/themes/biog/"
 -- Initialize theme (colors).
 beautiful.init(theme_path)
 settings = {}
@@ -50,7 +51,6 @@ use_titlebar = false
 layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.tile.bottom,
-    -- awful.layout.suit.fair, 
     awful.layout.suit.max,
     awful.layout.suit.magnifier,
     awful.layout.suit.floating
@@ -83,7 +83,7 @@ shifty.config.apps = {
 shifty.config.defaults = {
     layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
     run = function(tag) 
-        naughty.notify({ text = markup.fg( beautiful.fg_focus, markup.font("monospace", "Shifty Created: "..shifty.tag2index(tag).." : "..tag.name)) }) 
+        naughty.notify({ text = markup.fg( beautiful.fg_focus, markup.font("monospace", "Shifty Created: "..shifty.tag2index(mouse.screen,tag).." : "..tag.name)) }) 
     end,
 }
 -- added for SHIFTY ]]--
@@ -130,7 +130,7 @@ end
 function toggleTitlebar(c)
   if awful.layout.get(c.screen) == "floating" then 
     -- awful.titlebar.add(c, { modkey = modkey }) 
-    awful.titlebar.add(c, {} ) 
+    awful.titlebar.add(c, { modkey = modkey } ) 
   else
     if c.titlebar then
       awful.titlebar.remove(c)
@@ -150,11 +150,11 @@ myawesomemenu = {
    { "quit", awesome.quit }
 }
 
-mymainmenu = awful.menu.new({ items = { { "awesome", myawesomemenu, "/usr/share/awesome/icons/awesome16.png" },
+mymainmenu = awful.menu.new({ items = { { "awesome", myawesomemenu, icon_path.."/awesome16.png" },
                                         { "open terminal", terminal } }
                            })
 
-mylauncher = awful.widget.launcher({ image = "/home/perry/.config/awesome/themes/bio/awesome48.png",
+mylauncher = awful.widget.launcher({ image = icon_path.."awesome48.png",
                                      menu = mymainmenu })
 
 -- Create a systray
@@ -203,7 +203,6 @@ wicked.register(datewidget, wicked.widgets.date,
 
 -- }}}
 
--- print("just before cpu")
 -- {{{ -- CPU widgets
 cpuwidget = widget({ type = 'textbox', name = 'cpuwidget', align = 'right' })
 cpuwidget.width = 51
@@ -221,9 +220,9 @@ cpugraphwidget1.border_color = beautiful.bg_normal
 cpugraphwidget1.grow = 'left'
 
 cpugraphwidget1:plot_properties_set('cpu', {
-    fg = '#243367',
-    fg_center ='#285577', 
-    fg_end = '#AEC6D8',
+    fg = beautiful.widg_cpu_st ,
+    fg_center = beautiful.widg_cpu_mid ,
+    fg_end = beautiful.widg_cpu_end, 
     vertical_gradient = true
 })
 
@@ -242,9 +241,9 @@ cpugraphwidget2.border_color = beautiful.bg_normal
 cpugraphwidget2.grow = 'left'
 
 cpugraphwidget2:plot_properties_set('cpu', {
-    fg = '#243367',
-    fg_center ='#285577', 
-    fg_end = '#AEC6D8',
+    fg = beautiful.widg_cpu_st ,
+    fg_center = beautiful.widg_cpu_mid ,
+    fg_end = beautiful.widg_cpu_end, 
     vertical_gradient = true
 })
 
@@ -266,7 +265,8 @@ mocpwidget:buttons({
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
     button({ }, 3, function () awful.util.spawn('mocp --previous'); mocnotify() end)
 })
-mocpwidget.mouse_enter = function() mocnotify("entered") end
+mocpwidget.mouse_enter = function() mocnotify({"entered"}) end
+mocpwidget.mouse_leave = notdestroy
 awful.hooks.timer.register (.75,mocp)
 ---}}}
 
@@ -295,7 +295,6 @@ for s = 1, screen.count() do
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
     mylayoutbox[s] = widget({ type = "imagebox", align = "left" })
-    -- mylayoutbox[s].image = image("/home/perry/.config/awesome/themes/bio/layouts/tilew.png")
     mylayoutbox[s]:buttons({ button({ }, 1, function () awful.layout.inc(layouts, 1) end),
                              button({ }, 3, function () awful.layout.inc(layouts, -1) end),
                              button({ }, 4, function () awful.layout.inc(layouts, 1) end),
@@ -487,6 +486,8 @@ table.insert(clientkeys, key({modkey, "Shift"},"q", function ()
     end
 end))
 
+
+table.insert(clientkeys, key({ modkey, "Shift" },"t", function () toggleTitlebar(client.focus) end)) -- show client on all tags
 table.insert(clientkeys, key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end)) -- show client on all tags
 table.insert(clientkeys, key({ modkey }, "m", function (c) c.maximized_horizontal = not c.maximized_horizontal         -- maximize client
                                                            c.maximized_vertical = not c.maximized_vertical end))
