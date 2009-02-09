@@ -54,8 +54,10 @@ config.remember_index = true
 for s = 1, screen.count() do tags[s] = {} end
 local data = otable()
 
--- matches string 'name' to return a tag object? 
--- ok, seems to work
+-- matches string 'name' to return a tag object 
+-- @parm name - name of tag to find
+-- @parm scr - screen to look for tag on
+-- @return the tag object, or nil
 function name2tag(name, scr)
     local a, b = scr or 1, scr or screen.count()
     for s = a, b do
@@ -67,10 +69,14 @@ function name2tag(name, scr)
     end
 end
 
-function tag2index(tag)
-    for i, t in ipairs(tags[tag.screen]) do
-        if tag == t then return i end
+function tag2index(scr, tag)
+    local tags = screen[scr]:tags()
+    for i = 1, #tags do
+        if tags[i] == tag then
+            return i
+        end
     end
+    return 0
 end
 
 function viewidx(i, screen)
@@ -137,7 +143,7 @@ end
 function send(idx)
     local scr = client.focus.screen or mouse.screen
     local sel = awful.tag.selected(scr)
-    local sel_idx = tag2index(sel)
+    local sel_idx = tag2index(scr,sel)
     local target = awful.util.cycle(#tags[scr], sel_idx + idx)
     awful.tag.viewonly(tags[scr][target])
     awful.client.movetotag(tags[scr][target], client.focus)
@@ -236,8 +242,8 @@ function set(t, args)
     local index = args.index or preset.index or config.defaults.index
     local rel_index = args.rel_index or preset.rel_index or config.defaults.rel_index
     local sel = awful.tag.selected(scr)
-    local sel_idx = (sel and tag2index(sel)) or 0 --TODO: what happens with rel_idx if no tags selected
-    local t_idx = tag2index(t)
+    local sel_idx = (sel and tag2index(t.screen,sel)) or 0 --TODO: what happens with rel_idx if no tags selected
+    local t_idx = tag2index(t.screen,t)
     local limit = (not t_idx and #tags[t.screen] + 1) or #tags[t.screen]
     local idx = nil
 
@@ -304,7 +310,7 @@ function del(tag)
     local scr = mouse.screen or 1
     local sel = awful.tag.selected(scr)
     local t = tag or sel
-    local idx = tag2index(t)
+    local idx = tag2index(scr,t)
 
     if #tags[scr] > 1 then
         -- don't wipe tags if active clients on them?
