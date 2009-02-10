@@ -10,12 +10,7 @@
 -- * W: awesome: luaA_dofunction:317: error running function: /usr/share/awesome/lib/awful/tag.lua:77: bad argument #3 to '?' (boolean expected, got nil)
 --      - pressing mod+esc to flip to previous tag after creating a new one.
 --      this 'merges' the two tags instead of flipping back to it
--- * fix tag squares
 -- * move all data table settings to awful.tag.setproperty|getproperty
--- * prompt coloring is bad
--- * finish backup prompt (for people who forget to add the shifty.taglist, or who dont
---      want the prompt on the taglist
--- * fix new tags are always created (in taglist) adjacent to the first tag
 --
 -- package env
 
@@ -33,7 +28,6 @@ local mouse = mouse
 local capi = { hooks = hooks, client = client }
 local beautiful = require("beautiful")
 local awful = require("awful")
-local otable = otable
 local pairs = pairs
 local io = io
 local tostring = tostring
@@ -52,11 +46,10 @@ config.guess_position = true
 config.remember_index = true
 
 for s = 1, screen.count() do tags[s] = {} end
-local data = otable()
 
 -- matches string 'name' to return a tag object 
--- @parm name - name of tag to find
--- @parm scr - screen to look for tag on
+-- @param name : name of tag to find
+-- @param scr : screen to look for tag on
 -- @return the tag object, or nil
 function name2tag(name, scr)
     local a, b = scr or 1, scr or screen.count()
@@ -69,6 +62,10 @@ function name2tag(name, scr)
     end
 end
 
+-- finds index of a tag object
+-- @param scr : screen number to look for tag on
+-- @param tag : the tag object to find
+-- @return the index or zero
 function tag2index(scr, tag)
     local tags = screen[scr]:tags()
     for i = 1, #tags do
@@ -160,7 +157,6 @@ function pos2idx(pos, scr)
     if pos and scr then
         for i = #tags[scr] , 1, -1 do
             local t = tags[scr][i]
-            -- if data[t].position and data[t].position <= pos then v = i + 1; break end
             if awful.tag.getproperty(t,"position") and awful.tag.getproperty(t,"position") <= pos then v = i + 1; break end
         end
     end
@@ -530,24 +526,24 @@ function completion(cmd, cur_pos, ncomp)
     return matches[ncomp], cur_pos
 end
 
-function info(t)
-    if not t then return end
-
-    local v = "<b>     [ " .. t.name .." ]</b>\n\n" ..
-        "  screen = " .. t.screen .. "\n" ..
-        "selected = " .. tostring(t.selected) .. "\n" ..
-        "  layout = " .. t.layout .. "\n" ..
-        "  mwfact = " .. t.mwfact .. "\n"  ..
-        " nmaster = " .. t.nmaster .. "\n" ..
-        "    ncol = " .. t.ncol .. "\n" ..
-        "#clients = " .. #t:clients() .. "\n"
-
-    for op, val in pairs(data[t]) do
-        v = v .. "\n" .. op .. " = " .. tostring(val)
-    end
-
-    return v
-end
+-- function info(t)
+    -- if not t then return end
+-- 
+    -- local v = "<b>     [ " .. t.name .." ]</b>\n\n" ..
+        -- "  screen = " .. t.screen .. "\n" ..
+        -- "selected = " .. tostring(t.selected) .. "\n" ..
+        -- "  layout = " .. t.layout .. "\n" ..
+        -- "  mwfact = " .. t.mwfact .. "\n"  ..
+        -- " nmaster = " .. t.nmaster .. "\n" ..
+        -- "    ncol = " .. t.ncol .. "\n" ..
+        -- "#clients = " .. #t:clients() .. "\n"
+-- 
+    -- for op, val in pairs(data[t]) do
+        -- v = v .. "\n" .. op .. " = " .. tostring(val)
+    -- end
+-- 
+    -- return v
+-- end
 
 awful.hooks.tags.register(sweep)
 awful.hooks.arrange.register(sweep)
