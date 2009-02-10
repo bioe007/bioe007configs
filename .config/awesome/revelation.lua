@@ -12,7 +12,6 @@ local math = math
 local table = table
 local pairs = pairs
 local button = button
-local otable = otable
 local awful = awful
 local capi =
 {
