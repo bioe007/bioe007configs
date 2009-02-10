@@ -19,9 +19,9 @@ fg_batt_mid  = #00cb00
 fg_batt_low  = #e6f21d
 fg_batt_crit = #f8700a
 
-widg_cpu0 = #c87511
-widg_cpu1 = #ea8707 
-widg_cpu2 = #AEC6D8
+widg_cpu_st = #3f4627
+widg_cpu_mid = #a3b68a
+widg_cpu_end = #bcc4b2
 border_width  = 1
 border_normal = #00000000
 border_focus  = #dad8af
