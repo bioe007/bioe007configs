@@ -1,9 +1,12 @@
-require("beautiful")
+-- useful markup functions for awesome
+-- found somewhere (wiki maybe?) modularized and current:
+-- by bioe007 perrydothargraveatgmaildotcom
+local beautiful = require("beautiful")
 
 -- Markup helper functions
-markup = {}
+module("markup")
 
-function markup.bg(color, text)
+function bg(color, text)
     if text ~= nil then
         return '<bg color="'..color..'" />'..text
     else
@@ -11,7 +14,7 @@ function markup.bg(color, text)
     end
 end
 
-function markup.fg(color, text)
+function fg(color, text)
     if text ~= nil then
         return '<span color="'..color..'">'..text..'</span>'
     else
@@ -19,7 +22,7 @@ function markup.fg(color, text)
     end
 end
 
-function markup.font(font, text)
+function font(font, text)
     if text ~= nil then
         return '<span font_desc="'..font..'">'..text..'</span>'
     else
@@ -27,28 +30,28 @@ function markup.font(font, text)
     end
 end
 
-function markup.title(t)
+function title(t)
     return t
 end
 
-function markup.title_normal(t)
+function title_normal(t)
     return beautiful.title(t)
 end
 
-function markup.title_focus(t)
-    return markup.bg(beautiful.bg_focus, markup.fg(beautiful.fg_focus, markup.title(t)))
+function title_focus(t)
+    return bg(beautiful.bg_focus, fg(beautiful.fg_focus, title(t)))
 end
 
-function markup.title_urgent(t)
-    return markup.bg(beautiful.bg_urgent, markup.fg(beautiful.fg_urgent, markup.title(t)))
+function title_urgent(t)
+    return bg(beautiful.bg_urgent, fg(beautiful.fg_urgent, title(t)))
 end
 
-function markup.bold(text)
+function bold(text)
     return '<b>'..text..'</b>'
 end
 
-function markup.heading(text)
-    return markup.fg(beautiful.fg_focus, markup.bold(text))
+function heading(text)
+    return fg(beautiful.fg_focus, bold(text))
 end
 
 -- vim:set filetype=lua fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: --
