@@ -1,16 +1,11 @@
-local wibox = wibox
-local widget = widget
-local image = image
-local button = button
-local ipairs = ipairs
-local table = table
-local io = io
 local string = string
+local os = os
 local math = math
-local hooks = require("awful.hooks")
-local util = require("awful.util")
-local awbeautiful = require("beautiful")
+local awful = require("awful")
+local beautiful = require("beautiful")
 local naughty = require("naughty")
+local markup = require("markup")
+module("calendar")
 
 local calendar = nil
 local offset = 0
@@ -26,7 +21,7 @@ end
 function add_calendar(inc_offset)
   local save_offset = offset
   remove_calendar()
-  offset = save_offset + inc_offset
+  offset = save_offset + (inc_offset or 0)
   local datespec = os.date("*t")
   datespec = datespec.year * 12 + datespec.month - 1 + offset
   datespec = (datespec % 12 + 1) .. " " .. math.floor(datespec / 12)
