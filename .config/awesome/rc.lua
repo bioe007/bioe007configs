@@ -1,15 +1,13 @@
 -- just helps troubleshooting when re-loading rc.lua (see output on console) 
 print("Entered rc.lua: " .. os.time())
--- Include awesome libraries, with lots of useful function!
 require("awful")
 require("beautiful")
 require("wicked")
 require("revelation")
 require("naughty")
--- require("volumous")
 require("shifty")
-require("calendar")
 require("mocp")
+require("calendar")
 require("battery")
 require("markup")
 
@@ -191,12 +189,12 @@ datewidget = widget({
     align = 'right',
 })
 
-datewidget.mouse_enter = function() add_calendar(0) end
-datewidget.mouse_leave = remove_calendar
+datewidget.mouse_enter = function() calendar.add_calendar() end
+datewidget.mouse_leave = function() calendar.remove_calendar() end
 
 datewidget:buttons({ 
-  button({ }, 4, function() add_calendar(-1) end),
-  button({ }, 5, function() add_calendar(1) end), 
+  button({ }, 4, function() calendar.add_calendar(-1) end),
+  button({ }, 5, function() calendar.add_calendar(1) end), 
 })
 wicked.register(datewidget, wicked.widgets.date,
    markup.fg(beautiful.fg_sb_hi, '%k:%M %D'))
@@ -259,15 +257,17 @@ wicked.register(memwidget, wicked.widgets.mem, 'mem:' ..  markup.fg(beautiful.fg
 
 -- {{{ -- MOCP Widget
 mocpwidget = widget({ type = 'textbox', name = 'mocpwidget', align = 'right'})
+mocp.setwidget(mocpwidget)
 mocpwidget.width = 112
 mocpwidget:buttons({
-    button({ }, 1, function () mocplay(); mocnotify() end ),
+    button({ }, 1, function () mocp.play(); mocp.popup() end ),
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
-    button({ }, 3, function () awful.util.spawn('mocp --previous'); mocnotify() end)
+    button({ }, 4, function () awful.util.spawn('mocp --toggle-pause') end),
+    button({ }, 3, function () awful.util.spawn('mocp --previous'); mocp.popup() end),
+    button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
-mocpwidget.mouse_enter = function() mocnotify({"entered"}) end
-mocpwidget.mouse_leave = notdestroy
-awful.hooks.timer.register (.75,mocp)
+mocpwidget.mouse_enter = function() mocp.popup({"entered"}) end
+awful.hooks.timer.register (mocp.settings.interval,mocp.scroller)
 ---}}}
 
 --- {{{ FSWIDGET
@@ -441,17 +441,17 @@ table.insert(globalkeys, key({ modkey, "Mod1" },"l", function () awful.util.spaw
 -- }}} 
 
 -- {{{ - MEDIA
-table.insert(globalkeys, key({ modkey, "Mod1" },"p", mocplay ))
-table.insert(globalkeys, key({ },"XF86AudioPlay", mocplay ))
-table.insert(globalkeys, key({ modkey, "Ctrl" },"j", function() mocplay(); mocnotify() end ))
-table.insert(globalkeys, key({ modkey, "Ctrl" },"k", function () awful.util.spawn('mocp --previous');mocnotify() end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"p", mocp.play ))
+table.insert(globalkeys, key({ },"XF86AudioPlay", mocp.play ))
+table.insert(globalkeys, key({ modkey, "Ctrl" },"j", function() mocp.play(); mocp.popup() end ))
+table.insert(globalkeys, key({ modkey, "Ctrl" },"k", function () awful.util.spawn('mocp --previous');mocp.popup() end))
 table.insert(globalkeys, key({ "" }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +5') end))
 table.insert(globalkeys, key({ "" }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -5') end))
 table.insert(globalkeys, key({ modkey }, "XF86AudioRaiseVolume", function () awful.util.spawn('/home/perry/.bin/volume.py +1') end))
 table.insert(globalkeys, key({ modkey }, "XF86AudioLowerVolume", function () awful.util.spawn('/home/perry/.bin/volume.py -1') end))
 table.insert(globalkeys, key({ "" },"XF86AudioMute", function () awful.util.spawn('/home/perry/.bin/volume.py') end))
 table.insert(globalkeys, key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end))
-table.insert(globalkeys, key({ },"XF86AudioNext", mocplay ))
+table.insert(globalkeys, key({ },"XF86AudioNext", mocp.play ))
 table.insert(globalkeys, key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end))
 -- }}} 
 
