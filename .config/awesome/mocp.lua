@@ -1,15 +1,20 @@
-local widget = widget
-local button = button
 local io = io
 local string = string
-local hooks = require("awful.hooks")
-local util = require("awful.util")
+local awful = require("awful")
 local beautiful = require("beautiful")
+local naughty = require("naughty")
+local markup = require("markup")
+
+module("mocp")
+
 local mocbox = nil
+settings = {}
+settings.iScroller = 1
+settings.MAXCH = 15
+settings.interval = 0.75
 
--- module("mocscroll")
-
-function mocstate()
+---{{{ local function state()
+local function state()
 
     local np = {}
     np.file = {}
@@ -17,9 +22,9 @@ function mocstate()
 
     if np.file == nil then
         np.file:close()
-        mocpwidget.text = "moc stopped"
-        settings.sys.musicstate = "-"
-        mocInterval = 2
+        settings.widget.text = "moc stopped"
+        settings.musicstate = "-"
+        settings.interval = 2
         return false
     else
         np.file:close()
@@ -29,12 +34,14 @@ function mocstate()
         np.strng = np.file:read()
         np.file:close()
 
-        settings.sys.musicstate = np.strng
+        settings.musicstate = np.strng
         return np.strng
     end
 end
+---}}}
 
-function moctitle(delim)
+---{{{ local function title(delim)
+local function title(delim)
 
     local eol = delim or " "
     local np = {}
@@ -67,98 +74,100 @@ function moctitle(delim)
 
     return np.strng
 end
+---}}}
 
--- 
-function notdestroy()
+---{{{ local function notdestroy()
+local function notdestroy()
     if mocbox ~= nil then
         naughty.destroy(mocbox)
         mocbox = nil
     end
 end
+---}}}
 
-function mocnotify(args)
-
+---{{{ function popup(args)
+function popup(args)
+    
     notdestroy()
 
     local np = {}
     np.state = nil
     np.strng = ""
-    np.state = mocstate()
+    np.state = state()
     if np.state == false then
         return
     else
-        np.strng = moctitle("\n")
+        np.strng = title("\n")
     end
     np.strng = markup.fg( beautiful.fg_focus, markup.font("monospace", np.strng.."  "))  
     mocbox = naughty.notify({ 
         title = markup.font("monospace","Now Playing:"),
-        text = np.strng, hover_timeout = 0.5,
+        text = np.strng, hover_timeout = ( settings.hovertime or 3 ), timeout = 0,
         -- icon = "/usr/share/icons/gnome/24x24/actions/edia-playback-start.png", icon_size = 24,
-        run = function() mocplay(); mocnotify() end
+        run = function() play(); popup() end
     })
 end
+---}}}
 
+---{{{ function mocplay() 
 -- easier way to check|run mocp
-function mocplay() 
-  if settings.sys.musicstate == "STOP" then
+function play() 
+  if settings.musicstate == "STOP" then
     awful.util.spawn('mocp --play') 
-  elseif settings.sys.musicstate == "PLAY" then
+  elseif settings.musicstate == "PLAY" then
     awful.util.spawn('mocp --next')
   else 
     awful.util.spawn('mocp --toggle-pause')
   end
 end
+---}}}
+
+function setwidget(w)
+    settings.widget = w
+end
 
 -- {{{ mocp widget, scrolls text
--- settings = {}
--- settings.iScroller = 1
--- settings.MAXCH = 15
--- settings.mocInterval = 0.75
-iScroller = 1
-MAXCH = 15
-mocInterval = 0.75
-function mocp()
+function scroller(tb)
     local np = {}
 
-    np.strng = mocstate()
+    np.strng = state()
     if not np.strng then
-        mocpwidget.text = "moc stopped"
-        settings.sys.musicstate = "-"
+        settings.widget.text = "moc stopped"
+        settings.musicstate = "-"
         return
     else
 
         -- this just helps my keybindings work better 
-        settings.sys.musicstate = np.strng
+        settings.musicstate = np.strng
 
         -- this sets the symbolic prefix based on where moc is playing | (stopped or paused)
         if np.strng == "PAUSE" or np.strng == "STOP" then
             prefix = "|| "
-            mocInterval = 2
+            settings.interval = 2
         else
             prefix = ">> "
-            mocInterval = 0.75
+            settings.interval = 0.75
         end
 
         -- extract a substring, putting it after the 
-        np.strng = moctitle()
-        np.rtn = string.sub(np.strng,iScroller,MAXCH+iScroller-1) 
+        np.strng = title()
+        np.rtn = string.sub(np.strng,settings.iScroller,settings.MAXCH+settings.iScroller-1) 
 
-        -- if our index and MAXCH count are bigger than the string, wrap around to the beginning and
+        -- if our index and settings.MAXCH count are bigger than the string, wrap around to the beginning and
         -- add enough to make it look circular
-        if MAXCH+iScroller > (np.strng):len() then
-            np.rtn = np.rtn .. string.sub(np.strng,1,(MAXCH+iScroller-1)-np.strng:len())
+        if settings.MAXCH+settings.iScroller > (np.strng):len() then
+            np.rtn = np.rtn .. string.sub(np.strng,1,(settings.MAXCH+settings.iScroller-1)-np.strng:len())
         end
 
         np.rtn = awful.util.escape(np.rtn)
-        mocpwidget.text = markup.fg(beautiful.fg_normal,prefix) .. markup.fg(beautiful.fg_sb_hi,np.rtn) 
+        settings.widget.text = markup.fg(beautiful.fg_normal,prefix) .. markup.fg(beautiful.fg_sb_hi,np.rtn) 
 
-        if iScroller <= np.strng:len() then
-            iScroller = iScroller +1
+        if settings.iScroller <= np.strng:len() then
+            settings.iScroller = settings.iScroller +1
         else
-            iScroller = 1
+            settings.iScroller = 1
         end
     end
-        -- return (markup.fg(beautiful.fg_normal,prefix) .. markup.fg("#cfcfff",np.rtn) )
 end
 -- }}}
 
