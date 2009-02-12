@@ -284,7 +284,8 @@ awful.hooks.timer.register (59,fs)
 -- {{{ -- BATTERY 
 batterywidget = widget({ type = "textbox", name = "batterywidget", align = "right" })
 batterywidget.width = 49
-awful.hooks.timer.register(1, batteryInfo)
+battery.setwidget(batterywidget)
+awful.hooks.timer.register(1, battery.info)
 -- }}}
 
 ---{{{ STATUSBAR
@@ -300,7 +301,6 @@ for s = 1, screen.count() do
                              button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                              button({ }, 5, function () awful.layout.inc(layouts, -1) end) })
     -- Create a taglist widget
-    -- mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
     -- mytaglist[s] = shifty.taglist_new(s, shifty.taglist_label, mytaglist.buttons)
     mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
     -- Create a tasklist widget

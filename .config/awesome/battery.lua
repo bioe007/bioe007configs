@@ -1,19 +1,21 @@
-local wibox = wibox
-local widget = widget
-local image = image
-local button = button
-local ipairs = ipairs
-local table = table
+-- nice battery widget for awesome. 
+-- user can config path to battery using 
+--     battery.settings.ipath = <path to your info file>
+--     battery.settings.spath = <path to your state file>
+--
 local io = io
 local string = string
 local math = math
-local hooks = require("awful.hooks")
-local util = require("awful.util")
-local awbeautiful = require("beautiful")
+local beautiful = require("beautiful")
 local naughty = require("naughty")
+local markup = require("markup")
 
+module("battery")
 local battwarn 
 local adapter_state = nil
+local bwidget = {}
+
+settings = {}
 
 function showWarning(s)
 
@@ -28,10 +30,14 @@ function showWarning(s)
 
 end
 
-function batteryInfo()
+function setwidget(w)
+  bwidget = w
+end
+
+function info()
   -- paths to the relevant files for battery statistics and state
-  local capFile = "/proc/acpi/battery/BAT0/info"
-  local stateFile = "/proc/acpi/battery/BAT0/state"
+  local capFile = settings.ipath or "/proc/acpi/battery/BAT0/info"
+  local stateFile = settings.spath or "/proc/acpi/battery/BAT0/state"
 
   -- open the file containg the battery's capacity, and read
   local tmpFile = io.open(capFile)
@@ -73,11 +79,11 @@ function batteryInfo()
   -- decide which and where to put the charging state indicator
   local state = string.match(tCurrent,"charging state:%s+(%w+)")
   if state:match("charged") then
-    batterywidget.text = "bat: "..battery
+    bwidget.text = "bat: "..battery
   elseif state:match("discharging") then
-    batterywidget.text = "bat: "..battery.."-"
+    bwidget.text = "bat: "..battery.."-"
   else
-    batterywidget.text = "bat: +"..battery
+    bwidget.text = "bat: +"..battery
   end
 end
 
