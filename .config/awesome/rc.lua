@@ -354,38 +354,41 @@ for s = 1, screen.count() do
    keynumber = math.min(9, math.max(#shifty.tags[s], keynumber));
 end
 
-for i = 1, keynumber do
-    table.insert(globalkeys, key({ modkey }, i,
-    function ()
-        local screen = mouse.screen
-        if shifty.tags[screen][i] then
-            awful.tag.viewonly(shifty.tags[screen][i])
-        end
-    end))
-    table.insert(globalkeys, key({ modkey, "Control" }, i,
-    function ()
-        local screen = mouse.screen
-        if shifty.tags[screen][i] then
-            shifty.tags[screen][i].selected = not shifty.tags[screen][i].selected
-        end
-    end))
-    table.insert(globalkeys, key({ modkey, "Shift" }, i,
-    function ()
-        if client.focus then
-            if shifty.tags[client.focus.screen][i] then
-                awful.client.movetotag(shifty.tags[client.focus.screen][i])
-            end
-        end
-    end))
-    table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
-    function ()
-        if client.focus then
-            if shifty.tags[client.focus.screen][i] then
-                awful.client.toggletag(shifty.tags[client.focus.screen][i])
-            end
-        end
-    end))
-end
+-- for i = 1, 9 do
+    -- table.insert(globalkeys, key({ modkey }, i,
+    -- function ()
+        -- local screen = mouse.screen
+        -- if shifty.tags[screen][i] then
+            -- awful.tag.viewonly(shifty.tags[screen][i])
+        -- end
+    -- end))
+    -- table.insert(globalkeys, key({ modkey, "Control" }, i,
+    -- function ()
+        -- local screen = mouse.screen
+        -- if shifty.tags[screen][i] then
+            -- shifty.tags[screen][i].selected = not shifty.tags[screen][i].selected
+        -- end
+    -- end))
+    -- table.insert(globalkeys, key({ modkey, "Shift" }, i,
+    -- function ()
+        -- print("rc.lua: 374: client.name= "..client.focus.name)
+        -- if client.focus then
+            -- print("rc.lua: 376: client.name= "..client.focus.name)
+            -- if shifty.tags[client.focus.screen][i] then
+                -- print("rc.lua: 378: client.name= "..client.focus.name)
+                -- awful.client.movetotag(shifty.tags[client.focus.screen][i])
+            -- end
+        -- end
+    -- end))
+    -- table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
+    -- function ()
+        -- if client.focus then
+            -- if shifty.tags[client.focus.screen][i] then
+                -- awful.client.toggletag(shifty.tags[client.focus.screen][i])
+            -- end
+        -- end
+    -- end))
+-- end
 
 --[[ added for SHIFTY ]]--
 table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "j", shifty.prev))
@@ -399,13 +402,20 @@ table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "w", shifty.del))
 table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "t",     shifty.add))
 table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "t", function() shifty.add({ nopopup = true }) end))
 
-for i=1, 9 do
+for i=1, ( shifty.config.maxtags or 9 ) do
   table.insert(globalkeys, key({ modkey }, i,
           function () local t =  shifty.getpos(i, true) end))
   table.insert(globalkeys, key({ modkey, "Control" }, i,
           function () local t = shifty.getpos(i); t.selected = not t.selected end))
   table.insert(globalkeys, key({ modkey, "Shift" }, i,
-          function () if client.focus then awful.client.movetotag(shifty.getpos(i, true)) end end))
+          function () 
+              print("rc.lua: 411: mod+s+"..i) 
+              if client.focus then 
+                  print("rc.lua: 414: client.name="..client.focus.name.." client.screen= "..client.focus.screen.." tag.screen= "..shifty.getpos(i).screen) 
+                  print("currtag: ", awful.tag.selected() , "sendtotag ", shifty.getpos(i))
+                  shifty.getpos(i, true) 
+              end 
+          end))
   table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
           function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
 end
