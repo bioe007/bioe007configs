@@ -448,17 +448,20 @@ function sweep()
     end
 end
 
--- getpos
+-- getpos - returns a tag to match position
+--      * originally this function did a lot of client stuff, i think its
+--      * better to leave what can be done by awful to be done by awful
+--      *           -perry
 -- @param pos : the index to find
--- @param switch: boolean, switch to this tag or not [default = false]
-function getpos(pos, switch)
+function getpos(pos)
     local v = nil
     local existing = {}
     local selected = nil
     local scr = mouse.screen or 1
+    -- search for existing tag assigned to pos
     for i = 1, screen.count() do
         local s = awful.util.cycle(screen.count(), scr + i - 1)
-        for j, t in ipairs(tags[s]) do
+        for j, t in ipairs(screen[s]:tags()) do
             if awful.tag.getproperty(t,"position") == pos then
                 table.insert(existing, t)
                 if t.selected and s == scr then selected = #existing end
@@ -466,21 +469,18 @@ function getpos(pos, switch)
         end
     end
     if #existing > 0 then
+        -- if makeing another of an existing tag, return the end of the list
        if selected then v = existing[awful.util.cycle(#existing, selected + 1)] else v = existing[1] end
     end
     if not v then
+        -- search for preconf with 'pos' and create it
         for i, j in pairs(config.tags) do
             if j.position == pos then v = add({ name = i, position = pos, noswitch = not switch }) end
         end
     end
     if not v then
+        -- not existing, not preconfigured
         v = add({ position = pos, rename = pos .. ':', no_selectall = true, noswitch = not switch })
-    end
-    if switch then
-        if mouse.screen ~= v.screen then mouse.screen = v.screen end
-        awful.tag.viewonly(v)
-        local a = awful.client.focus.history.get(v.screen, 0) --FIXME
-        if a then client.focus = a end
     end
     return v
 end
