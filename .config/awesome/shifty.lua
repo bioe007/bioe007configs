@@ -7,13 +7,18 @@
 -- (perry<dot>hargrave[at]gmail[dot]com)
 --
 -- TODO:
--- * W: awesome: luaA_dofunction:317: error running function: /usr/share/awesome/lib/awful/tag.lua:77: bad argument #3 to '?' (boolean expected, got nil)
---      - pressing mod+esc to flip to previous tag after creating a new one.
---      this 'merges' the two tags instead of flipping back to it
--- * move all data table settings to awful.tag.setproperty|getproperty
+-- * pressing mod+esc to flip to previous tag after creating a new one.
+--      - this 'merges' the two tags instead of flipping back to it
+--
+-- * if awesome reloads, some stray tags are initialized (eg urxvt ) but their
+--      properties are left blank
+--
+-- * fix the prompt :S
+--
 --
 -- package env
 
+local type = type
 local tag = tag
 local ipairs = ipairs
 local table = table
@@ -33,6 +38,7 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local wibox = wibox
+local print = print
 module("shifty")
 
 tags = {}
@@ -76,21 +82,6 @@ function tag2index(scr, tag)
     return 0
 end
 
-function viewidx(i, screen)
-    local screen = screen or mouse.screen or 1
-    local tags = tags[screen]
-    local sel = awful.tag.selected()
-    awful.tag.viewnone()
-    for k, t in ipairs(tags) do
-        if t == sel then
-            tags[awful.util.cycle(#tags, k + i)].selected = true
-        end
-    end
-end
-
-function next() viewidx(1) end
-function prev() viewidx(-1) end
-
 function rename(tag, prefix, no_selectall, initial)
     local theme = beautiful.get()
     local scr = (tag and tag.screen) or mouse.screen or 1
@@ -103,6 +94,10 @@ function rename(tag, prefix, no_selectall, initial)
 
     local prmptbx = awful.widget.taglist.gettag(t)
 
+    if type(awful.widget.taglist.gettag(t)) then
+-- prmptbx.type ~= "textbox" then
+        print("not textbox", type(prmptbx), type(awful.widget.taglist.gettag(t)))
+    end
     -- had some errors with the former inline pango markup
     -- pango markup no longer takes the <bg color= .. argument so set it here,
     if t == awful.tag.selected(scr) then 
@@ -137,6 +132,8 @@ function rename(tag, prefix, no_selectall, initial)
 
 end
 
+-- send a client to tag[idx]
+-- @param idx the tag number to send a client to
 function send(idx)
     local scr = client.focus.screen or mouse.screen
     local sel = awful.tag.selected(scr)
@@ -154,6 +151,7 @@ function shift_prev() set(awful.tag.selected(), { rel_index = -1 }) end
 
 function pos2idx(pos, scr)
     local v = 1
+    -- local a_tags = screen[scr]:tags()
     if pos and scr then
         for i = #tags[scr] , 1, -1 do
             local t = tags[scr][i]
@@ -229,10 +227,10 @@ function set(t, args)
                             select{ args.icon and image(args.icon), preset.icon and image(preset.icon),
                                     awful.tag.getproperty(t,"icon"), config.defaults.icon and image(config.defaults.icon) })
     awful.tag.setproperty(t, "name", name)
-    awful.tag.setproperty(t, "layout", layout)
-    awful.tag.setproperty(t, "mwfact", mwfact)
-    awful.tag.setproperty(t, "nmaster", nmaster)
-    awful.tag.setproperty(t, "ncol", ncol)
+    awful.layout.set(layout,t)
+    awful.tag.setmwfact((mwfact or 0.6),t)
+    awful.tag.setnmaster((nmaster or 1),t)
+    awful.tag.setncol(ncol, t)
 
     -- calculate desired taglist index
     local index = args.index or preset.index or config.defaults.index
@@ -270,6 +268,37 @@ function set(t, args)
     return t
 end
 
+-- to resort awesomes tags to follow shifty's config positions
+--  @param scr : optional screen number [default one]
+function tsort(scr)
+    local scr = scr or 1
+    local a_tags = screen[scr]:tags()
+
+    print(#a_tags, #tags[scr])  -- debug
+    for i,t in ipairs(a_tags) do
+        cfg_t = config.tags[awful.tag.getproperty(t,"name")]
+        if cfg_t ~= nil then
+            if awful.tag.getproperty(a_tags[i+1], "position") ~= nil then
+                if cfg_t.position > awful.tag.getproperty(a_tags[i+1], "position") then
+                    print("misorderd tag " .. awful.tag.getproperty(t,"name") .. " pos= " ..
+                                                awful.tag.getproperty(t,"position") .. " index= "..i) -- debug
+                    set(t,{rel_index=1})
+                end
+            end
+        end
+    end
+
+    -- tags[scr] = screen[scr]:tags()
+    -- debugging
+    for k,t in pairs(a_tags) do
+        print("tag " .. awful.tag.getproperty(t,"name") .. " pos= " .. (awful.tag.getproperty(t,"position") or 20) .. " index= "..k)
+    end
+
+    for k,t in pairs(tags[scr]) do
+        print("tag " .. k .. " name= ")
+    end
+end
+
 function add(args)
     if not args then args = {} end
     local scr = args.screen or mouse.screen --FIXME test handling of screen arg more
@@ -277,6 +306,7 @@ function add(args)
 
     -- initialize a new tag object and its data structure
     local t = tag( name )
+    -- initial flag is used in set() so it must be initialized here
     awful.tag.setproperty(t,"initial", true)
 
     -- apply tag settings
@@ -308,13 +338,14 @@ function del(tag)
     local t = tag or sel
     local idx = tag2index(scr,t)
 
-    if #tags[scr] > 1 then
+    print("shifty.del():380: number of tags= ", #screen[scr]:tags())
+    if #screen[scr]:tags() > 1 then
         -- don't wipe tags if active clients on them?
-        if #(t:clients()) > 0 then return end
+        if #(t:clients()) > 0 then print("clients here"); return end
 
         index_cache[t.name] = idx
 
-        if t == sel and #tags[scr] > 0 then
+        if t == sel and #screen[scr]:tags() > 0 then
             awful.tag.history.restore(scr)
             if not awful.tag.selected(scr) then awful.tag.viewonly(tags[scr][awful.util.cycle(#tags[scr], idx - 1)])  end
         end
@@ -417,6 +448,9 @@ function sweep()
     end
 end
 
+-- getpos
+-- @param pos : the index to find
+-- @param switch: boolean, switch to this tag or not [default = false]
 function getpos(pos, switch)
     local v = nil
     local existing = {}
