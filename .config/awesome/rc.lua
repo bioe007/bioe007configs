@@ -347,80 +347,41 @@ root.buttons({
 globalkeys = {}
 clientkeys = {}
 
---{{{ Bind keyboard digits
--- Compute the maximum number of digit we need, limited to 9
-keynumber = 0
-for s = 1, screen.count() do
-   keynumber = math.min(9, math.max(#shifty.tags[s], keynumber));
-end
-
--- for i = 1, 9 do
-    -- table.insert(globalkeys, key({ modkey }, i,
-    -- function ()
-        -- local screen = mouse.screen
-        -- if shifty.tags[screen][i] then
-            -- awful.tag.viewonly(shifty.tags[screen][i])
-        -- end
-    -- end))
-    -- table.insert(globalkeys, key({ modkey, "Control" }, i,
-    -- function ()
-        -- local screen = mouse.screen
-        -- if shifty.tags[screen][i] then
-            -- shifty.tags[screen][i].selected = not shifty.tags[screen][i].selected
-        -- end
-    -- end))
-    -- table.insert(globalkeys, key({ modkey, "Shift" }, i,
-    -- function ()
-        -- print("rc.lua: 374: client.name= "..client.focus.name)
-        -- if client.focus then
-            -- print("rc.lua: 376: client.name= "..client.focus.name)
-            -- if shifty.tags[client.focus.screen][i] then
-                -- print("rc.lua: 378: client.name= "..client.focus.name)
-                -- awful.client.movetotag(shifty.tags[client.focus.screen][i])
-            -- end
-        -- end
-    -- end))
-    -- table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
-    -- function ()
-        -- if client.focus then
-            -- if shifty.tags[client.focus.screen][i] then
-                -- awful.client.toggletag(shifty.tags[client.focus.screen][i])
-            -- end
-        -- end
-    -- end))
--- end
-
---[[ added for SHIFTY ]]--
-table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "j", shifty.prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "k",   shifty.next))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "j",     shifty.shift_prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "k",     shifty.shift_next))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "h",     shifty.send_prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "l",     shifty.send_next))
-table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "r",  shifty.rename))
-table.insert(globalkeys, key({ modkey, "Shift", "Control" }, "w", shifty.del))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1" }, "t",     shifty.add))
-table.insert(globalkeys, key({ modkey,"Shift", "Control" }, "t", function() shifty.add({ nopopup = true }) end))
-
+-- {{{ - TAGS BINDINGS
 for i=1, ( shifty.config.maxtags or 9 ) do
   table.insert(globalkeys, key({ modkey }, i,
-          function () local t =  shifty.getpos(i, true) end))
+          function () local t =  awful.tag.viewonly(shifty.getpos(i)) end))
   table.insert(globalkeys, key({ modkey, "Control" }, i,
           function () local t = shifty.getpos(i); t.selected = not t.selected end))
   table.insert(globalkeys, key({ modkey, "Shift" }, i,
           function () 
-              print("rc.lua: 411: mod+s+"..i) 
               if client.focus then 
-                  print("rc.lua: 414: client.name="..client.focus.name.." client.screen= "..client.focus.screen.." tag.screen= "..shifty.getpos(i).screen) 
-                  print("currtag: ", awful.tag.selected() , "sendtotag ", shifty.getpos(i))
-                  shifty.getpos(i, true) 
+                  t = shifty.getpos(i)
+                  awful.client.movetotag(t)
+                  awful.tag.viewonly(t)
               end 
           end))
   table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
           function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
 end
--- added for SHIFTY ]]--
 
+table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
+table.insert(globalkeys, key({ modkey }, "Right", awful.tag.viewnext))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "j", awful.tag.viewprev))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "k", awful.tag.viewnext))
+table.insert(globalkeys, key({ modkey }, "Escape", awful.tag.history.restore))
+table.insert(globalkeys, key({ modkey }, "e", revelation.revelation ))
+
+table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "j", shifty.prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "k",   shifty.next))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "j",     shifty.shift_prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "k",     shifty.shift_next))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "h",     shifty.send_prev))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "l",     shifty.send_next))
+table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "r",  shifty.rename))
+table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "w", shifty.del))
+table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "t",     shifty.add))
+table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "t", function() shifty.add({ nopopup = true }) end))
 ---}}}
 
 -- {{{ - APPLICATIONS
@@ -471,15 +432,6 @@ table.insert(globalkeys, key({ modkey, "Control" }, "r", function ()
     awful.util.escape(awful.util.restart())
 end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
--- }}} 
-
--- {{{ - TAGS BINDINGS
-table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
-table.insert(globalkeys, key({ modkey }, "Right", awful.tag.viewnext))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "j", awful.tag.viewprev))
-table.insert(globalkeys, key({ modkey,"Mod1" }, "k", awful.tag.viewnext))
-table.insert(globalkeys, key({ modkey }, "Escape", awful.tag.history.restore))
-table.insert(globalkeys, key({ modkey }, "e", revelation.revelation ))
 -- }}} 
 
 -- {{{ - CLIENT MANIPULATION
