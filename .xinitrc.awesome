@@ -11,7 +11,7 @@ fi
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
 
-feh --bg-scale "/home/perry/images/awesome/my-bg.png" &
+feh --bg-scale "/home/perry/images/awesome/my-bg_brn.png" &
 
 # unclutter -idle 1
 RXVT_SOCKET="$HOME/.var/rxvt-unicode"
