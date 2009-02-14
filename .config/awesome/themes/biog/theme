@@ -80,4 +80,5 @@ layout_tileleft = /home/perry/.config/awesome/themes/biog/layouts/tileleft.png
 layout_tile = /home/perry/.config/awesome/themes/biog/layouts/tile.png
 layout_tiletop = /home/perry/.config/awesome/themes/biog/layouts/tiletop.png
 
+iconpath = /home/perry/.config/awesome/themes/biog/
 wallpaper_cmd = awsetbg /home/perry/.config/awesome/themes/biog/wp.png
