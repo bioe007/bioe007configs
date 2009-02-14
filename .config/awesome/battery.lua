@@ -79,11 +79,11 @@ function info()
   -- decide which and where to put the charging state indicator
   local state = string.match(tCurrent,"charging state:%s+(%w+)")
   if state:match("charged") then
-    bwidget.text = "bat: "..battery
+    bwidget.text = "bat:↯"..battery
   elseif state:match("discharging") then
-    bwidget.text = "bat: "..battery.."-"
+    bwidget.text = "bat: "..battery.."▼"
   else
-    bwidget.text = "bat: +"..battery
+    bwidget.text = "bat: ▲"..battery
   end
 end
 
