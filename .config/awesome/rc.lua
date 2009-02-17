@@ -16,10 +16,10 @@ print("cachedir= " .. awful.util.getdir("cache"))
 
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
-theme_path = "/home/perry/.config/awesome/themes/biog/theme"
-icon_path = "/home/perry/.config/awesome/themes/biog/"
+theme_path = "/home/perry/.config/awesome/themes/grey/theme"
 -- Initialize theme (colors).
 beautiful.init(theme_path)
+icon_path = beautiful.iconpath 
 settings = {}
 settings.new_become_master = false
 settings.showmwfact = true
@@ -54,7 +54,6 @@ layouts = {
     awful.layout.suit.floating
 }
 
---[[ {{{ SHIFTY related stuff ]]--
 shifty.config.tags = {
     ["w1"] =     { layout = awful.layout.suit.tile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
     ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
@@ -81,10 +80,10 @@ shifty.config.apps = {
 shifty.config.defaults = {
     layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
     run = function(tag) 
-        naughty.notify({ text = markup.fg( beautiful.fg_focus, markup.font("monospace", "Shifty Created: "..shifty.tag2index(mouse.screen,tag).." : "..tag.name)) }) 
+        naughty.notify({ text = markup.fg( beautiful.fg_normal,  markup.font("monospace",markup.fg(beautiful.fg_sb_hi, 
+                            "Shifty Created: "..shifty.tag2index(mouse.screen,tag).." : "..tag.name))) }) 
     end,
 }
--- added for SHIFTY ]]--
 
 -- }}} 
 -- }}}
@@ -266,8 +265,11 @@ mocpwidget:buttons({
     button({ }, 3, function () awful.util.spawn('mocp --previous'); mocp.popup() end),
     button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
-mocpwidget.mouse_enter = function() mocp.popup({"entered"}) end
-awful.hooks.timer.register (mocp.settings.interval,mocp.scroller)
+mocpwidget.mouse_enter = function() mocp.popup() end
+-- mocpwidget.mouse_leave = function() awful.hooks.timer.unregister(mocp.popup) end
+-- mocpwidget.mouse_enter = function() mocp.popup();awful.hooks.timer.register(1,mocp.popup); end
+-- mocpwidget.mouse_leave = function() awful.hooks.timer.unregister(mocp.popup) end
+awful.hooks.timer.register (mocp.settings.interval,mocp.scroller) -- comment while removing widgets mocp calls
 ---}}}
 
 --- {{{ FSWIDGET
@@ -283,9 +285,9 @@ awful.hooks.timer.register (59,fs)
 
 -- {{{ -- BATTERY 
 batterywidget = widget({ type = "textbox", name = "batterywidget", align = "right" })
-batterywidget.width = 49
+batterywidget.width = 56
 battery.setwidget(batterywidget)
-awful.hooks.timer.register(1, battery.info)
+awful.hooks.timer.register(10, battery.info)
 -- }}}
 
 ---{{{ STATUSBAR
@@ -541,14 +543,24 @@ root.keys(globalkeys)
 -- Hook function to execute when focusing a client.
 awful.hooks.focus.register(function (c)
     if not awful.client.ismarked(c) then
-        c.border_color = beautiful.border_focus
+        if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
+            c.border_width = beautiful.border_width
+            c.border_color = beautiful.border_focus
+        else
+            c.border_width = 0
+        end
     end
 end)
 
 -- Hook function to execute when unfocusing a client.
 awful.hooks.unfocus.register(function (c)
     if not awful.client.ismarked(c) then
-        c.border_color = beautiful.border_normal
+        if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
+            c.border_width = beautiful.border_width
+            c.border_color = beautiful.border_normal
+        else
+            c.border_width = 0
+        end
     end
 end)
 
@@ -593,7 +605,11 @@ awful.hooks.manage.register( function (c)
     })
     -- New client may not receive focus
     -- if they're not focusable, so set border anyway.
-    c.border_width = beautiful.border_width
+    if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
+        c.border_width = beautiful.border_width
+    else
+        c.border_width = 0
+    end
     c.border_color = beautiful.border_normal
 
     -- Check if the application should be floating.
@@ -609,11 +625,6 @@ awful.hooks.manage.register( function (c)
         awful.client.floating.set( c,true )
         awful.titlebar.add( c, { modkey = modkey } )
     end
-    -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
-    client.focus = c
-
-    -- Set key bindings
-    c:keys(clientkeys)
 
     if not settings.new_become_master then
         awful.client.setslave(c)
@@ -625,6 +636,12 @@ awful.hooks.manage.register( function (c)
     else
         c.size_hints_honor = true
     end
+
+    -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
+    client.focus = c
+
+    -- Set key bindings
+    c:keys(clientkeys)
 
     -- awful.placement.no_overlap(c)
     awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
