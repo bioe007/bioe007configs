@@ -1,0 +1,5 @@
+#!/bin/bash
+echo $1 $2 $3 > ~/mocdebg
+echo 'mocp.update("artist","'$1'")' | awesome-client
+echo 'mocp.update("song","'$2'")' | awesome-client
+echo 'mocp.update("album","'$3'")' | awesome-client
