@@ -4,6 +4,7 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local markup = require("markup")
+local print = print
 
 module("mocp")
 
@@ -13,7 +14,20 @@ settings.iScroller = 1
 settings.MAXCH = 15
 settings.interval = 0.75
 
----{{{ local function state()
+local trackinfo = {}
+trackinfo.artist = ""
+trackinfo.song = ""
+trackinfo.album = ""
+
+---{{{ function update ( k, v)
+function update ( k, v)
+    if trackinfo[k] ~= nil then
+        trackinfo[k] = v
+    end
+end
+---}}}
+
+---{{{ state()
 local function state()
 
     local np = {}
@@ -40,39 +54,41 @@ local function state()
 end
 ---}}}
 
+---{{{ setTitle
+--      this is used at most once, before mocp has a chance to call its OnSongChange
+local function setTitle()
+
+    local np = {}
+
+    -- grab artist
+    np.file = io.popen('mocp -Q %artist')
+    trackinfo.artist = awful.util.escape(np.file:read())
+    np.file:close()
+    -- grab song
+    np.file = io.popen('mocp -Q %song')
+    trackinfo.song = awful.util.escape(string.gsub( string.gsub(np.file:read(),"^%d*",""),"%(.*",""))
+    np.file:close()
+
+    -- get time, etc for notify
+    np.file = io.popen('mocp -Q %album')
+    trackinfo.album = awful.util.escape(np.file:read())
+    np.file:close()
+
+end
+---}}}
+
 ---{{{ local function title(delim)
 local function title(delim)
 
     local eol = delim or " "
     local np = {}
 
-    -- grab artist
-    np.file = io.popen('mocp -Q %artist')
-    np.artist = np.file:read() .. ":" .. eol
-    np.file:close()
-
-    -- grab song
-    np.file = io.popen('mocp -Q %song')
-    np.song =string.gsub( string.gsub(np.file:read(),"^%d*",""),"%(.*","") .. eol
-    np.file:close()
+    if trackinfo.artist == "" and state() then setTitle() end
+    np.song =string.gsub( string.gsub(trackinfo.song,"^%d*",""),"%(.*","") .. eol
 
     -- return for widget text
-    if not delim then return np.artist..np.song end
+    return trackinfo.artist.." : "..np.song
 
-    -- get time, etc for notify
-    np.file = io.popen('mocp -Q %album')
-    np.strng = "Artist: "..string.gsub(np.artist,":","").."Song:   "..np.song.."Album:  "..np.file:read()..eol
-    np.file:close()
-
-    np.file = io.popen('mocp -Q %ct')
-    np.strng = np.strng.."Time:   "..np.file:read() .." [ " 
-    np.file:close()
-
-    np.file = io.popen('mocp -Q %tt')
-    np.strng = np.strng..np.file:read() .." ]" 
-    np.file:close()
-
-    return np.strng
 end
 ---}}}
 
@@ -85,8 +101,26 @@ local function notdestroy()
 end
 ---}}}
 
----{{{ function popup(args)
-function popup(args)
+---{{{ getTime: gets ct and tt of track for popup
+--@return string containig formatted times
+local function getTime()
+    local fd = {}
+    local tstring = ""
+
+    fd = io.popen('mocp -Q %ct')
+    tstring = "Time:   "..fd:read() .." [ " 
+    fd:close()
+
+    fd = io.popen('mocp -Q %tt')
+    tstring = tstring..fd:read() .." ]" 
+    fd:close()
+    return tstring
+end
+---}}}
+
+---{{{ popup(args)
+-- displays a naughty notificaiton of the current track
+function popup()
     
     notdestroy()
 
@@ -97,7 +131,10 @@ function popup(args)
     if np.state == false then
         return
     else
-        np.strng = title("\n")
+        np.strng = "Artist: "..markup.fg(beautiful.fg_normal,trackinfo.artist).."\n"..
+                   "Song:   "..markup.fg(beautiful.fg_normal,trackinfo.song).."\n"..
+                   "Album:  "..markup.fg(beautiful.fg_normal,trackinfo.album).."\n"
+        np.strng = np.strng..markup.fg(beautiful.fg_normal,getTime())
     end
     np.strng = markup.fg( beautiful.fg_focus, markup.font("monospace", np.strng.."  "))  
     mocbox = naughty.notify({ 
