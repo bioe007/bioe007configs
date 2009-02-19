@@ -12,7 +12,6 @@ settings = {}
 settings.iScroller = 1
 settings.MAXCH = 15
 settings.interval = 0.75
-settings.stateinterval = 0.75
 
 local mocbox = nil
 local trackinfo = {}
@@ -22,6 +21,8 @@ trackinfo.album = ""
 trackinfo.state = ""
 
 ---{{{ local state()
+-- updates trackinfo.state [ PLAY|PAUSE|STOP|OFF ]
+-- and makes widget text/size changes as needed
 local function state()
 
     local fd = {}
@@ -52,7 +53,7 @@ end
 ---}}}
 
 ---{{{ local setTitle
---      this is used at most once, before mocp has a chance to call its OnSongChange
+-- call to force update of trackinfo variables
 local function setTitle()
 
     local fd = {}
@@ -124,7 +125,7 @@ local function getTime()
 end
 ---}}}
 
----{{{ popup(args)
+---{{{ popup
 -- displays a naughty notificaiton of the current track
 function popup()
     
@@ -152,7 +153,7 @@ function popup()
 end
 ---}}}
 
----{{{ function mocplay() 
+---{{{ mocplay() 
 -- easier way to check|run mocp
 function play() 
   if trackinfo.state == "STOP" then
