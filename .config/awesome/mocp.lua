@@ -4,87 +4,84 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local markup = require("markup")
-local print = print
 
 module("mocp")
 
-local mocbox = nil
+-- public settings
 settings = {}
 settings.iScroller = 1
 settings.MAXCH = 15
 settings.interval = 0.75
+settings.stateinterval = 0.75
 
+local mocbox = nil
 local trackinfo = {}
 trackinfo.artist = ""
-trackinfo.song = ""
+trackinfo.songtitle = ""
 trackinfo.album = ""
+trackinfo.state = ""
 
----{{{ function update ( k, v)
-function update ( k, v)
-    if trackinfo[k] ~= nil then
-        trackinfo[k] = v
-    end
-end
----}}}
-
----{{{ state()
+---{{{ local state()
 local function state()
 
-    local np = {}
-    np.file = {}
-    np.file = io.popen('pgrep mocp')
+    local fd = {}
+    local state ="" 
 
-    if np.file == nil then
-        np.file:close()
-        settings.widget.text = "moc stopped"
-        settings.musicstate = "-"
-        settings.interval = 2
-        return false
+    fd = io.popen('pgrep -fx mocp')
+
+    if fd:read() ~= nil then 
+        fd:close()
+
+        fd = io.popen('mocp -i')
+        trackinfo.state = string.gsub(fd:read(),"State:%s*","")
+        fd:close()
+
+        if trackinfo.state == "STOP" then
+            return false
+        else
+            settings.widget.width = 112
+            return true
+        end
     else
-        np.file:close()
-
-        -- pgrep returned something so we can now check for play|pause
-        np.file = io.popen('mocp -Q %state')
-        np.strng = np.file:read()
-        np.file:close()
-
-        settings.musicstate = np.strng
-        return np.strng
+        trackinfo.state = "OFF"
+        settings.widget.text = "" 
+        settings.widget.width = 0
     end
+    fd:close()
 end
 ---}}}
 
----{{{ setTitle
+---{{{ local setTitle
 --      this is used at most once, before mocp has a chance to call its OnSongChange
 local function setTitle()
 
-    local np = {}
+    local fd = {}
 
-    -- grab artist
-    np.file = io.popen('mocp -Q %artist')
-    trackinfo.artist = awful.util.escape(np.file:read())
-    np.file:close()
-    -- grab song
-    np.file = io.popen('mocp -Q %song')
-    trackinfo.song = awful.util.escape(string.gsub( string.gsub(np.file:read(),"^%d*",""),"%(.*",""))
-    np.file:close()
+    if state() then
+        fd = io.popen('mocp -i')
 
-    -- get time, etc for notify
-    np.file = io.popen('mocp -Q %album')
-    trackinfo.album = awful.util.escape(np.file:read())
-    np.file:close()
+        -- read to end of mocp -i
+        tmp = fd:read()
+        while tmp ~= nil do
+            key = string.match(tmp,"^%w+")
+            if trackinfo[key:lower()] ~= nil then
+                trackinfo[key:lower()]=awful.util.escape(string.gsub(string.gsub(tmp,key..":%s*",""),"%b()",""))
+            end
+            tmp = fd:read()
+        end
+    end
 
 end
 ---}}}
 
----{{{ local function title(delim)
+---{{{ local title(delim)
 local function title(delim)
 
     local eol = delim or " "
     local np = {}
 
     if trackinfo.artist == "" and state() then setTitle() end
-    np.song =string.gsub( string.gsub(trackinfo.song,"^%d*",""),"%(.*","") .. eol
+    np.song =string.gsub( string.gsub(trackinfo.songtitle,"^%d*",""),"%(.*","") .. eol
 
     -- return for widget text
     return trackinfo.artist.." : "..np.song
@@ -101,19 +98,28 @@ local function notdestroy()
 end
 ---}}}
 
----{{{ getTime: gets ct and tt of track for popup
+---{{{ local getTime() gets ct and tt of track for popup
 --@return string containig formatted times
 local function getTime()
     local fd = {}
-    local tstring = ""
+    local ttable = {}
+-- TotalTime:
+-- CurrentTime:
+    fd = io.popen('mocp -i')
+    local tmp = fd:read()
 
-    fd = io.popen('mocp -Q %ct')
-    tstring = "Time:   "..fd:read() .." [ " 
+    while tmp ~= nil do
+        key = string.match(tmp,"^%w+")
+        if key == "TotalTime" then
+            tstring = " [ "..markup.fg(beautiful.fg_normal,awful.util.escape(string.gsub(string.gsub(tmp,key..":%s*",""),"%b()",""))).." ]"
+        elseif key == "CurrentTime" then
+            tstring = markup.fg(beautiful.fg_focus,"Time:   ")..markup.fg(beautiful.fg_normal,awful.util.escape(string.gsub(string.gsub(tmp,key..":%s*",""),"%b()","")))..tstring
+        end
+        tmp = fd:read()
+    end
+
     fd:close()
 
-    fd = io.popen('mocp -Q %tt')
-    tstring = tstring..fd:read() .." ]" 
-    fd:close()
     return tstring
 end
 ---}}}
@@ -122,17 +128,17 @@ end
 -- displays a naughty notificaiton of the current track
 function popup()
     
+    setTitle()
     notdestroy()
 
     local np = {}
     np.state = nil
     np.strng = ""
-    np.state = state()
-    if np.state == false then
+    if not state() then
         return
     else
         np.strng = "Artist: "..markup.fg(beautiful.fg_normal,trackinfo.artist).."\n"..
-                   "Song:   "..markup.fg(beautiful.fg_normal,trackinfo.song).."\n"..
+                   "Song:   "..markup.fg(beautiful.fg_normal,trackinfo.songtitle).."\n"..
                    "Album:  "..markup.fg(beautiful.fg_normal,trackinfo.album).."\n"
         np.strng = np.strng..markup.fg(beautiful.fg_normal,getTime())
     end
@@ -149,9 +155,9 @@ end
 ---{{{ function mocplay() 
 -- easier way to check|run mocp
 function play() 
-  if settings.musicstate == "STOP" then
+  if trackinfo.state == "STOP" then
     awful.util.spawn('mocp --play') 
-  elseif settings.musicstate == "PLAY" then
+  elseif trackinfo.state == "PLAY" then
     awful.util.spawn('mocp --next')
   else 
     awful.util.spawn('mocp --toggle-pause')
@@ -161,26 +167,40 @@ end
 
 function setwidget(w)
     settings.widget = w
+    awful.hooks.timer.register (settings.interval,scroller)
+    state()
 end
+
+---{{{ function update ( k, v)
+-- called by any kind of external script to trigger widget text update
+function update ( k, v )
+    if #k == 0 or #v == 0 then return end
+    if trackinfo[k] ~= nil then
+        trackinfo[k] = v
+    end
+    state()
+end
+---}}}
 
 -- {{{ mocp widget, scrolls text
 function scroller(tb)
     local np = {}
 
-    np.strng = state()
-    if not np.strng then
-        settings.widget.text = "moc stopped"
-        settings.musicstate = "-"
+    -- if mocp is not running, then simply return here
+    if trackinfo.state == "OFF" then
+        settings.iScroller = 1
+        state()
         return
     else
-
-        -- this just helps my keybindings work better 
-        settings.musicstate = np.strng
-
         -- this sets the symbolic prefix based on where moc is playing | (stopped or paused)
-        if np.strng == "PAUSE" or np.strng == "STOP" then
+        if trackinfo.state == "PAUSE" then
             prefix = "|| "
             settings.interval = 2
+        elseif trackinfo.state == "STOP" then
+            settings.iScroller = 1
+            settings.widget.width = 20
+            settings.widget.text = "[]"
+            return
         else
             prefix = ">> "
             settings.interval = 0.75
