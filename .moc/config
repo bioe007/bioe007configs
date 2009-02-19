@@ -310,10 +310,10 @@ UseCursorSelection	= no
 # Example:
 #
 #OnSongChange = "/home/jack/.moc/myscript %a %r"
-OnSongChange = "/home/perry/.bin/mochg %a %t %r"
+OnSongChange = "/home/perry/.bin/mochg artist %a songtitle %t album %r"
 
 # OnStop
 # Run the following command (full path, no arguments) when MOC changes state
 # to stopped (when user stopped playing or changes a song).
 #
-#OnStop = "/home/jack/.moc/myscript_on_stop"
+OnStop = "/home/perry/.bin/mochg"
