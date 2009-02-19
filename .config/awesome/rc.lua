@@ -35,7 +35,6 @@ settings.apps.editor_cmd = settings.apps.terminal .. " -e " .. settings.apps.edi
 
 settings.sys = {}
 settings.sys.battwarn = false
-settings.sys.musicstate = ""
 
 -- Default modkey.
 modkey = "Mod4"
@@ -257,7 +256,6 @@ wicked.register(memwidget, wicked.widgets.mem, 'mem:' ..  markup.fg(beautiful.fg
 -- {{{ -- MOCP Widget
 mocpwidget = widget({ type = 'textbox', name = 'mocpwidget', align = 'right'})
 mocp.setwidget(mocpwidget)
-mocpwidget.width = 112
 mocpwidget:buttons({
     button({ }, 1, function () mocp.play(); mocp.popup() end ),
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
@@ -266,10 +264,7 @@ mocpwidget:buttons({
     button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
 mocpwidget.mouse_enter = function() mocp.popup() end
--- mocpwidget.mouse_leave = function() awful.hooks.timer.unregister(mocp.popup) end
--- mocpwidget.mouse_enter = function() mocp.popup();awful.hooks.timer.register(1,mocp.popup); end
--- mocpwidget.mouse_leave = function() awful.hooks.timer.unregister(mocp.popup) end
-awful.hooks.timer.register (mocp.settings.interval,mocp.scroller) -- comment while removing widgets mocp calls
+awful.hooks.timer.register (mocp.settings.interval,mocp.scroller)
 ---}}}
 
 --- {{{ FSWIDGET
