@@ -38,7 +38,7 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local wibox = wibox
-local print = print
+-- local print = print
 module("shifty")
 
 tags = {}
@@ -92,14 +92,8 @@ function rename(tag, prefix, no_selectall, initial)
     local text = prefix or t.name or ""
     local before = t.name
 
-    local prmptbx = awful.widget.taglist.gettag(t)
+    prmptbx = taglist[scr][tag2index(scr,t)*2]
 
-    if type(awful.widget.taglist.gettag(t)) then
--- prmptbx.type ~= "textbox" then
-        print("not textbox", type(prmptbx), type(awful.widget.taglist.gettag(t)))
-    end
-    -- had some errors with the former inline pango markup
-    -- pango markup no longer takes the <bg color= .. argument so set it here,
     if t == awful.tag.selected(scr) then 
         bg = theme.bg_focus or '#535d6c'
         fg = theme.fg_urgent or '#ffffff'
@@ -111,7 +105,7 @@ function rename(tag, prefix, no_selectall, initial)
 
     awful.prompt.run(
         { fg_cursor = fg, bg_cursor = bg, ul_cursor = "single",
-        prompt = text, selectall = not no_selectall,  },
+          prompt = tag2index(scr,t)..": ", selectall = not no_selectall,  },
         prmptbx,
         function (name) if name:len() > 0 then 
             t.name = name; 
@@ -129,7 +123,6 @@ function rename(tag, prefix, no_selectall, initial)
             awful.hooks.user.call("tags", scr)
         end
     )
-
 end
 
 -- send a client to tag[idx]
@@ -274,14 +267,14 @@ function tsort(scr)
     local scr = scr or 1
     local a_tags = screen[scr]:tags()
 
-    print(#a_tags, #tags[scr])  -- debug
+    -- print(#a_tags, #tags[scr])  -- debug
     for i,t in ipairs(a_tags) do
         cfg_t = config.tags[awful.tag.getproperty(t,"name")]
         if cfg_t ~= nil then
             if awful.tag.getproperty(a_tags[i+1], "position") ~= nil then
                 if cfg_t.position > awful.tag.getproperty(a_tags[i+1], "position") then
-                    print("misorderd tag " .. awful.tag.getproperty(t,"name") .. " pos= " ..
-                                                awful.tag.getproperty(t,"position") .. " index= "..i) -- debug
+                    -- print("misorderd tag " .. awful.tag.getproperty(t,"name") .. " pos= " ..
+                                                -- awful.tag.getproperty(t,"position") .. " index= "..i) -- debug
                     set(t,{rel_index=1})
                 end
             end
@@ -291,11 +284,11 @@ function tsort(scr)
     -- tags[scr] = screen[scr]:tags()
     -- debugging
     for k,t in pairs(a_tags) do
-        print("tag " .. awful.tag.getproperty(t,"name") .. " pos= " .. (awful.tag.getproperty(t,"position") or 20) .. " index= "..k)
+        -- print("tag " .. awful.tag.getproperty(t,"name") .. " pos= " .. (awful.tag.getproperty(t,"position") or 20) .. " index= "..k)
     end
 
     for k,t in pairs(tags[scr]) do
-        print("tag " .. k .. " name= ")
+        -- print("tag " .. k .. " name= ")
     end
 end
 
@@ -338,10 +331,10 @@ function del(tag)
     local t = tag or sel
     local idx = tag2index(scr,t)
 
-    print("shifty.del():380: number of tags= ", #screen[scr]:tags())
+    -- print("shifty.del():380: number of tags= ", #screen[scr]:tags())
     if #screen[scr]:tags() > 1 then
         -- don't wipe tags if active clients on them?
-        if #(t:clients()) > 0 then print("clients here"); return end
+        -- if #(t:clients()) > 0 then print("clients here"); return end
 
         index_cache[t.name] = idx
 
@@ -453,6 +446,7 @@ end
 --      * better to leave what can be done by awful to be done by awful
 --      *           -perry
 -- @param pos : the index to find
+-- @return v : the tag (found or created) at position == 'pos'
 function getpos(pos)
     local v = nil
     local existing = {}
