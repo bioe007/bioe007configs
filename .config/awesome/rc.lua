@@ -85,7 +85,6 @@ shifty.config.defaults = {
 }
 
 -- }}} 
--- }}}
 
 -- {{{ -- OWN functions
 
@@ -264,7 +263,6 @@ mocpwidget:buttons({
     button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
 mocpwidget.mouse_enter = function() mocp.popup() end
-awful.hooks.timer.register (mocp.settings.interval,mocp.scroller)
 ---}}}
 
 --- {{{ FSWIDGET
