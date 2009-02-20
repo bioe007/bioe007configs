@@ -161,6 +161,12 @@ function play()
   elseif trackinfo.state == "PLAY" then
     awful.util.spawn('mocp --next')
   else 
+    if trackinfo.state == "PLAY" then
+        trackinfo.state = "PAUSE"
+    else
+        trackinfo.state = "PLAY"
+    end
+
     awful.util.spawn('mocp --toggle-pause')
   end
 end
@@ -195,15 +201,15 @@ function scroller(tb)
     else
         -- this sets the symbolic prefix based on where moc is playing | (stopped or paused)
         if trackinfo.state == "PAUSE" then
-            prefix = "|| "
+            prefix = "▌▌ "
             settings.interval = 2
         elseif trackinfo.state == "STOP" then
             settings.iScroller = 1
             settings.widget.width = 20
-            settings.widget.text = "[]"
+            settings.widget.text = "⬣"
             return
         else
-            prefix = ">> "
+            prefix = "▶ "
             settings.interval = 0.75
         end
 
