@@ -137,7 +137,7 @@ end
 
 -- }}}
 
--- {{{ Wibox & WIDGETS
+-- {{{ -- Statusbar, menus & Widgets
 -- Create a laucher widget and a main menu
 myawesomemenu = {
     { "manual", settings.apps.terminal .. " -e man awesome" },
@@ -157,7 +157,7 @@ mylauncher = awful.widget.launcher({ image = icon_path.."awesome48.png",
 mysystray = widget({ type = "systray", align = "right" })
 
 
----{{{ WIBOX for each screen and add it
+--{{{ -- WIBOX for each screen and add it
 mywibox = {}
 mypromptbox = {}
 mylayoutbox = {}
@@ -266,12 +266,13 @@ mocpwidget:buttons({
 mocpwidget.mouse_enter = function() mocp.popup() end
 ---}}}
 
---- {{{ FSWIDGET
+-- {{{ -- FSWIDGET
 fswidget = widget({ type = "textbox", name = "fswidget", align = "right" })
 fs.init( fswidget, 
         { interval = 59, 
           parts = {   ['sda7'] = {label = "/"},
                       ['sda5'] = {label = "dat"} } })
+-- }}}
 
 -- {{{ -- BATTERY 
 batterywidget = widget({ type = "textbox", name = "batterywidget", align = "right" })
@@ -280,7 +281,7 @@ battery.setwidget(batterywidget)
 awful.hooks.timer.register(10, battery.info)
 -- }}}
 
----{{{ STATUSBAR
+--{{{ -- STATUSBAR
 for s = 1, screen.count() do
     -- Create a promptbox for each screen
     mypromptbox[s] = widget({ type = "textbox", align = "left" })
