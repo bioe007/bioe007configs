@@ -1,7 +1,6 @@
 local io = io
 local awful = require("awful")
 local pairs = pairs
-local type = type
 local string = string
 
 module("fs")
