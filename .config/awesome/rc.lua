@@ -10,6 +10,7 @@ require("mocp")
 require("calendar")
 require("battery")
 require("markup")
+require("fs")
 
 print("cachedir= " .. awful.util.getdir("cache"))
 -- volumous.init("/home/perry/.config/awesome/themes/bio/vol_images/", 30, 30)
@@ -139,10 +140,10 @@ end
 -- {{{ Wibox & WIDGETS
 -- Create a laucher widget and a main menu
 myawesomemenu = {
-   { "manual", settings.apps.terminal .. " -e man awesome" },
-   { "edit config", settings.apps.editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
-   { "restart", awesome.restart },
-   { "quit", awesome.quit }
+    { "manual", settings.apps.terminal .. " -e man awesome" },
+    { "edit config", settings.apps.editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
+    { "restart", awesome.restart },
+    { "quit", awesome.quit }
 }
 
 mymainmenu = awful.menu.new({ items = { { "awesome", myawesomemenu, icon_path.."/awesome16.png" },
@@ -267,14 +268,10 @@ mocpwidget.mouse_enter = function() mocp.popup() end
 
 --- {{{ FSWIDGET
 fswidget = widget({ type = "textbox", name = "fswidget", align = "right" })
-
-function fs()
-  fh = io.popen('df -h | grep -w \'sda7\\|sda5\' | awk \'{print $5}\' | tr -d \'%\'')
-  fswidget.text = '/: ' .. markup.fg(beautiful.fg_sb_hi,fh:read()) .. ' dat: ' .. markup.fg(beautiful.fg_sb_hi,fh:read())
-  fh:close()
-end
-awful.hooks.timer.register (59,fs)
---- }}} 
+fs.init( fswidget, 
+        { interval = 59, 
+          parts = {   ['sda7'] = {label = "/"},
+                      ['sda5'] = {label = "dat"} } })
 
 -- {{{ -- BATTERY 
 batterywidget = widget({ type = "textbox", name = "batterywidget", align = "right" })
@@ -345,19 +342,19 @@ clientkeys = {}
 -- {{{ - TAGS BINDINGS
 for i=1, ( shifty.config.maxtags or 9 ) do
   table.insert(globalkeys, key({ modkey }, i,
-          function () local t =  awful.tag.viewonly(shifty.getpos(i)) end))
+  function () local t =  awful.tag.viewonly(shifty.getpos(i)) end))
   table.insert(globalkeys, key({ modkey, "Control" }, i,
-          function () local t = shifty.getpos(i); t.selected = not t.selected end))
+  function () local t = shifty.getpos(i); t.selected = not t.selected end))
   table.insert(globalkeys, key({ modkey, "Shift" }, i,
-          function () 
-              if client.focus then 
-                  t = shifty.getpos(i)
-                  awful.client.movetotag(t)
-                  awful.tag.viewonly(t)
-              end 
-          end))
+  function () 
+    if client.focus then 
+      t = shifty.getpos(i)
+      awful.client.movetotag(t)
+      awful.tag.viewonly(t)
+    end 
+  end))
   table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
-          function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
+  function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
 end
 
 table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
@@ -423,8 +420,8 @@ table.insert(globalkeys, key({ },"XF86AudioStop", function () awful.util.spawn('
 
 -- {{{ - SPECIAL keys
 table.insert(globalkeys, key({ modkey, "Control" }, "r", function ()
-    mypromptbox[mouse.screen].text =
-    awful.util.escape(awful.util.restart())
+  mypromptbox[mouse.screen].text =
+  awful.util.escape(awful.util.restart())
 end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
 -- }}} 
@@ -432,15 +429,15 @@ table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
 -- {{{ - CLIENT MANIPULATION
 hiddenClient = nil
 table.insert(clientkeys, key({modkey, "Shift"},"q", function ()
-    local c = client.focus()
+  local c = client.focus()
 
-    if hiddenClient == nil then
-        hiddenClient= c
-        c.hide = true
-    else
-        c.hide = false
-        hiddenClient = nil
-    end
+  if hiddenClient == nil then
+    hiddenClient= c
+    c.hide = true
+  else
+    c.hide = false
+    hiddenClient = nil
+  end
 end))
 
 
@@ -475,15 +472,15 @@ end))
 
 -- {{{ - LAYOUT MANIPULATION
 table.insert(globalkeys, key({ modkey }, "l", 
-    function () 
-        awful.tag.incmwfact(0.05) 
-        -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
-    end))
+  function () 
+    awful.tag.incmwfact(0.05) 
+    -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
+  end))
 table.insert(globalkeys, key({ modkey }, "h", 
-    function () 
-        awful.tag.incmwfact(-0.05) 
-        -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
-    end))
+  function () 
+    awful.tag.incmwfact(-0.05) 
+    -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
+  end))
 
 table.insert(globalkeys, key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end))
@@ -535,129 +532,129 @@ root.keys(globalkeys)
 -- {{{ Hooks
 -- Hook function to execute when focusing a client.
 awful.hooks.focus.register(function (c)
-    if not awful.client.ismarked(c) then
-        if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
-            c.border_width = beautiful.border_width
-            c.border_color = beautiful.border_focus
-        else
-            c.border_width = 0
-        end
+  if not awful.client.ismarked(c) then
+    if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
+      c.border_width = beautiful.border_width
+      c.border_color = beautiful.border_focus
+    else
+      c.border_width = 0
     end
+  end
 end)
 
 -- Hook function to execute when unfocusing a client.
 awful.hooks.unfocus.register(function (c)
-    if not awful.client.ismarked(c) then
-        if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
-            c.border_width = beautiful.border_width
-            c.border_color = beautiful.border_normal
-        else
-            c.border_width = 0
-        end
+  if not awful.client.ismarked(c) then
+    if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
+      c.border_width = beautiful.border_width
+      c.border_color = beautiful.border_normal
+    else
+      c.border_width = 0
     end
+  end
 end)
 
 -- Hook function to execute when marking a client
 awful.hooks.marked.register(function (c)
-    c.border_color = beautiful.border_marked
+  c.border_color = beautiful.border_marked
 end)
 
 -- Hook function to execute when unmarking a client.
 awful.hooks.unmarked.register(function (c)
-    c.border_color = beautiful.border_focus
+  c.border_color = beautiful.border_focus
 end)
 
 -- Hook function to execute when the mouse enters a client.
 awful.hooks.mouse_enter.register(function (c)
-    -- Sloppy focus, but disabled for magnifier layout
-    if awful.layout.get(c.screen) ~= "magnifier"
-        and awful.client.focus.filter(c) then
-        client.focus = c
-    end
+  -- Sloppy focus, but disabled for magnifier layout
+  if awful.layout.get(c.screen) ~= "magnifier"
+    and awful.client.focus.filter(c) then
+    client.focus = c
+  end
 end)
 
 -- Hook function to execute when a new client appears.
 awful.hooks.manage.register( function (c)
-    -- If we are not managing this application at startup, move it to the screen where the mouse is.
-    -- We only do it for filtered windows (i.e. no dock, etc).
-    if not startup and awful.client.focus.filter(c) then
-        c.screen = mouse.screen
-    end
+  -- If we are not managing this application at startup, move it to the screen where the mouse is.
+  -- We only do it for filtered windows (i.e. no dock, etc).
+  if not startup and awful.client.focus.filter(c) then
+    c.screen = mouse.screen
+  end
 
-    if use_titlebar then
-        -- Add a titlebar
-        awful.titlebar.add(c, { modkey = modkey })
-    end
-    -- Add mouse bindings
-    c:buttons({
-        button({ }, 1, function (c) client.focus = c; c:raise() end),
-        button({ modkey }, 1, function (c) awful.mouse.client.move() end),
-        button({ modkey }, 3, awful.mouse.client.resize ),
-        -- button({ modkey, "Shift" }, 1, function (c) revelation.revelation()
-            -- end )
-    })
-    -- New client may not receive focus
-    -- if they're not focusable, so set border anyway.
-    if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
-        c.border_width = beautiful.border_width
-    else
-        c.border_width = 0
-    end
-    c.border_color = beautiful.border_normal
+  if use_titlebar then
+    -- Add a titlebar
+    awful.titlebar.add(c, { modkey = modkey })
+  end
+  -- Add mouse bindings
+  c:buttons({
+    button({ }, 1, function (c) client.focus = c; c:raise() end),
+    button({ modkey }, 1, function (c) awful.mouse.client.move() end),
+    button({ modkey }, 3, awful.mouse.client.resize ),
+    -- button({ modkey, "Shift" }, 1, function (c) revelation.revelation()
+    -- end )
+  })
+  -- New client may not receive focus
+  -- if they're not focusable, so set border anyway.
+  if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
+    c.border_width = beautiful.border_width
+  else
+    c.border_width = 0
+  end
+  c.border_color = beautiful.border_normal
 
-    -- Check if the application should be floating.
-    local cls = c.class
-    local inst = c.instance
-    if ( string.find( c.name,"Preferences" ) ) ~= nil then
-        -- a fix for ffx's preferences window. should clean this up
-        awful.titlebar.add( c, { modkey = modkey } )
-        awful.client.floating.set( c,true )
-    end
+  -- Check if the application should be floating.
+  local cls = c.class
+  local inst = c.instance
+  if ( string.find( c.name,"Preferences" ) ) ~= nil then
+    -- a fix for ffx's preferences window. should clean this up
+    awful.titlebar.add( c, { modkey = modkey } )
+    awful.client.floating.set( c,true )
+  end
 
-    if c.name == "glxgears" then 
-        awful.client.floating.set( c,true )
-        awful.titlebar.add( c, { modkey = modkey } )
-    end
+  if c.name == "glxgears" then 
+    awful.client.floating.set( c,true )
+    awful.titlebar.add( c, { modkey = modkey } )
+  end
 
-    if not settings.new_become_master then
-        awful.client.setslave(c)
-    end
+  if not settings.new_become_master then
+    awful.client.setslave(c)
+  end
 
-    -- Honor size hints: for all but terminals
-    if c.class == "urxvt" or c.class == "URxvt" then
-        c.size_hints_honor = false
-    else
-        c.size_hints_honor = true
-    end
+  -- Honor size hints: for all but terminals
+  if c.class == "urxvt" or c.class == "URxvt" then
+    c.size_hints_honor = false
+  else
+    c.size_hints_honor = true
+  end
 
-    -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
-    client.focus = c
+  -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
+  client.focus = c
 
-    -- Set key bindings
-    c:keys(clientkeys)
+  -- Set key bindings
+  c:keys(clientkeys)
 
-    -- awful.placement.no_overlap(c)
-    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
-    if awful.client.floating.get(c) then
-        awful.client.moveresize(10,43,0,0,c)
-    end
+  -- awful.placement.no_overlap(c)
+  awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
+  if awful.client.floating.get(c) then
+    awful.client.moveresize(10,43,0,0,c)
+  end
 
 end)
 
 -- Hook function to execute when arranging the screen (tag switch, new client, etc)
 awful.hooks.arrange.register(function (screen)
-    local layout = awful.layout.getname(awful.layout.get(screen))
-    if layout and beautiful["layout_" ..layout] then
-        mylayoutbox[screen].image = image(beautiful["layout_" .. layout])
-    else
-        mylayoutbox[screen].image = nil
-    end
-   -- Give focus to the latest client in history if no window has focus
-    -- or if the current window is a desktop or a dock one.
-    if not client.focus then
-        local c = awful.client.focus.history.get(screen, 0)
-        if c then client.focus = c end
-    end
+  local layout = awful.layout.getname(awful.layout.get(screen))
+  if layout and beautiful["layout_" ..layout] then
+    mylayoutbox[screen].image = image(beautiful["layout_" .. layout])
+  else
+    mylayoutbox[screen].image = nil
+  end
+  -- Give focus to the latest client in history if no window has focus
+  -- or if the current window is a desktop or a dock one.
+  if not client.focus then
+    local c = awful.client.focus.history.get(screen, 0)
+    if c then client.focus = c end
+  end
 end)
 
 -- }}}
@@ -674,4 +671,4 @@ end)
 -- else
     -- print("not found")
 -- end
--- vim:set filetype=lua fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: --
+-- vim:set filetype=lua fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent: --
