@@ -25,14 +25,11 @@ function showWarning(s)
            markup.fg(beautiful.fg_batt_oshi or "#ff2233", "Warning, low battery! ".. s ))),
     timeout = 0, hover_timeout = 0.5,
     bg = beautiful.bg_focus,
-    -- width = beautiful.battery_w or 160,
+    width = beautiful.battery_w or 160,
   })
 
 end
 
-function setwidget(w)
-  bwidget = w
-end
 
 function info()
   -- paths to the relevant files for battery statistics and state
@@ -53,7 +50,6 @@ function info()
   -- calculate remaining %
   local battery = math.floor(((current * 100) / capacity))
 
-  -- showWarning(battery)
   -- colorize based on remaining battery charge
   if battery < 10 then
     battery = markup.fg(beautiful.fg_batt_oshi or "#ff0000", battery)
@@ -79,11 +75,16 @@ function info()
   -- decide which and where to put the charging state indicator
   local state = string.match(tCurrent,"charging state:%s+(%w+)")
   if state:match("charged") then
-    bwidget.text = "bat:↯"..battery
+    bwidget.text = "bat: ↯"..battery
   elseif state:match("discharging") then
-    bwidget.text = "bat: "..battery.."▼"
+    bwidget.text = "bat: ▼"..battery
   else
     bwidget.text = "bat: ▲"..battery
   end
 end
 
+function init(w, width)
+  bwidget = w
+  bwidget.width = width or 56
+  info()
+end
