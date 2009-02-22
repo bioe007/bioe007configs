@@ -7,7 +7,7 @@ local config = {}
 
 module("volume")
 
-function vol(mode)
+function vol(mode, percent)
   if mode == "update" then
     local fd = io.popen("amixer -c " .. config.cardid .. " -- sget " .. config.channel)
     local status = fd:read("*a")
@@ -27,14 +27,14 @@ function vol(mode)
     -- config.widget.text = volume
     config.widget:bar_data_add("vol", volume)
   elseif mode == "up" then
-    awful.util.spawn("amixer -q -c " .. config.cardid .. " sset " .. config.channel .. " 5%+")
-    volume("update")
+    awful.util.spawn("amixer -q -c " .. config.cardid .. " sset " .. config.channel .." "..(percent or 5).."%+")
+    vol("update")
   elseif mode == "down" then
-    awful.util.spawn("amixer -q -c " .. config.cardid .. " sset " .. config.channel .. " 5%-")
-    volume("update")
+    awful.util.spawn("amixer -q -c " .. config.cardid .. " sset " .. config.channel .." "..(percent or 5).."%-")
+    vol("update")
   else
     awful.util.spawn("amixer -c " .. config.cardid .. " sset " .. config.channel .. " toggle")
-    volume("update")
+    vol("update")
   end
 end
 
@@ -54,13 +54,14 @@ function init(w, cardid, channel, colors)
  
   config.widget:bar_properties_set("vol", 
   colors or { ["bg"] = beautiful.vol_bg,
-                   ["fg"] = beautiful.widg_cpu_st,
-                   ["fg_center"] = beautiful.widg_cpu_mid,
-                   ["fg_end"] = beautiful.widg_cpu_end,
+                   ["fg"] = beautiful.fg_focus,
+                   ["fg_center"] = beautiful.fg_focus, --"#ffffff", --beautiful.widg_cpu_mid,
+                   ["fg_end"] = beautiful.fg_focus, -- "#ffffff", -- beautiful.widg_cpu_end,
                    ["fg_off"] = beautiful.bg_normal,
                    ["border_color"] = beautiful.bg_focus,
                  })
 
+  vol("update")
   awful.hooks.timer.register(10, function () vol("update") end)
 
 end
