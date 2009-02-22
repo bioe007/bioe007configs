@@ -16,11 +16,13 @@ fg_urgent     = #ffaaaa
 ## specific 
 fg_sb_hi     = #343434
 fg_batt_mid  = #008600
-fg_batt_low  = #e6f21d
-fg_batt_crit = #f8700a
+fg_batt_low  = #e4f01b
+fg_batt_crit = #a84007
 widg_cpu_st  = #343434
 widg_cpu_mid = #888888
 widg_cpu_end = #cccccc
+
+vol_bg = #000000
 
 border_width  = 1
 border_normal = #000124
