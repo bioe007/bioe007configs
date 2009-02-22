@@ -2,6 +2,8 @@ local io = io
 local awful = require("awful")
 local pairs = pairs
 local string = string
+local markup = require("markup")
+local beautiful = require("beautiful")
 
 module("fs")
 
@@ -33,7 +35,7 @@ local function stats()
       key = string.gsub(key,"^/%w+/","")
       if fs.config.parts[key] then
         fs.config.parts[key].use = string.format('%3d',string.gsub(line:match("%d+%%.*$"),"%%%s.*$",""))
-        tmp = tmp..fs.config.parts[key].label..":"..fs.config.parts[key].use.." "
+        tmp = tmp..markup.fg(beautiful.fg_normal,fs.config.parts[key].label..":")..markup.fg(beautiful.fg_sb_hi,fs.config.parts[key].use).." "
       end
     end
   end
