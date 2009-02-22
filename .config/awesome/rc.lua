@@ -11,6 +11,7 @@ require("calendar")
 require("battery")
 require("markup")
 require("fs")
+require("volume")
 
 print("cachedir= " .. awful.util.getdir("cache"))
 -- volumous.init("/home/perry/.config/awesome/themes/bio/vol_images/", 30, 30)
@@ -276,10 +277,13 @@ fs.init( fswidget,
 
 -- {{{ -- BATTERY 
 batterywidget = widget({ type = "textbox", name = "batterywidget", align = "right" })
-batterywidget.width = 56
-battery.setwidget(batterywidget)
-awful.hooks.timer.register(10, battery.info)
+battery.init(batterywidget)
+awful.hooks.timer.register(50, battery.info)
 -- }}}
+
+-- {{ volume widget
+pb_volume =  widget({ type = "progressbar", name = "pb_volume", align = "right" })
+volume.init(pb_volume)
 
 --{{{ -- STATUSBAR
 for s = 1, screen.count() do
@@ -317,6 +321,7 @@ for s = 1, screen.count() do
         cpugraphwidget1,
         cpugraphwidget2, widget_spacer_r,
         mocpwidget, widget_spacer_r,
+        pb_volume, widget_spacer_r,
         datewidget, s == 1 and mysystray or nil
     } 
     mywibox[s].screen = s
