@@ -10,11 +10,13 @@
 -- * pressing mod+esc to flip to previous tag after creating a new one.
 --      - this 'merges' the two tags instead of flipping back to it
 --
--- * if awesome reloads, some stray tags are initialized (eg urxvt ) but their
+-- * init: if awesome reloads, some stray tags are initialized (eg urxvt ) but their
 --      properties are left blank
 --
 -- * fix the prompt :S
 --
+-- * awful.tag history is stupid, deleted tags are not removed from history so
+-- switching mod+esc after deleting takes to nil tag
 --
 -- package env
 
@@ -51,9 +53,10 @@ config.guess_name = true
 config.guess_position = true
 config.remember_index = true
 
+-- create a table for each screen
 for s = 1, screen.count() do tags[s] = {} end
 
--- matches string 'name' to return a tag object 
+--{{{ name2tag: matches string 'name' to return a tag object 
 -- @param name : name of tag to find
 -- @param scr : screen to look for tag on
 -- @return the tag object, or nil
@@ -67,8 +70,9 @@ function name2tag(name, scr)
         end
     end
 end
+--}}}
 
--- finds index of a tag object
+--{{{ tag2index: finds index of a tag object
 -- @param scr : screen number to look for tag on
 -- @param tag : the tag object to find
 -- @return the index or zero
@@ -81,7 +85,13 @@ function tag2index(scr, tag)
     end
     return 0
 end
+--}}}
 
+--{{{ rename
+--@param tag: tag object to be renamed
+--@param prefix: if any prefix is to be added
+--@param no_selectall:
+--@param initial: boolean if this is initial creation of tag
 function rename(tag, prefix, no_selectall, initial)
     local theme = beautiful.get()
     local scr = (tag and tag.screen) or mouse.screen or 1
@@ -124,8 +134,10 @@ function rename(tag, prefix, no_selectall, initial)
         end
     )
 end
+--}}}
 
--- send a client to tag[idx]
+--{{{ send: moves client to tag[idx]
+-- maybe this isn't needed here in shifty? 
 -- @param idx the tag number to send a client to
 function send(idx)
     local scr = client.focus.screen or mouse.screen
@@ -135,13 +147,18 @@ function send(idx)
     awful.tag.viewonly(tags[scr][target])
     awful.client.movetotag(tags[scr][target], client.focus)
 end
+--}}}
 
+-- FIXME: both of these seem broken
 function send_next() send(1) end
 function send_prev() send(-1) end
 
 function shift_next() set(awful.tag.selected(), { rel_index = 1 }) end
 function shift_prev() set(awful.tag.selected(), { rel_index = -1 }) end
 
+--{{{ pos2idx: translate shifty position to tag index
+--@param pos: position (an integer)
+--@param scr: screen number
 function pos2idx(pos, scr)
     local v = 1
     -- local a_tags = screen[scr]:tags()
@@ -153,7 +170,10 @@ function pos2idx(pos, scr)
     end
     return v
 end
+--}}}
 
+--{{{ select : helper function chooses the first non-nil argument
+--@param args - table of arguments
 function select(args)
     for i, a in pairs(args) do
         if a ~= nil then
@@ -161,7 +181,12 @@ function select(args)
         end
     end
 end
+--}}}
 
+--{{{ set : set a tags properties
+--@param t: the tag
+--@param args : a table of optional (?) tag properties
+--@return t - the tag object
 function set(t, args)
     if not t then return end
     if not args then args = {} end
@@ -190,7 +215,6 @@ function set(t, args)
     nmaster = args.nmaster or preset.nmaster or config.defaults.nmaster or t.nmaster
     ncol = args.ncol or preset.ncol or config.defaults.ncol or t.ncol
 
-    -- new using setproperty way
     awful.tag.setproperty(t,"matched", 
                             select{ args.matched, awful.tag.getproperty(t,"matched") } )
     awful.tag.setproperty(t,"notext", 
@@ -260,8 +284,12 @@ function set(t, args)
     awful.hooks.user.call("tags", t.screen)
     return t
 end
+--}}}
 
--- to resort awesomes tags to follow shifty's config positions
+--{{{ tsort : to resort awesomes tags to follow shifty's config positions
+-- FIXME- this function is still being dev, so don't use it unless
+-- you feel adventurous ;)
+--
 --  @param scr : optional screen number [default one]
 function tsort(scr)
     local scr = scr or 1
@@ -291,7 +319,11 @@ function tsort(scr)
         -- print("tag " .. k .. " name= ")
     end
 end
+--}}}
 
+--{{{ add : adds a tag
+--@param args: table of optional arguments
+--
 function add(args)
     if not args then args = {} end
     local scr = args.screen or mouse.screen --FIXME test handling of screen arg more
@@ -323,7 +355,10 @@ function add(args)
     -- return the tag
     return t
 end
+--}}}
 
+--{{{ del : delete a tag
+--@param tag : the tag to be deleted
 function del(tag)
     -- should a tag ever be deleted if #tags[scr] < 1 ?
     local scr = mouse.screen or 1
@@ -349,7 +384,10 @@ function del(tag)
         awful.tag.history.update(scr)
     end
 end
+--}}}
 
+--{{{ match : handles app->tag matching 
+--@param c : client to be matched
 function match(c)
     local target_tag, target_screen, target, nopopup, intrusive = nil
     local cls = c.class
@@ -421,7 +459,10 @@ function match(c)
         awful.tag.viewonly(target)
     end
 end
+--}}}
 
+--{{{ sweep : hook function that marks tags as used, visited, deserted
+--  also handles deleting used and empty tags 
 function sweep()
     for s = 1, screen.count() do
         for i, t in ipairs(tags[s]) do
@@ -440,8 +481,9 @@ function sweep()
         end
     end
 end
+--}}}
 
--- getpos - returns a tag to match position
+--{{{ getpos : returns a tag to match position
 --      * originally this function did a lot of client stuff, i think its
 --      * better to leave what can be done by awful to be done by awful
 --      *           -perry
@@ -478,8 +520,13 @@ function getpos(pos)
     end
     return v
 end
+--}}}
 
--- init :: search shifty.config.tags for initial set of tags to open
+--{{{ init : search shifty.config.tags for initial set of tags to open
+--FIXME: when awesome reloads, this init is too simple, some tags are left 
+--with empty properties, this makes them resistant to normal del and sweep
+--functions
+--
 function init()
     for i, j in pairs(config.tags) do
         if j.init then 
@@ -487,7 +534,10 @@ function init()
         end
     end
 end
+--}}}
 
+--{{{ count : utility function returns the index of a table element
+--FIXME: this is currently used only in remove_dup, so is it really necessary?
 function count(table, element)
     local v = 0
     for i, e in pairs(table) do
@@ -495,7 +545,10 @@ function count(table, element)
     end
     return v
 end
+--}}}
 
+--{{{ remove_dup : used by shifty.completion when more than one
+--tag at a position exists
 function remove_dup(table)
     local v = {}
     for i, entry in ipairs(table) do
@@ -503,7 +556,10 @@ function remove_dup(table)
     end
     return v
 end
+--}}}
 
+--{{{ completion : prompt completion
+--
 function completion(cmd, cur_pos, ncomp)
     local list = {}
 
@@ -553,6 +609,7 @@ function completion(cmd, cur_pos, ncomp)
     -- return match and position
     return matches[ncomp], cur_pos
 end
+--}}}
 
 -- function info(t)
     -- if not t then return end
@@ -578,4 +635,4 @@ awful.hooks.arrange.register(sweep)
 awful.hooks.clients.register(sweep)
 awful.hooks.manage.register(match)
 
--- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:encoding=utf-8:textwidth=80
+-- vim: foldmethod=marker:filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:encoding=utf-8:textwidth=80
