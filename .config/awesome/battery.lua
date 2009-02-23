@@ -48,7 +48,7 @@ function info()
   local current = string.match(tCurrent,"remaining capacity:%s+(%d+)")
 
   -- calculate remaining %
-  local battery = math.floor(((current * 100) / capacity))
+  local battery = math.min(math.floor(((current * 100) / capacity)),100)
 
   -- colorize based on remaining battery charge
   if battery < 10 then
@@ -75,16 +75,16 @@ function info()
   -- decide which and where to put the charging state indicator
   local state = string.match(tCurrent,"charging state:%s+(%w+)")
   if state:match("charged") then
-    bwidget.text = "bat: ↯"..battery
+    bwidget.text = "⚡: ↯"..battery
   elseif state:match("discharging") then
-    bwidget.text = "bat: ▼"..battery
+    bwidget.text = "⚡: ▼"..battery
   else
-    bwidget.text = "bat: ▲"..battery
+    bwidget.text = "⚡: ▲"..battery
   end
 end
 
 function init(w, width)
   bwidget = w
-  bwidget.width = width or 56
+  bwidget.width = width or 48
   info()
 end
