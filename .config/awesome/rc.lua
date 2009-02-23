@@ -264,7 +264,9 @@ mocpwidget:buttons({
     button({ }, 3, function () awful.util.spawn('mocp --previous'); mocp.popup() end),
     button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
-mocpwidget.mouse_enter = function() mocp.popup() end
+-- mocpwidget.mouse_enter = function() mocp.popup() end
+mocpwidget.mouse_enter = function() awful.hooks.timer.register(1,mocp.popup) end
+mocpwidget.mouse_leave = function() awful.hooks.timer.unregister(mocp.popup) end
 ---}}}
 
 -- {{{ -- FSWIDGET
