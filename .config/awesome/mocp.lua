@@ -105,15 +105,14 @@ local function getTime()
   fd = io.popen('mocp -i')
 
   for line in fd:lines() do
-    key = string.match(line,c,"^%w+")
+    key = string.match(line,"^%w+")
     if key == "TotalTime" then
       tstring = " [ "..markup.fg(beautiful.fg_normal,
-      awful.util.escape(string.gsub(string.gsub(line,c,key..":%s*",""),"%b()",""))).." ]"
+      awful.util.escape(string.gsub(string.gsub(line,key..":%s*",""),"%b()",""))).." ]"
     elseif key == "CurrentTime" then
       tstring = markup.fg(beautiful.fg_focus,"Time:   ")..
       markup.fg(beautiful.fg_normal,
-      awful.util.escape(string.gsub(string.gsub(line,c,key..":%s*",""),"%b()","")))..
-      tstring
+      awful.util.escape(string.gsub(string.gsub(line,key..":%s*",""),"%b()","")))..tstring
     end
   end
 
@@ -126,7 +125,7 @@ end
 ---{{{ popup
 -- displays a naughty notificaiton of the current track
 function popup()
-
+  -- awful.hooks.timer.unregister(popup)
   setTitle()
   notdestroy()
 
@@ -199,7 +198,7 @@ function scroller(tb)
   else
     -- this sets the symbolic prefix based on where moc is playing | (stopped or paused)
     if trackinfo.state == "PAUSE" then
-      prefix = "▌▌ "
+      prefix = "|| "
       settings.interval = 2
     elseif trackinfo.state == "STOP" then
       settings.iScroller = 1
