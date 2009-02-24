@@ -264,7 +264,6 @@ mocpwidget:buttons({
     button({ }, 3, function () awful.util.spawn('mocp --previous'); mocp.popup() end),
     button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
--- mocpwidget.mouse_enter = function() mocp.popup() end
 mocpwidget.mouse_enter = function() awful.hooks.timer.register(1,mocp.popup) end
 mocpwidget.mouse_leave = function() awful.hooks.timer.unregister(mocp.popup) end
 ---}}}
@@ -286,6 +285,14 @@ awful.hooks.timer.register(50, battery.info)
 -- {{ volume widget
 pb_volume =  widget({ type = "progressbar", name = "pb_volume", align = "right" })
 volume.init(pb_volume)
+pb_volume:buttons({
+  button({ }, 1, function () volume.vol("up","5") end),
+  button({ }, 4, function () volume.vol("up","1") end),
+  button({ }, 3, function () volume.vol("down","5") end),
+  button({ }, 5, function () volume.vol("down","1") end),
+  button({ }, 2, function () volume.vol() end),
+})
+
 
 --{{{ -- STATUSBAR
 for s = 1, screen.count() do
@@ -322,7 +329,7 @@ for s = 1, screen.count() do
         cpuwidget, widget_spacer_r,
         cpugraphwidget1,
         cpugraphwidget2, widget_spacer_r,
-        mocpwidget, widget_spacer_r,
+        mocpwidget, 
         pb_volume, widget_spacer_r,
         datewidget, s == 1 and mysystray or nil
     } 
