@@ -3,20 +3,24 @@
 --     battery.settings.ipath = <path to your info file>
 --     battery.settings.spath = <path to your state file>
 --
+-- hal checking stolen from Kooky's battery widget
+--
 local io = io
 local string = string
 local math = math
 local beautiful = require("beautiful")
 local naughty = require("naughty")
 local markup = require("markup")
+local tonumber = tonumber
 
 module("battery")
 local battwarn 
-local adapter_state = nil
 local bwidget = {}
+local device
 
 settings = {}
 
+--{{{ popup when battery level gets low
 function showWarning(s)
 
   naughty.notify({ 
@@ -29,26 +33,47 @@ function showWarning(s)
   })
 
 end
+--}}}
 
+--{{{ gets percentage of charge in battery
+function charge()
+	 local level = 100
+	 local hal = io.popen("hal-get-property --udi "..device.." --key battery.charge_level.percentage")
+	 if hal ~= nil then
+	    level = hal:read()
+	    hal:close()
+	 end
+	 
+	 return level
+end
+--}}}
 
+--{{{ evaluates the ac adapter state
+function state()
+	 local plug = "charged"
+
+	 local hal = io.popen("hal-get-property --udi "..device.." --key battery.rechargeable.is_discharging")
+	 if hal ~= nil then
+		 if hal:read():match("true") then
+			 plug = "discharging"
+		 else
+			 hal = io.popen("hal-get-property --udi "..device.." --key battery.rechargeable.is_charging")
+			 if hal:read():match("true") then
+				 plug = "charging"
+       end
+		 end
+		 hal:close()
+	 end
+	 
+	 return plug
+end
+---}}}
+
+--{{{ populates bwidget.text with current state symbol and percentage
 function info()
-  -- paths to the relevant files for battery statistics and state
-  local capFile = settings.ipath or "/proc/acpi/battery/BAT0/info"
-  local stateFile = settings.spath or "/proc/acpi/battery/BAT0/state"
-
-  -- open the file containg the battery's capacity, and read
-  local tmpFile = io.open(capFile)
-  local capacity = tmpFile:read("*a"):match("last full capacity:%s+(%d+)")
-  io.close(tmpFile)
-
-  -- get the current remaining batter capacity
-  tmpFile = io.open(stateFile)
-  local tCurrent = tmpFile:read("*all")
-  io.close(tmpFile)
-  local current = string.match(tCurrent,"remaining capacity:%s+(%d+)")
 
   -- calculate remaining %
-  local battery = math.min(math.floor(((current * 100) / capacity)),100)
+  local battery = tonumber(charge())
 
   -- colorize based on remaining battery charge
   if battery < 10 then
@@ -73,18 +98,28 @@ function info()
   end
 
   -- decide which and where to put the charging state indicator
-  local state = string.match(tCurrent,"charging state:%s+(%w+)")
-  if state:match("charged") then
+	local adapter = state()
+  if adapter:match("charged") then
     bwidget.text = "⚡: ↯"..battery
-  elseif state:match("discharging") then
+  elseif adapter:match("discharging") then
     bwidget.text = "⚡: ▼"..battery
   else
     bwidget.text = "⚡: ▲"..battery
   end
 end
+---}}}
 
+--{{{ 
 function init(w, width)
   bwidget = w
   bwidget.width = width or 48
+	local hal = io.popen("hal-find-by-capability --capability battery")
+	if hal ~= nil then
+		device = hal:read()
+		hal:close()
+	end
   info()
 end
+--}}}
+
+-- vim: filetype=lua fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent:
