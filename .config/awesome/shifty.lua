@@ -282,7 +282,7 @@ end
 --  @param scr : optional screen number [default one]
 function tsort(scr)
   local scr = scr or 1
-  local a_tags = #tags[scr]
+  local a_tags = tags[scr]
 
   local k = 1
   -- print(#a_tags, #tags[scr])  -- debug
@@ -486,44 +486,44 @@ function sweep()
 end
 --}}}
 
-    --{{{ getpos : returns a tag to match position
-    --      * originally this function did a lot of client stuff, i think its
-    --      * better to leave what can be done by awful to be done by awful
-    --      *           -perry
-    -- @param pos : the index to find
-    -- @return v : the tag (found or created) at position == 'pos'
-    function getpos(pos)
-      local v = nil
-      local existing = {}
-      local selected = nil
-      local scr = mouse.screen or 1
-      -- search for existing tag assigned to pos
-      for i = 1, screen.count() do
-        local s = awful.util.cycle(screen.count(), scr + i - 1)
-        for j, t in ipairs(screen[s]:tags()) do
-          if awful.tag.getproperty(t,"position") == pos then
-            table.insert(existing, t)
-            if t.selected and s == scr then selected = #existing end
-          end
-        end
+--{{{ getpos : returns a tag to match position
+--      * originally this function did a lot of client stuff, i think its
+--      * better to leave what can be done by awful to be done by awful
+--      *           -perry
+-- @param pos : the index to find
+-- @return v : the tag (found or created) at position == 'pos'
+function getpos(pos)
+  local v = nil
+  local existing = {}
+  local selected = nil
+  local scr = mouse.screen or 1
+  -- search for existing tag assigned to pos
+  for i = 1, screen.count() do
+    local s = awful.util.cycle(screen.count(), scr + i - 1)
+    for j, t in ipairs(screen[s]:tags()) do
+      if awful.tag.getproperty(t,"position") == pos then
+        table.insert(existing, t)
+        if t.selected and s == scr then selected = #existing end
       end
-      if #existing > 0 then
-        -- if makeing another of an existing tag, return the end of the list
-        if selected then v = existing[awful.util.cycle(#existing, selected + 1)] else v = existing[1] end
-      end
-      if not v then
-        -- search for preconf with 'pos' and create it
-        for i, j in pairs(config.tags) do
-          if j.position == pos then v = add({ name = i, position = pos, noswitch = not switch }) end
-        end
-      end
-      if not v then
-        -- not existing, not preconfigured
-        v = add({ position = pos, rename = pos .. ':', no_selectall = true, noswitch = not switch })
-      end
-      return v
     end
-    --}}}
+  end
+  if #existing > 0 then
+    -- if makeing another of an existing tag, return the end of the list
+    if selected then v = existing[awful.util.cycle(#existing, selected + 1)] else v = existing[1] end
+  end
+  if not v then
+    -- search for preconf with 'pos' and create it
+    for i, j in pairs(config.tags) do
+      if j.position == pos then v = add({ name = i, position = pos, noswitch = not switch }) end
+    end
+  end
+  if not v then
+    -- not existing, not preconfigured
+    v = add({ position = pos, rename = pos .. ':', no_selectall = true, noswitch = not switch })
+  end
+  return v
+end
+--}}}
 
     --{{{ init : search shifty.config.tags for initial set of tags to open
     --FIXME: when awesome reloads, this init is too simple, some tags are left 
