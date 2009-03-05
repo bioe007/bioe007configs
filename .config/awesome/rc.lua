@@ -56,14 +56,14 @@ layouts = {
 }
 
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.tile.bottom,  mwfact=0.60, exclusive = false, solitary = false, init = true, position = 1, screen = 1, } ,
+    ["w1"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 1, } ,
     ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
-    ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, nopopup = true, leave_kills = true,                                                               } ,
-    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true, position = 4, spawn = settings.apps.browser  } ,
-    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false,position = 5,spawn = settings.apps.mail     } ,
-    ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true,                                                                } ,
-    ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false,                                                           } ,
-    ["office"] = { rel_index = 1, layout = awful.layout.suit.tile                                                                    } ,
+    ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true , position = 4, spawn = settings.apps.browser  } ,
+    ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, solitary = false, position = 3, nopopup = true, leave_kills = true, } ,
+    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false, position = 5, spawn = settings.apps.mail     } ,
+    ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true , position = 6,} ,
+    ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false, position = 8 } ,
+    ["office"] = { rel_index = 1, layout = awful.layout.suit.tile} ,
 }
 
 shifty.config.apps = {
@@ -156,7 +156,6 @@ mylauncher = awful.widget.launcher({ image = icon_path.."awesome48.png",
 
 -- Create a systray
 mysystray = widget({ type = "systray", align = "right" })
-
 
 --{{{ -- WIBOX for each screen and add it
 mywibox = {}
@@ -282,7 +281,7 @@ battery.init(batterywidget)
 awful.hooks.timer.register(50, battery.info)
 -- }}}
 
--- {{ volume widget
+-- {{{ volume widget
 pb_volume =  widget({ type = "progressbar", name = "pb_volume", align = "right" })
 volume.init(pb_volume)
 pb_volume:buttons({
@@ -292,7 +291,7 @@ pb_volume:buttons({
   button({ }, 5, function () volume.vol("down","1") end),
   button({ }, 2, function () volume.vol() end),
 })
-
+-- }}}
 
 --{{{ -- STATUSBAR
 for s = 1, screen.count() do
@@ -374,9 +373,9 @@ end
 
 table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
 table.insert(globalkeys, key({ modkey }, "Right", awful.tag.viewnext))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "j", awful.tag.viewprev))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "k", awful.tag.viewnext))
-table.insert(globalkeys, key({ modkey }, "Escape", awful.tag.history.restore))
+table.insert(globalkeys, key({ modkey }, "space", awful.tag.viewnext))
+table.insert(globalkeys, key({ modkey, "Shift" }, "space", awful.tag.viewprev))
+table.insert(globalkeys, key({ modkey }, "Escape",  awful.tag.history.restore))
 table.insert(globalkeys, key({ modkey }, "e", revelation.revelation ))
 
 table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "j", shifty.prev))
@@ -396,15 +395,43 @@ table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "t", function() shift
 table.insert(globalkeys, key({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end))
 
 -- application launching and controlling, Win+Alt
-table.insert(globalkeys, key({ modkey, "Mod1" },"w", function () awful.util.spawn(settings.apps.browser) end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"m", function () awful.util.spawn(settings.apps.mail) end))
+table.insert(globalkeys, key({ modkey},"w", function () 
+  for k,v in pairs(shifty.tags[1]) do
+    if v.name == "web" then
+      awful.tag.viewonly(v)
+      return
+    end
+  end
+  awful.util.spawn(settings.apps.browser) end))
+table.insert(globalkeys, key({ modkey },"m", function () 
+  for k,v in pairs(shifty.tags[1]) do
+    if v.name == "mail" then
+      awful.tag.viewonly(v)
+      return
+    end
+  end
+  awful.util.spawn(settings.apps.mail) end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end))
-table.insert(globalkeys, key({ modkey, "Mod1", "Shift" },"v", function () awful.util.spawn('VBoxSDL -vm xp2') end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"g", function () awful.util.spawn('gschem') end))
+table.insert(globalkeys, key({ modkey, "Mod1", "Shift" },"v", function ()
+  for k,v in pairs(shifty.tags[1]) do
+    if v.name == "vbox" then
+      awful.tag.viewonly(v)
+      return
+    end
+  end
+  awful.util.spawn('VBoxSDL -vm xp2') end))
+table.insert(globalkeys, key({ modkey },"g", function ()
+  for k,v in pairs(shifty.tags[1]) do
+    if v.name == "dz" then
+      awful.tag.viewonly(v)
+      return
+    end
+  end
+  awful.util.spawn('gschem') end))
 table.insert(globalkeys, key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"v", function () awful.util.spawn('TERM=rxvt-256color ' .. settings.apps.terminal..' -name vim -e sh -c vim') end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"v", function () awful.util.spawn('/home/perry/.bin/vim-start.sh') end))
 table.insert(globalkeys, key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end))
 -- }}}
 
@@ -421,8 +448,8 @@ table.insert(globalkeys, key({ modkey, "Mod1" },"l", function () awful.util.spaw
 -- {{{ - MEDIA
 table.insert(globalkeys, key({ modkey, "Mod1" },"p", mocp.play ))
 table.insert(globalkeys, key({ },"XF86AudioPlay", mocp.play ))
-table.insert(globalkeys, key({ modkey, "Ctrl" },"j", function() mocp.play(); mocp.popup() end ))
-table.insert(globalkeys, key({ modkey, "Ctrl" },"k", function () awful.util.spawn('mocp --previous');mocp.popup() end))
+table.insert(globalkeys, key({ modkey, "Mod1" },"j", function() mocp.play(); mocp.popup() end ))
+table.insert(globalkeys, key({ modkey, "Mod1" },"k", function () awful.util.spawn('mocp --previous');mocp.popup() end))
 table.insert(globalkeys, key({ "" }, "XF86AudioRaiseVolume", function() volume.vol("up","5") end))
 table.insert(globalkeys, key({ "" }, "XF86AudioLowerVolume", function() volume.vol("down","5") end))
 table.insert(globalkeys, key({ modkey }, "XF86AudioRaiseVolume",function() volume.vol("up","2")end))
@@ -442,18 +469,18 @@ table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
 -- }}} 
 
 -- {{{ - CLIENT MANIPULATION
-hiddenClient = nil
-table.insert(clientkeys, key({modkey, "Shift"},"q", function ()
-  local c = client.focus()
-
-  if hiddenClient == nil then
-    hiddenClient= c
-    c.hide = true
-  else
-    c.hide = false
-    hiddenClient = nil
-  end
-end))
+-- hiddenClient = nil
+-- table.insert(clientkeys, key({modkey, "Shift"},"q", function ()
+  -- local c = client.focus()
+-- 
+  -- if hiddenClient == nil then
+    -- hiddenClient= c
+    -- c.hide = true
+  -- else
+    -- c.hide = false
+    -- hiddenClient = nil
+  -- end
+-- end))
 
 
 table.insert(clientkeys, key({ modkey, "Shift" },"t", function () toggleTitlebar(client.focus) end)) -- show client on all tags
@@ -486,23 +513,16 @@ end))
 -- }}}
 
 -- {{{ - LAYOUT MANIPULATION
-table.insert(globalkeys, key({ modkey }, "l", 
-  function () 
-    awful.tag.incmwfact(0.05) 
-    -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
-  end))
-table.insert(globalkeys, key({ modkey }, "h", 
-  function () 
-    awful.tag.incmwfact(-0.05) 
-    -- setMwbox(markup.font("Verdana 10", "MWFact: " .. awful.tag.selected().mwfact ))
-  end))
+table.insert(globalkeys, key({ modkey }, "l", function () awful.tag.incmwfact(0.05) end))
+table.insert(globalkeys, key({ modkey }, "h", function () awful.tag.incmwfact(-0.05) end))
+table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incmwfact(0.05) end))
+table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incmwfact(-0.05) end))
 
 table.insert(globalkeys, key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end))
 table.insert(globalkeys, key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end))
-table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end))
-table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end))
-table.insert(globalkeys, key({ modkey }, "space", function () awful.layout.inc(layouts, 1) end))
-table.insert(globalkeys, key({ modkey, "Shift" }, "space", function () awful.layout.inc(layouts, -1) end))
+-- table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end))
+-- table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end))
+table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () awful.layout.inc(layouts, 1) end))
 -- }}}
 
 -- {{{ - PROMPT
@@ -548,24 +568,14 @@ root.keys(globalkeys)
 -- Hook function to execute when focusing a client.
 awful.hooks.focus.register(function (c)
   if not awful.client.ismarked(c) then
-    if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
-      c.border_width = beautiful.border_width
       c.border_color = beautiful.border_focus
-    else
-      c.border_width = 0
-    end
   end
 end)
 
 -- Hook function to execute when unfocusing a client.
 awful.hooks.unfocus.register(function (c)
   if not awful.client.ismarked(c) then
-    if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
-      c.border_width = beautiful.border_width
       c.border_color = beautiful.border_normal
-    else
-      c.border_width = 0
-    end
   end
 end)
 
@@ -648,10 +658,8 @@ awful.hooks.manage.register( function (c)
   -- Set key bindings
   c:keys(clientkeys)
 
-  -- awful.placement.no_overlap(c)
-  awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
   if awful.client.floating.get(c) then
-    awful.client.moveresize(10,43,0,0,c)
+    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
   end
 
 end)
@@ -670,6 +678,17 @@ awful.hooks.arrange.register(function (screen)
     local c = awful.client.focus.history.get(screen, 0)
     if c then client.focus = c end
   end
+  -- dwm border mod
+  local tiledclients = awful.client.tiled(screen)
+  if (#tiledclients == 0 ) then return end
+  if (#tiledclients == 1) or (layout == 'max') then
+    tiledclients[1].border_width = 0
+  else
+    for unused, current in pairs(tiledclients) do
+      current.border_width = beautiful.border_width
+    end
+  end
+
 end)
 
 -- }}}
