@@ -38,7 +38,6 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local wibox = wibox
--- local print = print
 module("shifty")
 
 tags = {}
@@ -241,21 +240,15 @@ function set(t, args)
 
   if rel_index then
     idx = awful.util.cycle(limit, (t_idx or sel_idx) + rel_index)
-    -- print("shifty244: rel_index ="..rel_index.." idx="..idx)
   elseif index then
     idx = awful.util.cycle(limit, index)
-    -- print("shifty247: index ="..index.." idx="..idx)
   elseif awful.tag.getproperty(t,"position") then
     idx = pos2idx(awful.tag.getproperty(t,"position"), t.screen)
-    -- print("shifty250: position ="..awful.tag.getproperty(t,"position").." idx="..idx)
     if t_idx and t_idx < idx then idx = idx - 1 end
-    -- print("shifty251: position ="..awful.tag.getproperty(t,"position").." idx="..idx)
   elseif config.remember_index and index_cache[t.name] then
     idx = index_cache[t.name]
-    -- print("shifty254: rememberidx idx="..idx)
   elseif not t_idx then
     idx = #tags[t.screen] + 1
-    -- print("shifty257: not t_idx="..idx)
   end
 
   -- if tag already in the table, remove it
@@ -265,8 +258,6 @@ function set(t, args)
   if idx then
     index_cache[t.name] = idx
     table.insert(tags[t.screen], idx, t)
-    -- else
-    -- table.insert(tags[t.screen], t)
   end
 
   -- refresh taglist and return
@@ -285,7 +276,6 @@ function tsort(scr)
   local a_tags = screen[scr]:tags()
 
   local k = 1
-  -- print(#a_tags, #tags[scr])  -- debug
   for i=1,#a_tags do
     cfg_t = config.tags[a_tags[i].name]
     -- bail if this is not a configured tag?
@@ -349,23 +339,17 @@ end
 --{{{ del : delete a tag
 --@param tag : the tag to be deleted [current tag]
 function del(tag)
-  -- print("entered del")
   local scr = mouse.screen or 1
   local sel = awful.tag.selected(scr)
   local t = tag or sel
   local idx = tag2index(scr,t)
 
-  -- print("shifty.del():380: number of tags= ", #screen[scr]:tags())
   -- should a tag ever be deleted if #tags[scr] < 1 ?
   if #screen[scr]:tags() > 1 then
-    -- print("have > 1 tags")
+    if #(t:clients()) > 0 then return end
 
     -- this is also checked in sweep, but where is better? 
     if not awful.tag.getproperty(t,"persist") then
-      -- print(t.name.." is not persistent")
-      -- don't wipe tags if active clients on them?
-      -- if #(t:clients()) > 0 then print("clients here"); return end
-
       index_cache[t.name] = idx
 
       -- if the current tag is being deleted, move to a previous
@@ -378,7 +362,6 @@ function del(tag)
         end
       end
 
-      -- print("setting t.name="..t.name.." to nil".." idx="..idx.." t.position="..(awful.tag.getproperty(t,"position") or "none"))
       t.screen = nil
       table.remove(tags[scr], idx)
       awful.tag.history.update(scr)
@@ -519,117 +502,117 @@ function getpos(pos)
 end
 --}}}
 
-    --{{{ init : search shifty.config.tags for initial set of tags to open
-    --FIXME: when awesome reloads, this init is too simple, some tags are left 
-    --with empty properties, this makes them resistant to normal del and sweep
-    --functions
-    --
-    function init()
-      for i, j in pairs(config.tags) do
-        if j.init then 
-          add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) 
-        end
-      end
+--{{{ init : search shifty.config.tags for initial set of tags to open
+--FIXME: when awesome reloads, this init is too simple, some tags are left 
+--with empty properties, this makes them resistant to normal del and sweep
+--functions
+--
+function init()
+  for i, j in pairs(config.tags) do
+    if j.init then 
+      add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) 
     end
-    --}}}
+  end
+end
+--}}}
 
-    --{{{ count : utility function returns the index of a table element
-    --FIXME: this is currently used only in remove_dup, so is it really necessary?
-    function count(table, element)
-      local v = 0
-      for i, e in pairs(table) do
-        if element == e then v = v + 1 end
-      end
-      return v
+--{{{ count : utility function returns the index of a table element
+--FIXME: this is currently used only in remove_dup, so is it really necessary?
+function count(table, element)
+  local v = 0
+  for i, e in pairs(table) do
+    if element == e then v = v + 1 end
+  end
+  return v
+end
+--}}}
+
+--{{{ remove_dup : used by shifty.completion when more than one
+--tag at a position exists
+function remove_dup(table)
+  local v = {}
+  for i, entry in ipairs(table) do
+    if count(v, entry) == 0 then v[#v+ 1] = entry end
+  end
+  return v
+end
+--}}}
+
+--{{{ completion : prompt completion
+--
+function completion(cmd, cur_pos, ncomp)
+  local list = {}
+
+  -- gather names from config.tags
+  for n, p in pairs(config.tags) do table.insert(list, n) end
+
+  -- gather names from config.apps
+  for i, p in pairs(config.apps) do
+    if p.tag then table.insert(list, p.tag) end
+  end
+
+  -- gather names from existing tags, starting with the current screen
+  for i = 1, screen.count() do
+    local s = awful.util.cycle(screen.count(), mouse.screen + i - 1)
+    for j, t in pairs(tags[s]) do table.insert(list, t.name) end
+  end
+
+  -- gather names from history
+  f = io.open(awful.util.getdir("cache") .. "/history_tags")
+  for name in f:lines() do table.insert(list, name) end
+  f:close()
+
+  -- do nothing if it's pointless
+  if cur_pos ~= #cmd + 1 and cmd:sub(cur_pos, cur_pos) ~= " " then
+    return cmd, cur_pos
+  elseif #cmd == 0 then
+    return cmd, cur_pos
+  end
+
+  -- find matching indices
+  local matches = {}
+  for i, j in ipairs(list) do
+    if list[i]:find("^" .. cmd:sub(1, cur_pos)) then
+      table.insert(matches, list[i])
     end
-    --}}}
+  end
 
-    --{{{ remove_dup : used by shifty.completion when more than one
-    --tag at a position exists
-    function remove_dup(table)
-      local v = {}
-      for i, entry in ipairs(table) do
-        if count(v, entry) == 0 then v[#v+ 1] = entry end
-      end
-      return v
-    end
-    --}}}
+  -- no matches
+  if #matches == 0 then return cmd, cur_pos end
 
-    --{{{ completion : prompt completion
-    --
-    function completion(cmd, cur_pos, ncomp)
-      local list = {}
+  -- remove duplicates
+  matches = remove_dup(matches)
 
-      -- gather names from config.tags
-      for n, p in pairs(config.tags) do table.insert(list, n) end
+  -- cycle
+  while ncomp > #matches do ncomp = ncomp - #matches end
 
-      -- gather names from config.apps
-      for i, p in pairs(config.apps) do
-        if p.tag then table.insert(list, p.tag) end
-      end
+  -- return match and position
+  return matches[ncomp], cur_pos
+end
+--}}}
 
-      -- gather names from existing tags, starting with the current screen
-      for i = 1, screen.count() do
-        local s = awful.util.cycle(screen.count(), mouse.screen + i - 1)
-        for j, t in pairs(tags[s]) do table.insert(list, t.name) end
-      end
+-- function info(t)
+-- if not t then return end
+-- 
+-- local v = "<b>     [ " .. t.name .." ]</b>\n\n" ..
+-- "  screen = " .. t.screen .. "\n" ..
+-- "selected = " .. tostring(t.selected) .. "\n" ..
+-- "  layout = " .. t.layout .. "\n" ..
+-- "  mwfact = " .. t.mwfact .. "\n"  ..
+-- " nmaster = " .. t.nmaster .. "\n" ..
+-- "    ncol = " .. t.ncol .. "\n" ..
+-- "#clients = " .. #t:clients() .. "\n"
+-- 
+-- for op, val in pairs(data[t]) do
+-- v = v .. "\n" .. op .. " = " .. tostring(val)
+-- end
+-- 
+-- return v
+-- end
 
-      -- gather names from history
-      f = io.open(awful.util.getdir("cache") .. "/history_tags")
-      for name in f:lines() do table.insert(list, name) end
-      f:close()
+awful.hooks.tags.register(sweep)
+awful.hooks.arrange.register(sweep)
+awful.hooks.clients.register(sweep)
+awful.hooks.manage.register(match)
 
-      -- do nothing if it's pointless
-      if cur_pos ~= #cmd + 1 and cmd:sub(cur_pos, cur_pos) ~= " " then
-        return cmd, cur_pos
-      elseif #cmd == 0 then
-        return cmd, cur_pos
-      end
-
-      -- find matching indices
-      local matches = {}
-      for i, j in ipairs(list) do
-        if list[i]:find("^" .. cmd:sub(1, cur_pos)) then
-          table.insert(matches, list[i])
-        end
-      end
-
-      -- no matches
-      if #matches == 0 then return cmd, cur_pos end
-
-      -- remove duplicates
-      matches = remove_dup(matches)
-
-      -- cycle
-      while ncomp > #matches do ncomp = ncomp - #matches end
-
-      -- return match and position
-      return matches[ncomp], cur_pos
-    end
-    --}}}
-
-    -- function info(t)
-    -- if not t then return end
-    -- 
-    -- local v = "<b>     [ " .. t.name .." ]</b>\n\n" ..
-    -- "  screen = " .. t.screen .. "\n" ..
-    -- "selected = " .. tostring(t.selected) .. "\n" ..
-    -- "  layout = " .. t.layout .. "\n" ..
-    -- "  mwfact = " .. t.mwfact .. "\n"  ..
-    -- " nmaster = " .. t.nmaster .. "\n" ..
-    -- "    ncol = " .. t.ncol .. "\n" ..
-    -- "#clients = " .. #t:clients() .. "\n"
-    -- 
-    -- for op, val in pairs(data[t]) do
-    -- v = v .. "\n" .. op .. " = " .. tostring(val)
-    -- end
-    -- 
-    -- return v
-    -- end
-
-    awful.hooks.tags.register(sweep)
-    awful.hooks.arrange.register(sweep)
-    awful.hooks.clients.register(sweep)
-    awful.hooks.manage.register(match)
-
-    -- vim: foldmethod=marker:filetype=lua:expandtab:shiftwidth=2:tabstop=2:softtabstop=2:encoding=utf-8:textwidth=80
+-- vim: foldmethod=marker:filetype=lua:expandtab:shiftwidth=2:tabstop=2:softtabstop=2:encoding=utf-8:textwidth=80
