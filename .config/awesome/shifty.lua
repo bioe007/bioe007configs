@@ -338,8 +338,10 @@ function add(args)
   else rename(t, "", nil, true)
   end
 
-  -- return the tag
-  tsort(scr)
+  -- if this is a configured tag, then sort
+  if config.tags[name] ~= nil then
+    tsort(scr)
+  end
   return t
 end
 --}}}
