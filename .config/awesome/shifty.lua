@@ -275,14 +275,14 @@ function set(t, args)
 end
 --}}}
 
---{{{ tsort : to resort awesomes tags to follow shifty's config positions
+--{{{ tsort : to re-sort awesomes tags to follow shifty's config positions
 -- FIXME- this function is still being dev, so don't use it unless
 -- you feel adventurous ;)
 --
 --  @param scr : optional screen number [default one]
 function tsort(scr)
   local scr = scr or 1
-  local a_tags = tags[scr]
+  local a_tags = screen[scr]:tags()
 
   local k = 1
   -- print(#a_tags, #tags[scr])  -- debug
@@ -297,22 +297,13 @@ function tsort(scr)
           while cfg_t.position > (awful.tag.getproperty(a_tags[i+k],"position") or 9999999) do
             k = k+1
           end
-          -- print("misorderd tag " .. a_tags[i].name .. " pos= " .. ( awful.tag.getproperty(a_tags[i],"position") or "nil") .. " index= "..i.."  relidx="..k) -- debug
           set(a_tags[i],{rel_index=k})
+          tsort(scr)
         end
       end
     end
   end
 
-  -- tags[scr] = screen[scr]:tags()
-  -- debugging
-  for k,t in pairs(a_tags) do
-    -- print("tag " .. awful.tag.getproperty(t,"name") .. " pos= " .. (awful.tag.getproperty(t,"position") or 20) .. " index= "..k)
-  end
-
-  for k,t in pairs(tags[scr]) do
-    -- print("tag " .. k .. " name= ")
-  end
 end
 --}}}
 
@@ -348,6 +339,7 @@ function add(args)
   end
 
   -- return the tag
+  tsort(scr)
   return t
 end
 --}}}
