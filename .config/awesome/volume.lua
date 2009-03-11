@@ -11,6 +11,9 @@ function vol(mode, percent)
   if mode == "update" then
     local fd = io.popen("amixer -c " .. config.cardid .. " -- sget " .. config.channel)
     local status = fd:read("*a")
+    if fd ~= nil then
+      fd:close()
+    end
     local volume = string.match(status, "(%d?%d?%d)%%")
 
     status = string.match(status, "%[(o[^%]]*)%]")
