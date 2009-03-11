@@ -2,14 +2,14 @@
 # a helper script to update my awesome mocp widget
 #
 # this script accepts key value pairs and passes them to the mocp module via awesome-client
-echo time >> ~/mocdbg
+# echo time >> ~/mocdbg
 if [ "$#" -lt "2" ] ; then
-  echo 'setting stop' >> ~/mocdbg
+  # echo 'setting stop' >> ~/mocdbg
   echo 'mocp.update("state","STOP")' | awesome-client
 else
   while [ "$#" -ge "2" ] ; do
-    echo $1 $2 >> ~/mocdbg
+    # echo $1 $2 >> ~/mocdbg
     echo 'mocp.update("'$1'","'$2'")' | awesome-client
-    shift; shift
+    shift 2
   done
 fi
