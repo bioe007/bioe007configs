@@ -30,7 +30,7 @@ local function state()
 
   fd = io.popen('pgrep -fx mocp')
 
-  if fd:read() ~= nil then 
+  if fd ~= nil then 
     fd:close()
 
     fd = io.popen('mocp -i')
@@ -69,6 +69,7 @@ local function setTitle()
       end
     end
   end
+  fd:close()
 
 end
 ---}}}
