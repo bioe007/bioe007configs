@@ -82,7 +82,7 @@ shifty.config.defaults = {
     layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
     run = function(tag) 
         naughty.notify({ text = markup.fg( beautiful.fg_normal,  markup.font("monospace",markup.fg(beautiful.fg_sb_hi, 
-                            "Shifty Created: "..shifty.tag2index(mouse.screen,tag).." : "..tag.name))) }) 
+                            "Shifty Created: "..(awful.tag.getproperty(tag,"position") or shifty.tag2index(mouse.screen,tag)).." : "..tag.name))) }) 
     end,
 }
 
@@ -272,7 +272,7 @@ fswidget = widget({ type = "textbox", name = "fswidget", align = "right" })
 fs.init( fswidget, 
         { interval = 59, 
           parts = {   ['sda7'] = {label = "/"},
-                      ['sda5'] = {label = "dat"} } })
+                      ['sda5'] = {label = "d"} } })
 -- }}}
 
 -- {{{ -- BATTERY 
@@ -355,20 +355,17 @@ clientkeys = {}
 
 -- {{{ - TAGS BINDINGS
 for i=1, ( shifty.config.maxtags or 9 ) do
-  table.insert(globalkeys, key({ modkey }, i,
-  function () local t =  awful.tag.viewonly(shifty.getpos(i)) end))
-  table.insert(globalkeys, key({ modkey, "Control" }, i,
-  function () local t = shifty.getpos(i); t.selected = not t.selected end))
+  table.insert(globalkeys, key({ modkey }, i, function () local t =  awful.tag.viewonly(shifty.getpos(i)) end))
+  table.insert(globalkeys, key({ modkey, "Control" }, i, function () local t = shifty.getpos(i); t.selected = not t.selected end))
   table.insert(globalkeys, key({ modkey, "Shift" }, i,
-  function () 
-    if client.focus then 
-      t = shifty.getpos(i)
-      awful.client.movetotag(t)
-      awful.tag.viewonly(t)
-    end 
-  end))
-  table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
-  function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
+    function () 
+      if client.focus then 
+        t = shifty.getpos(i)
+        awful.client.movetotag(t)
+        awful.tag.viewonly(t)
+      end 
+    end))
+  table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i, function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
 end
 
 table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
@@ -615,16 +612,7 @@ awful.hooks.manage.register( function (c)
     button({ }, 1, function (c) client.focus = c; c:raise() end),
     button({ modkey }, 1, function (c) awful.mouse.client.move() end),
     button({ modkey }, 3, awful.mouse.client.resize ),
-    -- button({ modkey, "Shift" }, 1, function (c) revelation.revelation()
-    -- end )
   })
-  -- New client may not receive focus
-  -- if they're not focusable, so set border anyway.
-  if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
-    c.border_width = beautiful.border_width
-  else
-    c.border_width = 0
-  end
   c.border_color = beautiful.border_normal
 
   -- Check if the application should be floating.
