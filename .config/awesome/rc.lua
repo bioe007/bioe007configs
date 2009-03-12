@@ -139,21 +139,6 @@ end
 -- }}}
 
 -- {{{ -- Statusbar, menus & Widgets
--- Create a laucher widget and a main menu
-myawesomemenu = {
-    { "manual", settings.apps.terminal .. " -e man awesome" },
-    { "edit config", settings.apps.editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
-    { "restart", awesome.restart },
-    { "quit", awesome.quit }
-}
-
-mymainmenu = awful.menu.new({ items = { { "awesome", myawesomemenu, icon_path.."/awesome16.png" },
-                                        { "open terminal", terminal } }
-                           })
-
-mylauncher = awful.widget.launcher({ image = icon_path.."awesome48.png",
-                                     menu = mymainmenu })
-
 -- Create a systray
 mysystray = widget({ type = "systray", align = "right" })
 
@@ -317,7 +302,6 @@ for s = 1, screen.count() do
     mywibox[s] = wibox({ position = "top", fg = beautiful.fg_normal, bg = beautiful.bg_normal })
     -- Add widgets to the wibox - order matters
     mywibox[s].widgets = { 
-        mylauncher,
         mypromptbox[s], widget_spacer_l,
         mylayoutbox[s], widget_spacer_l,
         mytaglist[s], widget_spacer_l,
