@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+# simple script to print text files
+#
+header="$1 : `date | cut --fields=2,3,4,5,6 -d ' '` "
+fname="/tmp/${UID}-enscript-tmp.ps"
+enscript -b "${header}" -Ec -C --word-wrap -f Courier7 -p ${fname} "$1" 
+lpr -r $fname 
