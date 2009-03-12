@@ -520,6 +520,7 @@ table.insert(globalkeys, key({ modkey, "Shift" }, "l", function () awful.tag.inc
 -- table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end))
 -- table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end))
 table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () awful.layout.inc(layouts, 1) end))
+table.insert(globalkeys, key({ modkey, "Mod1","Shift" }, "l", function () awful.layout.inc(layouts, -1) end))
 -- }}}
 
 -- {{{ - PROMPT
