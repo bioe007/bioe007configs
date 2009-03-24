@@ -99,8 +99,6 @@ function rename(tag, prefix, no_selectall, initial)
   local text = prefix or t.name or ""
   local before = t.name
 
-  prmptbx = taglist[scr][tag2index(scr,t)*2]
-
   if t == awful.tag.selected(scr) then 
     bg = theme.bg_focus or '#535d6c'
     fg = theme.fg_urgent or '#ffffff'
@@ -110,26 +108,18 @@ function rename(tag, prefix, no_selectall, initial)
   end
   text = '<span color="'..fg..'">'..text..'</span>'
 
-  awful.prompt.run(
-  { fg_cursor = fg, bg_cursor = bg, ul_cursor = "single",
-  prompt = tag2index(scr,t)..": ", selectall = not no_selectall,  },
-  prmptbx,
-  function (name) if name:len() > 0 then 
-    t.name = name; 
-  end
-end, 
-completion,
-awful.util.getdir("cache") .. "/history_tags", nil,
-function ()
-  if initial and t.name == before then
-    del(t)
-  else
-    awful.tag.setproperty(t,"initial",true)
-    set(t)
-  end
-  awful.hooks.user.call("tags", scr)
-end
-)
+  awful.prompt.run( { 
+    fg_cursor = fg, bg_cursor = bg, ul_cursor = "single",
+    prompt = tag2index(scr,t)..": ", selectall = not no_selectall,  },
+    taglist[scr][tag2index(scr,t)*2],
+    function (name) if name:len() > 0 then t.name = name; end end, 
+    completion,
+    awful.util.getdir("cache") .. "/history_tags", nil,
+    function () if initial and t.name == before then del(t)
+      else awful.tag.setproperty(t,"initial",true); set(t) end
+      awful.hooks.user.call("tags", scr)
+    end
+    )
 end
 --}}}
 
@@ -146,10 +136,10 @@ function send(idx)
 end
 --}}}
 
--- FIXME: both of these seem broken
 function send_next() send(1) end
 function send_prev() send(-1) end
 
+-- FIXME: both of these seem broken
 function shift_next() set(awful.tag.selected(), { rel_index = 1 }) end
 function shift_prev() set(awful.tag.selected(), { rel_index = -1 }) end
 
@@ -158,7 +148,6 @@ function shift_prev() set(awful.tag.selected(), { rel_index = -1 }) end
 --@param scr: screen number
 function pos2idx(pos, scr)
   local v = 1
-  -- local a_tags = screen[scr]:tags()
   if pos and scr then
     for i = #tags[scr] , 1, -1 do
       local t = tags[scr][i]
