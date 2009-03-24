@@ -61,6 +61,7 @@ alias :q="exit"
 alias p="sudo pacman"
 alias y="yaourt"
 alias cds="cd $SANDBOX"
+alias mv="mv -i"
 
 # 
 # correctly set path for octave use
