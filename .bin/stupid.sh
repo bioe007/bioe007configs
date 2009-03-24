@@ -27,6 +27,7 @@ else
   while [[ -z "$DISPLAY" ]] ; do
     sleep 1
   done
+  sudo xrandr --output LVDS --mode "1280x800"
   sudo xrandr --newmode "1280x1024_59.00" 106.97 1280 1360 1496 1712 1024 1025 1028 1059 -HSync +Vsync
   sudo xrandr --addmode VGA "1280x1024_59.00"
   sudo xrandr --output VGA --mode "1280x1024_59.00" --left-of LVDS
