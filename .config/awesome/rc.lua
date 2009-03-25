@@ -34,6 +34,7 @@ settings.apps.editor_cmd = settings.apps.terminal .. " -e " .. settings.apps.edi
 
 -- Default modkey.
 modkey = "Mod4"
+shifty.modkey = modkey
 
 --{{{ layouts
 layouts = {
@@ -47,39 +48,43 @@ layouts = {
 
 --{{{ configured tags
 shifty.config.tags = {
-    -- ["w0"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, } ,
-    ["w1"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 1, } ,
-    ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
+    ["w2"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 2} ,
+    ["w1"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 1, slave = true } ,
+    ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false, slave = false } ,
     ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true , position = 4, spawn = settings.apps.browser  } ,
     ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, solitary = false, position = 3, nopopup = true, leave_kills = true, } ,
-    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false, position = 5, spawn = settings.apps.mail     } ,
+    ["mail"] =   { layout = awful.layout.suit.tile,         mwfact=0.55, exclusive = false, solitary = false, position = 5, spawn = settings.apps.mail, slave = true     } ,
     ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true , position = 6,} ,
     ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false, position = 8 } ,
-    ["office"] = { rel_index = 1, layout = awful.layout.suit.tile} ,
+    ["office"] = { position = 9, layout = awful.layout.suit.tile} ,
 }
 --}}}
 
---{{{ app matching rules
+--{{{ application matching rules
 shifty.config.apps = {
-         { match = { "Navigator","Vimperator"                              } , tag = "web"                            } ,
-         { match = { "Shredder.*"                                          } , tag = "mail",                          } ,
-         { match = { "OpenOffice.*"                                        } , tag = "office",                        } ,
+         { match = { "Navigator","Vimperator","Gran Paradiso"              } , tag = "web"                            } ,
+         { match = { "Shredder.*"                                          } , tag = "mail", slave = false            } ,
+         { match = { "OpenOffice.*"                                        } , tag = "office", slave = false          } ,
          { match = { "pcb","gschem","PCB_Log"                              } , tag = "dz",                            } ,
+         { match = { "pcb","gschem"                                        } , tag = "dz", slave = false              } ,
          { match = { "acroread","Apvlv"                                    } , tag = "ds",                            } ,
          { match = { "VBox.*","VirtualBox.*"                               } , tag = "vbx",                           } ,
-         { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw"          } , tag = "media",         nopopup = true, } ,
+         { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw","easytag"} , tag = "media",         nopopup = true, } ,
          { match = { "XDosEmu", "MPlayer", "gimp", "Gnuplot", "galculator" } , float = true                           } ,
          { match = { "VirtualBox","glxgears",                              } , float = true,                           } ,
+         { match = { "urxvt","URxvt", "sakura"                             } , honorsizehints = false,                           } ,
 }
 --}}}
 
-shifty.config.defaults = {
-  layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
-  run = function(tag) 
-    naughty.notify({ text = markup.fg( beautiful.fg_normal,  markup.font("monospace",markup.fg(beautiful.fg_sb_hi, 
-    "Shifty Created: "..(awful.tag.getproperty(tag,"position") or shifty.tag2index(mouse.screen,tag)).." : "..tag.name))) }) 
-  end,
-}
+shifty.config.defaults={  layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
+                            run = function(tag) 
+                            naughty.notify({ 
+                              text = markup.fg( beautiful.fg_normal,  markup.font("monospace",markup.fg(beautiful.fg_sb_hi, 
+                                                "Shifty Created: "
+                                                  ..(awful.tag.getproperty(tag,"position") or shifty.tag2index(mouse.screen,tag))..
+                                                    " : "..tag.name))) 
+                            }) end,
+                       }
 
 -- }}} 
 
@@ -167,7 +172,7 @@ mocp.setwidget(mocpwidget)
 mocpwidget:buttons({
     button({ }, 1, function () mocp.play(); mocp.popup() end ),
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
-    button({ }, 4, function () awful.util.spawn('mocp --toggle-pause') end),
+    button({ }, 4, function () mocp.play(); mocp.popup() end),
     button({ }, 3, function () awful.util.spawn('mocp --previous'); mocp.popup() end),
     button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
@@ -229,13 +234,13 @@ for s = 1, screen.count() do
         mylayoutbox[s], widget_spacer_l,
         mytaglist[s], widget_spacer_l,
         mytasklist[s], widget_spacer_r,
-        fswidget, widget_spacer_r,
-        batterywidget, widget_spacer_r,
-        memwidget, widget_spacer_r,
-        cpuwidget, widget_spacer_r,
-        mocpwidget, 
-        pb_volume, widget_spacer_r,
-        datewidget,widget_spacer_r, s == 1 and mysystray or nil
+        s == 1 and fswidget or nil, s == 1 and widget_spacer_r,
+        s == 1 and batterywidget, s == 1 and widget_spacer_r,
+        s == 1 and memwidget, s == 1 and widget_spacer_r,
+        s == 1 and cpuwidget, s == 1 and widget_spacer_r,
+        s == 1 and mocpwidget, 
+        s == 1 and pb_volume, s == 1 and widget_spacer_r,
+        s == 1 and datewidget,s == 1 and widget_spacer_r, s == 1 and mysystray or nil
     } 
     mywibox[s].screen = s
 end
@@ -367,20 +372,6 @@ table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
 -- }}} 
 
 -- {{{ - CLIENT MANIPULATION
--- hiddenClient = nil
--- table.insert(clientkeys, key({modkey, "Shift"},"q", function ()
-  -- local c = client.focus()
--- 
-  -- if hiddenClient == nil then
-    -- hiddenClient= c
-    -- c.hide = true
-  -- else
-    -- c.hide = false
-    -- hiddenClient = nil
-  -- end
--- end))
-
-
 table.insert(clientkeys, key({ modkey, "Shift" },"t", function () toggleTitlebar(client.focus) end)) -- show client on all tags
 table.insert(clientkeys, key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end)) -- show client on all tags
 table.insert(clientkeys, key({ modkey }, "m", function (c) c.maximized_horizontal = not c.maximized_horizontal         -- maximize client
@@ -407,6 +398,7 @@ table.insert(clientkeys, key({ "Mod1" }, "Tab", function ()
   end
   awful.client.focus.byidx(-1)
 end))
+shifty.config.clientkeys = clientkeys
 -- }}}
 
 -- {{{ - LAYOUT MANIPULATION
@@ -495,59 +487,6 @@ awful.hooks.mouse_enter.register(function (c)
     and awful.client.focus.filter(c) then
     client.focus = c
   end
-end)
-
--- Hook function to execute when a new client appears.
-awful.hooks.manage.register( function (c)
-  -- If we are not managing this application at startup, move it to the screen where the mouse is.
-  -- We only do it for filtered windows (i.e. no dock, etc).
-  if not startup and awful.client.focus.filter(c) then
-    c.screen = mouse.screen
-  end
-
-  -- Add mouse bindings
-  c:buttons({
-    button({ }, 1, function (c) client.focus = c; c:raise() end),
-    button({ modkey }, 1, function (c) awful.mouse.client.move() end),
-    button({ modkey }, 3, awful.mouse.client.resize ),
-  })
-  c.border_color = beautiful.border_normal
-
-  -- Check if the application should be floating.
-  local cls = c.class
-  local inst = c.instance
-  if ( string.find( c.name,"Preferences" ) ) ~= nil then
-    -- a fix for ffx's preferences window. should clean this up
-    awful.titlebar.add( c, { modkey = modkey } )
-    awful.client.floating.set( c,true )
-  end
-
-  if c.name == "glxgears" then 
-    awful.client.floating.set( c,true )
-    awful.titlebar.add( c, { modkey = modkey } )
-  end
-
-  if not settings.new_become_master then
-    awful.client.setslave(c)
-  end
-
-  -- Honor size hints: for all but terminals
-  if c.class == "urxvt" or c.class == "URxvt" then
-    c.size_hints_honor = false
-  else
-    c.size_hints_honor = true
-  end
-
-  -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
-  client.focus = c
-
-  -- Set key bindings
-  c:keys(clientkeys)
-
-  if awful.client.floating.get(c) then
-    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
-  end
-
 end)
 
 -- Hook function to execute when arranging the screen (tag switch, new client, etc)
