@@ -63,16 +63,16 @@ shifty.config.tags = {
 --{{{ application matching rules
 shifty.config.apps = {
          { match = { "Navigator","Vimperator","Gran Paradiso"              } , tag = "web"                            } ,
-         { match = { "Shredder.*"                                          } , tag = "mail", slave = false            } ,
-         { match = { "OpenOffice.*"                                        } , tag = "office", slave = false          } ,
-         { match = { "pcb","gschem","PCB_Log"                              } , tag = "dz",                            } ,
+         { match = { "Shredder.*"                                          } , tag = "mail"                           } ,
+         { match = { "OpenOffice.*"                                        } , tag = "office"                         } ,
          { match = { "pcb","gschem"                                        } , tag = "dz", slave = false              } ,
+         { match = { "PCB_Log","Status"                                    } , tag = "dz", slave = true               } ,
          { match = { "acroread","Apvlv"                                    } , tag = "ds",                            } ,
          { match = { "VBox.*","VirtualBox.*"                               } , tag = "vbx",                           } ,
          { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw","easytag"} , tag = "media",         nopopup = true, } ,
-         { match = { "XDosEmu", "MPlayer", "gimp", "Gnuplot", "galculator" } , float = true                           } ,
-         { match = { "VirtualBox","glxgears",                              } , float = true,                           } ,
-         { match = { "urxvt","URxvt", "sakura"                             } , honorsizehints = false,                           } ,
+         { match = { "XDosEmu", "MPlayer", "Gnuplot", "galculator"         } , float = true                           } ,
+         { match = { "VirtualBox",                                         } , float = true,                          } ,
+         { match = { "urxvt","URxvt", "sakura"                             } , honorsizehints = false, slave = true   } ,
 }
 --}}}
 
@@ -153,7 +153,7 @@ wicked.register(datewidget, wicked.widgets.date,
 
 -- }}}
 
--- {{{ -- CPU widgets
+-- {{{ -- CPU widget
 cpuwidget = widget({ type = 'textbox', name = 'cpuwidget', align = 'right' })
 cpuwidget.width = 40
 wicked.register(cpuwidget, wicked.widgets.cpu, 'cpu:' .. markup.fg(beautiful.fg_sb_hi, '$1'))
@@ -518,16 +518,4 @@ end)
 
 -- }}}
 
--- local hks = awful.hooks.registered() 
--- for i,h in pairs(hks) do
-    -- print("hook name " .. h)
--- end
--- hks = nil
-
--- print("calling findhook")
--- if findhook("timer","fs")==true then 
-    -- print("found fs: ")
--- else
-    -- print("not found")
--- end
 -- vim:set filetype=lua fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent: --
