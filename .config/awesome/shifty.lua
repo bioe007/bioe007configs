@@ -38,28 +38,18 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local wibox = wibox
-local print = print
 module("shifty")
 
 tags = {}
 index_cache = {}
 config = {}
-config.tags = {} -- ["foobar"] = { layout = awful.layout.suit.tile }, init = true }
+config.tags = {}
 config.apps = {}
-config.defaults = {} --[[ { layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
-                    run = function(tag) 
-                    naughty.notify({ 
-                              text = markup.fg( beautiful.fg_normal,  markup.font("monospace",markup.fg(beautiful.fg_sb_hi, 
-                               "Shifty Created: "..(awful.tag.getproperty(tag,"position") or shifty.tag2index(mouse.screen,tag))..
-                               " : "..tag.name))) 
-                    }) end,
-                  } --]]--
-
+config.defaults = {}
 config.guess_name = true
 config.guess_position = true
 config.remember_index = true
 config.clientkeys = {}
-
 
 -- create a table for each screen
 for s = 1, screen.count() do tags[s] = {} end
@@ -465,8 +455,8 @@ function match(c)
   end
 
   -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
-  awful.client.focus = c
-  awful.client.focus:raise()
+  client.focus = c
+  client.focus:raise()
 end
 --}}}
 
@@ -495,7 +485,7 @@ end
 --{{{ getpos : returns a tag to match position
 --      * originally this function did a lot of client stuff, i think its
 --      * better to leave what can be done by awful to be done by awful
---
+--      *           -perry
 -- @param pos : the index to find
 -- @return v : the tag (found or created) at position == 'pos'
 function getpos(pos)
@@ -531,31 +521,12 @@ function getpos(pos)
 end
 --}}}
 
-function set(k,v)
-  if k == nil or v == nil then return end
-  config[k] = v
-end
-
-local function initfail()
-  print("something is wrong with shifty init")
-end
-
 --{{{ init : search shifty.config.tags for initial set of tags to open
 --FIXME: when awesome reloads, this init is too simple, some tags are left 
 --with empty properties, this makes them resistant to normal del and sweep
 --functions
 --
--- function init(args, tagwidget)
 function init()
-  -- if args == nil or args.tags == nil then initfail() end
-
-  -- for k, _ in pairs(args) do
-    -- print(k,args.k)
-    -- config[k] = args.k
-  -- end
-
-  -- config.taglist = tagwidget
-
   numscr = screen.count()
   for i, j in pairs(config.tags) do
     if j.init and (j.screen <= numscr) then
@@ -638,7 +609,9 @@ function completion(cmd, cur_pos, ncomp)
   -- return match and position
   return matches[ncomp], cur_pos
 end
---}}} 
+--}}}
+
+
 awful.hooks.tags.register(sweep)
 awful.hooks.arrange.register(sweep)
 awful.hooks.clients.register(sweep)
