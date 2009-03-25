@@ -7,11 +7,12 @@
 -- (perry<dot>hargrave[at]gmail[dot]com)
 --
 -- TODO:
--- * pressing mod+esc to flip to previous tag after creating a new one.
---      - this 'merges' the two tags instead of flipping back to it
+-- * init: if awesome reloads, some stray tags are initialized (eg urxvt ) but 
+-- their properties are left blank
 --
--- * init: if awesome reloads, some stray tags are initialized (eg urxvt ) but their
---      properties are left blank
+-- * fix multi-headed setups. i want one set of tags across all monitors, be
+-- able to move across any of them on either monitor, combine them from either
+-- monitor, etc etc.
 --
 -- * awful.tag history is stupid, deleted tags are not removed from history so
 -- switching mod+esc after deleting takes to nil tag
@@ -90,11 +91,12 @@ end
 --@param prefix: if any prefix is to be added
 --@param no_selectall:
 --@param initial: boolean if this is initial creation of tag
+--
+-- FIXME: promptbox is located incorrectly for scr == 2
 function rename(tag, prefix, no_selectall, initial)
   local theme = beautiful.get()
-  local scr = (tag and tag.screen) or mouse.screen or 1
-
-  local t = tag or awful.tag.selected(scr)
+  local t = tag or awful.tag.selected(mouse.screen)
+  local scr = tag.screen 
   local bg = nil
   local fg = nil
   local text = prefix or t.name or ""
@@ -421,6 +423,9 @@ function match(c)
 
   -- set properties of floating clients
   if awful.client.floating.get(c) then
+
+    c.border_width = beautiful.border_width
+    c.border_color = beautiful.border_normal
     if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
       awful.titlebar.add( c, { modkey = modkey } )
     end
