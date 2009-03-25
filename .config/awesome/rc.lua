@@ -46,6 +46,7 @@ layouts = {
 }
 --}}}
 
+-- config = {}
 --{{{ configured tags
 shifty.config.tags = {
     ["w2"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 2} ,
@@ -85,7 +86,8 @@ shifty.config.defaults={  layout = awful.layout.suit.tile.bottom, ncol = 1, floa
                                                     " : "..tag.name))) 
                             }) end,
                        }
-
+-- shifty.config.guess_name = true
+-- shifty.config.guess_position = true
 -- }}} 
 
 -- {{{ -- OWN functions
@@ -248,7 +250,7 @@ end
 
 -- shifty initialization needs to go after the taglist has been created
 shifty.taglist = mytaglist
-shifty.init()
+shifty.init( )
 -- }}}
 
 -- {{{ Mouse bindings
@@ -399,6 +401,7 @@ table.insert(clientkeys, key({ "Mod1" }, "Tab", function ()
   awful.client.focus.byidx(-1)
 end))
 shifty.config.clientkeys = clientkeys
+-- shifty.set("clientkeys", clientkeys)
 -- }}}
 
 -- {{{ - LAYOUT MANIPULATION
