@@ -427,7 +427,7 @@ function match(c)
   -- if not matched or matches currently selected, see if we can leave at the current tag
   local sel = awful.tag.selected(c.screen)
   if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
-    if not (awful.tag.getproperty(sel,"exclusive") or awful.tag.getproperty(sel,"solitary")) or intrusive or typ == "dialog" then 
+    if typ == "dialog" or not (awful.tag.getproperty(sel,"exclusive") or awful.tag.getproperty(sel,"solitary")) or intrusive  then 
       client.focus = c
       client.focus:raise()
       return
