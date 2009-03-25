@@ -389,28 +389,31 @@ function match(c)
   c:keys(config.clientkeys)
 
 
-  -- try matching client to config.apps
-  for i, a in ipairs(config.apps) do
-    if a.match then
-      for k, w in ipairs(a.match) do
-        if cls:find(w) or inst:find(w) or name:find(w) or role:find(w) or typ:find(w) then
-          if a.tag and config.tags[a.tag] and config.tags[a.tag].screen then
-            target_screen = config.tags[a.tag].screen
-          elseif a.screen then
-            target_screen = a.screen
-          else
-            target_screen = c.screen
+  -- try matching client to config.apps unless its a dialog, then don't do
+  -- anything
+  if typ ~= "dialog" then
+    for i, a in ipairs(config.apps) do
+      if a.match then
+        for k, w in ipairs(a.match) do
+          if cls:find(w) or inst:find(w) or name:find(w) or role:find(w) or typ:find(w) then
+            if a.tag and config.tags[a.tag] and config.tags[a.tag].screen then
+              target_screen = config.tags[a.tag].screen
+            elseif a.screen then
+              target_screen = a.screen
+            else
+              target_screen = c.screen
+            end
+            if a.tag then
+              target_tag = a.tag
+            end
+            if a.float then awful.client.floating.set( c, true) end
+            if a.geometry ~=nil then c:fullgeometry(a.geometry) end
+            if a.slave ~=nil and a.slave then awful.client.setslave(c) end
+            if a.nopopup ~=nil then nopopup = true end
+            if a.intrusive ~=nil then intrusive = true end
+            if a.fullscreen ~=nil then c.fullscreen = a.fullscreen end
+            if a.honorsizehints ~=nil then c.size_hints_honor = a.honorsizehints end
           end
-          if a.tag then
-            target_tag = a.tag
-          end
-          if a.float then awful.client.floating.set( c, true) end
-          if a.geometry ~=nil then c:fullgeometry(a.geometry) end
-          if a.slave ~=nil and a.slave then awful.client.setslave(c) end
-          if a.nopopup ~=nil then nopopup = true end
-          if a.intrusive ~=nil then intrusive = true end
-          if a.fullscreen ~=nil then c.fullscreen = a.fullscreen end
-          if a.honorsizehints ~=nil then c.size_hints_honor = a.honorsizehints end
         end
       end
     end
