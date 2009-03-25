@@ -49,6 +49,7 @@ config.defaults = {}
 config.guess_name = true
 config.guess_position = true
 config.remember_index = true
+config.clientkeys = {}
 
 -- create a table for each screen
 for s = 1, screen.count() do tags[s] = {} end
@@ -368,6 +369,23 @@ function match(c)
   local role = c.role
   local typ = c.type
 
+  -- If we are not managing this application at startup, move it to the screen where the mouse is.
+  -- We only do it for filtered windows (i.e. no dock, etc).
+  if not startup and awful.client.focus.filter(c) then
+    c.screen = mouse.screen
+  end
+
+  -- Add mouse bindings
+  c:buttons({
+    button({ }, 1, function (c) client.focus = c; c:raise() end),
+    button({ modkey }, 1, function (c) awful.mouse.client.move() end),
+    button({ modkey }, 3, awful.mouse.client.resize ),
+  })
+  c.border_color = beautiful.border_normal
+  -- Set key bindings
+  c:keys(config.clientkeys)
+
+
   -- try matching client to config.apps
   for i, a in ipairs(config.apps) do
     if a.match then
@@ -390,11 +408,13 @@ function match(c)
             end
           end
           if a.geometry ~=nil then c:fullgeometry(a.geometry) end
-          if a.slave ~=nil then awful.client.setslave(c) end
+          if a.slave ~=nil then 
+            if a.slave then awful.client.setslave(c) end
+          end
           if a.nopopup ~=nil then nopopup = true end
           if a.intrusive ~=nil then intrusive = true end
           if a.fullscreen ~=nil then c.fullscreen = a.fullscreen end
-          if a.honorsizehints ~=nil then c.honorsizehints = a.honorsizehints end
+          if a.honorsizehints ~=nil then c.size_hints_honor = a.honorsizehints end
         end
       end
     end
@@ -404,6 +424,7 @@ function match(c)
   local sel = awful.tag.selected(c.screen)
   if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
     if not (awful.tag.getproperty(sel,"exclusive") or awful.tag.getproperty(sel,"solitary")) or intrusive or typ == "dialog" then 
+      client.focus = c
       return
     end 
   end
@@ -427,6 +448,13 @@ function match(c)
   if target and (not (awful.tag.getproperty(target,"nopopup") or nopopup) and target ~= sel) then
     awful.tag.viewonly(target)
   end
+
+  if awful.client.floating.get(c) then
+    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
+  end
+
+  -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
+  client.focus = c
 end
 --}}}
 
@@ -497,9 +525,10 @@ end
 --functions
 --
 function init()
+  numscr = screen.count()
   for i, j in pairs(config.tags) do
-    if j.init then 
-      add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) 
+    if j.init and (j.screen <= numscr) then
+        add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) 
     end
   end
 end
@@ -580,24 +609,6 @@ function completion(cmd, cur_pos, ncomp)
 end
 --}}}
 
--- function info(t)
--- if not t then return end
--- 
--- local v = "<b>     [ " .. t.name .." ]</b>\n\n" ..
--- "  screen = " .. t.screen .. "\n" ..
--- "selected = " .. tostring(t.selected) .. "\n" ..
--- "  layout = " .. t.layout .. "\n" ..
--- "  mwfact = " .. t.mwfact .. "\n"  ..
--- " nmaster = " .. t.nmaster .. "\n" ..
--- "    ncol = " .. t.ncol .. "\n" ..
--- "#clients = " .. #t:clients() .. "\n"
--- 
--- for op, val in pairs(data[t]) do
--- v = v .. "\n" .. op .. " = " .. tostring(val)
--- end
--- 
--- return v
--- end
 
 awful.hooks.tags.register(sweep)
 awful.hooks.arrange.register(sweep)
