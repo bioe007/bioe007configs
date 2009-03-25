@@ -360,14 +360,17 @@ function del(tag)
 end
 --}}}
 
---{{{ match : handles app->tag matching 
+--{{{ match : handles app->tag matching, a replacement for the manage hook in
+--            rc.lua
 --@param c : client to be matched
 function match(c)
   local target_tag, target_screen, target, nopopup, intrusive = nil
-  local cls = c.class
-  local inst = c.instance
-  local role = c.role
+  -- type is the only field we're guaranteed
   local typ = c.type
+  local cls = c.class or ""
+  local inst = c.instance or ""
+  local role = c.role or ""
+  local name = c.name or ""
 
   -- If we are not managing this application at startup, move it to the screen where the mouse is.
   -- We only do it for filtered windows (i.e. no dock, etc).
@@ -390,7 +393,7 @@ function match(c)
   for i, a in ipairs(config.apps) do
     if a.match then
       for k, w in ipairs(a.match) do
-        if (role and role:find(w)) or (inst and inst:find(w)) or (cls and cls:find(w)) or (typ and typ:find(w)) then
+        if cls:find(w) or inst:find(w) or name:find(w) or role:find(w) or typ:find(w) then
           if a.tag and config.tags[a.tag] and config.tags[a.tag].screen then
             target_screen = config.tags[a.tag].screen
           elseif a.screen then
@@ -401,16 +404,9 @@ function match(c)
           if a.tag then
             target_tag = a.tag
           end
-          if a.float then  -- set client floating
-            awful.client.floating.set( c, true)
-            if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
-              awful.titlebar.add( c, { modkey = modkey } )
-            end
-          end
+          if a.float then awful.client.floating.set( c, true) end
           if a.geometry ~=nil then c:fullgeometry(a.geometry) end
-          if a.slave ~=nil then 
-            if a.slave then awful.client.setslave(c) end
-          end
+          if a.slave ~=nil and a.slave then awful.client.setslave(c) end
           if a.nopopup ~=nil then nopopup = true end
           if a.intrusive ~=nil then intrusive = true end
           if a.fullscreen ~=nil then c.fullscreen = a.fullscreen end
@@ -420,11 +416,20 @@ function match(c)
     end
   end
 
+  -- set properties of floating clients
+  if awful.client.floating.get(c) then
+    if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
+      awful.titlebar.add( c, { modkey = modkey } )
+    end
+    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
+  end
+
   -- if not matched or matches currently selected, see if we can leave at the current tag
   local sel = awful.tag.selected(c.screen)
   if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
     if not (awful.tag.getproperty(sel,"exclusive") or awful.tag.getproperty(sel,"solitary")) or intrusive or typ == "dialog" then 
       client.focus = c
+      client.focus:raise()
       return
     end 
   end
@@ -449,12 +454,9 @@ function match(c)
     awful.tag.viewonly(target)
   end
 
-  if awful.client.floating.get(c) then
-    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
-  end
-
   -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
   client.focus = c
+  client.focus:raise()
 end
 --}}}
 
