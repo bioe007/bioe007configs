@@ -289,7 +289,7 @@ end
 
 --{{{ tsort : to re-sort awesomes tags to follow shifty's config positions
 --
---  @param scr : optional screen number [default one]
+--  @param scr : optional screen number [mouse.screen]
 function tsort(scr)
   local scr = scr or mouse.screen
   local a_tags = screen[scr]:tags()
@@ -301,10 +301,11 @@ function tsort(scr)
     if cfg_t ~= nil then
       if awful.tag.getproperty(a_tags[i+1], "position") ~= nil then
         if cfg_t.position > awful.tag.getproperty(a_tags[i+1], "position") then
-
           k = 1
-          while cfg_t.position > (awful.tag.getproperty(a_tags[i+k],"position") or 9999999) do
+          nextpos = awful.tag.getproperty(a_tags[i+k], "position")
+          while nextpos ~= nil and cfg_t.position > nextpos and k <= #a_tags do
             k = k+1
+            nextpos = awful.tag.getproperty(a_tags[i+k], "position")
           end
           set(a_tags[i],{rel_index=k})
           tsort(scr)
@@ -464,7 +465,7 @@ function match(c)
   if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
     if typ == "dialog" or not (awful.tag.getproperty(sel,"exclusive") or awful.tag.getproperty(sel,"solitary")) or intrusive  then 
       client.focus = c
-      client.focus:raise()
+      c:raise()
       return
     end 
   end
@@ -491,7 +492,7 @@ function match(c)
 
   -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
   client.focus = c
-  client.focus:raise()
+  c:raise()
 end
 --}}}
 
