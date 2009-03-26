@@ -254,7 +254,7 @@ abstracts = {
   topicsbend = "<<";
 
   # prompt = "%K$*#%n ";
-  prompt = "%R>%n ";
+  prompt = "%b>%n ";
 
   sb = " %c %n$* %c%n";
   sbmode = "[%c+%n$*]";
