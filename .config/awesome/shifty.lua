@@ -179,8 +179,9 @@ end
 --
 --@param scr : the screen to move tag to
 --@param t : the tag to be moved [awful.tag.selected()]
+--@return the tag
 function tagtoscr(scr,t)
-  if not scr then return end
+  if not scr or scr < 1 or scr > screen.count() then return end
   local otag = t or awful.tag.selected() 
 
   local vargs = {}
@@ -190,12 +191,10 @@ function tagtoscr(scr,t)
   if #otag:clients() >= 0 then
     for _ , c in ipairs(otag:clients()) do
       c.screen = scr
-      c:tags( {otag })
+      c:tags( { otag } )
     end
   end
   awful.tag.history.restore()
-  awful.screen.focus(scr)
-  awful.tag.viewonly(otag)
 
   -- if this is a configured tag, then sort
   if config.tags[name] ~= nil then
@@ -292,7 +291,7 @@ end
 --
 --  @param scr : optional screen number [default one]
 function tsort(scr)
-  local scr = scr or 1
+  local scr = scr or mouse.screen
   local a_tags = screen[scr]:tags()
 
   local k = 1
