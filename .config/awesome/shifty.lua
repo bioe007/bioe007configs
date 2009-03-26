@@ -96,7 +96,7 @@ end
 function rename(tag, prefix, no_selectall, initial)
   local theme = beautiful.get()
   local t = tag or awful.tag.selected(mouse.screen)
-  local scr = tag.screen 
+  local scr = tag.screen
   local bg = nil
   local fg = nil
   local text = prefix or t.name or ""
@@ -174,6 +174,36 @@ function select(args)
   end
 end
 --}}}
+
+---{{{ tagtoscr : move an entire tag to another screen
+--
+--@param scr : the screen to move tag to
+--@param t : the tag to be moved [awful.tag.selected()]
+function tagtoscr(scr,t)
+  if not scr then return end
+  local otag = t or awful.tag.selected() 
+
+  local vargs = {}
+  vargs.screen = scr
+  set(otag,vargs)
+
+  if #otag:clients() >= 0 then
+    for _ , c in ipairs(otag:clients()) do
+      c.screen = scr
+      c:tags( {otag })
+    end
+  end
+  awful.tag.history.restore()
+  awful.screen.focus(scr)
+  awful.tag.viewonly(otag)
+
+  -- if this is a configured tag, then sort
+  if config.tags[name] ~= nil then
+    tsort(scr)
+  end
+  return otag
+end
+---}}}
 
 --{{{ set : set a tags properties
 --@param t: the tag
@@ -259,8 +289,6 @@ end
 --}}}
 
 --{{{ tsort : to re-sort awesomes tags to follow shifty's config positions
--- FIXME- this function is still being dev, so don't use it unless
--- you feel adventurous ;)
 --
 --  @param scr : optional screen number [default one]
 function tsort(scr)
