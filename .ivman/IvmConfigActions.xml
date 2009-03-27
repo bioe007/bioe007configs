@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<ivm:ActionsConfig version="0.2" xmlns:ivm="http://www.eikke.com/ivm">
+    <!-- Read the IvmConfigActions.xml man page for details on how to edit this file. -->
+
+	<ivm:Option name="checkOnInit" value="true" />
+
+    <!-- mount everything we can -->
+    <ivm:Match name="ivm.mountable" value="true">
+        <ivm:Option name="mount" value="true" />
+    </ivm:Match>
+
+    <!-- rip CDs with audio tracks and no data tracks -->
+    <!--
+    <ivm:Match name="hal.volume.disc.type" value="cd_rom">
+        <ivm:Match name="hal.volume.disc.has_audio" value="true">
+            <ivm:Match name="hal.volume.disc.has_data" value="false">
+                <ivm:Option name="exec" value="kaudiocreator" />
+            </ivm:Match>
+        </ivm:Match>
+    </ivm:Match>
+    -->
+
+    <!-- When attaching a wireless card, if we connect to network with Nickname 'QUT-Wireless',
+         start 'vpnc-connect' to connect to VPN; when we remove wireless card, disconnect
+         from the VPN. Replace the 'NETID' with your own wireless network Nickname.
+		 As you can see, this script, being fairly big, is probably a good candidate to put into
+		 a separate little scriptlet. -->
+    <!--
+    <ivm:Match name="hal.info.category" value="net.80211">
+        <ivm:Option name="exec" value="NETID=&apos;QUT-Wireless&apos;; i=0; while ! { /sbin/ifconfig $hal.net.interface$ | grep 'inet addr' &amp;>/dev/null || [ $i -gt 45 ]; }; do sleep 1; i=`expr $i + 1`; done; ps aux | grep -v grep | grep vpnc &amp;> /dev/null || { c=0; while ! { [ &quot;`/usr/sbin/iwconfig $hal.net.interface$ 2>&amp;1 | sed -n -r -e 's/.*Nickname:\&quot;([^\&quot;]+)\&quot;.*/\1/ p'`&quot; = &quot;${NETID}&quot;] || [ $c -ge 10 ]; }; do sleep 1; c=`expr $c + 1`; done; [ $c -lt 10 ] &amp;&amp; sudo vpnc-connect; }" />
+        <ivm:Option name="execun" value="sudo vpnc-disconnect" />
+    </ivm:Match>
+   -->
+
+    <!-- autoplay video DVDs in Xine (change PLAYER and PLAYEROPT to use a different media player -->
+    <!--
+    <ivm:Match name="hal.volume.disc.is_videodvd" value="true">
+        <ivm:Option name="exec" value="PLAYER='xine'; PLAYEROPT='-f dvd://'; pumount '$hal.volume.mount_point$' &amp;&amp; ${PLAYER} ${PLAYEROPT}$hal.block.device$" />
+    </ivm:Match>
+    -->
+
+   <!-- ======================= awesome notifications ========================== -->
+   <ivm:Match name="hal.info.category" value="storage">
+       <ivm:Match name="hal.storage.bus" value="usb">
+           <ivm:Option name="exec" value="awenotify 'USB: $hal.info.vendor$ $hal.info.product$'" />
+       </ivm:Match>
+   </ivm:Match>
+   <!--
+   <ivm:Match name="hal.info.category" value="scanner">
+       <ivm:Match name="hal.storage.bus" value="usb">
+           <ivm:Option name="exec" value="kdialog &#45;-passivepopup 'USB scanner detected: $hal.info.vendor$ $hal.info.product$' 4" />
+       </ivm:Match>
+   </ivm:Match>
+   <ivm:Match name="hal.info.category" value="printer">
+        <ivm:Match name="hal.info.bus" value="usb">
+           <ivm:Option name="exec" value="kdialog &#45;-passivepopup 'USB printer detected: $hal.info.vendor$ $hal.info.product$' 4" />
+        </ivm:Match>
+   </ivm:Match>
+   -->
+
+</ivm:ActionsConfig>
