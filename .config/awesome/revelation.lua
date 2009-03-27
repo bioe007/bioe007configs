@@ -112,11 +112,9 @@ function revelation(class, fn, s)
 
   local function restore()
     local t = awful.tag.selected()
-    for i,c in pairs(allc) do
-      if not oset.clients[c] then
-        awful.client.toggletag(t,c)
-      end
-    end
+  
+    t:clients({})
+    t:clients(oset.clients)
     awful.tag.setproperty(t,"layout",oset.layout)
     awful.tag.setnmaster(oset.nmaster,t)
     awful.tag.setmwfact(oset.mwfact, t)
