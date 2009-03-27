@@ -5,7 +5,7 @@
 -- @release v3.1-rc3-14-gc7ee83f
 -- 
 -- note: rewritten by Perry Hargrave perry)dot(hargrave)at(gmail.com
--- note: this is a version of revelation.lua modified for awesome 3.1.223+
+-- note: this is a version of revelation.lua modified for awesome 3.2-50
 --
 ---------------------------------------------------------------------------
 local math = math
