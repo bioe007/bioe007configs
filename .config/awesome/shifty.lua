@@ -175,7 +175,7 @@ function select(args)
 end
 --}}}
 
----{{{ tagtoscr : move an entire tag to another screen
+--{{{ tagtoscr : move an entire tag to another screen
 --
 --@param scr : the screen to move tag to
 --@param t : the tag to be moved [awful.tag.selected()]
@@ -322,7 +322,11 @@ end
 --
 function add(args)
   if not args then args = {} end
-  local scr = args.screen or mouse.screen --FIXME test handling of screen arg more
+  local scr = mouse.screen 
+  -- check that args.scr is valid number
+  if args.scr and (args.scr > 0) and (args.screen <= screen.count()) then 
+    scr = args.scr 
+  end
   local name = args.name or ( args.rename and args.rename .. "_" ) or "_" --FIXME: pretend prompt '_'
 
   -- initialize a new tag object and its data structure
