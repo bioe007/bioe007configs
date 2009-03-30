@@ -21,6 +21,7 @@ local capi =
   mouse = mouse,
   screen = screen
 }
+local print = print
 --- Exposé implementation
 module("revelation")
 
@@ -90,7 +91,7 @@ end
 -- @param fn A binary function f(t, n) to set the layout for tag t for n clients, or nil for the default layout.
 -- @param s The screen to consider clients of, or nil for "current screen".
 function revelation(class, fn, s)
-  local screen = s or capi.mouse.screen
+  local scr = s or capi.mouse.screen
   local t = awful.tag.selected()
 
   local oset = {}
@@ -99,22 +100,14 @@ function revelation(class, fn, s)
   oset.nmaster = awful.tag.getnmaster(t)
   oset.layout = awful.tag.getproperty(t,"layout")
 
-  oset.clients = t.clients(t)
-
-  local allc = capi.client.get(screen)
-  if #allc == 0 then
-    return
-  end
-
   awful.tag.setproperty(t,"layout",awful.layout.suit.fair )
+  awful.tag.viewmore( capi.screen[scr]:tags() )
 
-  t:clients(allc)
+  awful.hooks.user.call("arrange", scr)
 
   local function restore()
     local t = awful.tag.selected()
   
-    t:clients({})
-    t:clients(oset.clients)
     awful.tag.setproperty(t,"layout",oset.layout)
     awful.tag.setnmaster(oset.nmaster,t)
     awful.tag.setmwfact(oset.mwfact, t)
@@ -124,6 +117,5 @@ function revelation(class, fn, s)
     capi.keygrabber.stop()
   end
 
-  awful.tag.viewonly(t)
   capi.keygrabber.run(keyboardhandler(restore))
 end
