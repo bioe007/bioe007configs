@@ -569,8 +569,8 @@ end
 function init()
   numscr = screen.count()
   for i, j in pairs(config.tags) do
-    if j.init and (j.screen <= numscr) then
-        add({ name = i, persist = true, screen = j.screen, layout = j.layout, mwfact = j.mwfact }) 
+    if j.init and ((j.screen or 1) <= numscr) then
+        add({ name = i, persist = true, screen = (j.screen or 1), layout = j.layout, mwfact = j.mwfact }) 
     end
   end
 end
