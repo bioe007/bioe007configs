@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+text="$@"
+
+cmd='echo naughty.notify({text="'${text}'"})'
+$cmd | awesome-client
+
+# echo $(date) : awenotify : "$@" : "$cmd" | tee -a  ~/awenotifydbg
