@@ -458,6 +458,7 @@ function match(c)
     if config.defaults.floatBars then       -- add a titlebar if requested in config.defaults
       awful.titlebar.add( c, { modkey = modkey } )
     end
+    awful.placement.centered(c, c.transient_for)
     awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
   end
 
