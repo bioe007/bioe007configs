@@ -321,134 +321,131 @@ globalkeys =
 
   key({ modkey},"w", function () 
     for s = 1, screen.count() do 
-      for k,v in pairs(shifty.tags[s]) do
-        if v.name == "web" then
-          awful.tag.viewonly(v)
-          return
-        end
+      t = shifty.name2tag("web",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
       end
     end
-    awful.util.spawn(settings.apps.browser) end),
-    key({ modkey },"m", function () 
-      for s = 1, screen.count() do 
-        for k,v in pairs(shifty.tags[s]) do
-          if v.name == "mail" then
-            awful.tag.viewonly(v)
-            return
-          end
-        end
+    awful.util.spawn(settings.apps.browser) 
+  end),
+  key({ modkey },"m", function () 
+    for s = 1, screen.count() do 
+      t = shifty.name2tag("mail",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
       end
-      awful.util.spawn(settings.apps.mail) 
-    end),
-    key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end),
-    key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end),
-    key({ modkey, "Mod1", "Shift" },"v", function ()
-      for s = 1, screen.count() do 
-        for k,v in pairs(shifty.tags[s]) do
-          if v.name == "vbox" then
-            awful.tag.viewonly(v)
-            return
-          end
-        end
+    end
+    awful.util.spawn(settings.apps.mail) 
+  end),
+  key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end),
+  key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end),
+  key({ modkey, "Mod1", "Shift" },"v", function ()
+    for s = 1, screen.count() do 
+      t = shifty.name2tag("vbox",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
       end
-      awful.util.spawn('VBoxSDL -vm xp2')
-    end),
-    key({ modkey },"g", function ()
-      for s = 1, screen.count() do 
-      for k,v in pairs(shifty.tags[s]) do
-        if v.name == "dz" then
-          awful.tag.viewonly(v)
-          return
-        end
+    end
+    awful.util.spawn('VBoxSDL -vm xp2')
+  end),
+  key({ modkey },"g", function ()
+    for s = 1, screen.count() do 
+      t = shifty.name2tag("vbox",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
       end
+    end
+    awful.util.spawn('gschem')
+  end),
+  key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end),
+  key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end),
+  key({ modkey, "Mod1" },"v", function () awful.util.spawn('/home/perry/.bin/vim-start.sh') end),
+  key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end),
+  -- }}}
+
+  -- {{{ - POWER
+  key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end),
+  key({ modkey, "Mod1" },"s", function () 
+    os.execute('sudo pm-suspend')
+    awful.util.spawn('slock')
+  end),
+  key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end),
+  key({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end),
+  -- }}} 
+
+  -- {{{ - MEDIA
+  key({ modkey, "Mod1" },"p", mocp.play ),
+  key({ },"XF86AudioPlay", mocp.play ),
+  key({ modkey },"Down", function() mocp.play(); mocp.popup() end ),
+  key({ modkey },"Up", function () awful.util.spawn('mocp --previous');mocp.popup() end),
+  key({ }, "XF86AudioRaiseVolume", function() volume.vol("up","5") end),
+  key({ }, "XF86AudioLowerVolume", function() volume.vol("down","5") end),
+  key({ modkey }, "XF86AudioRaiseVolume",function() volume.vol("up","2")end),
+  key({ modkey }, "XF86AudioLowerVolume", function() volume.vol("down","2")end),
+  key({ },"XF86AudioMute", function() volume.vol() end),
+  key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end),
+  key({ },"XF86AudioNext", mocp.play ),
+  key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end),
+  -- }}} 
+
+  -- {{{ - SPECIAL keys
+  key({ modkey, "Control" }, "r", function ()
+    mypromptbox[mouse.screen].text = awful.util.escape(awful.util.restart())
+  end),
+  key({ modkey, "Shift" }, "q", awesome.quit),
+  -- }}} 
+
+  -- {{{ - LAYOUT MANIPULATION
+  key({ modkey }, "l", function () awful.tag.incmwfact(0.05) end),
+  key({ modkey }, "h", function () awful.tag.incmwfact(-0.05) end),
+  key({ modkey, "Control" }, "l", function () awful.tag.incmwfact(0.05) end),
+  key({ modkey, "Control" }, "h", function () awful.tag.incmwfact(-0.05) end),
+
+  key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end),
+  key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end),
+  -- table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end),
+  -- table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end),
+  key({ modkey, "Mod1" }, "l", function () awful.layout.inc(layouts, 1) end),
+  key({ modkey, "Mod1","Shift" }, "l", function () awful.layout.inc(layouts, -1) end),
+  -- }}}
+
+  -- {{{ - PROMPT
+  key({ modkey }, "F1", 
+  function ()
+    awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," >> ") }, mypromptbox[mouse.screen], awful.util.spawn, awful.completion.shell,
+    awful.util.getdir("cache") .. "/history")
+  end),
+
+  key({ modkey }, "F4", 
+  function ()
+    awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," L> ") }, mypromptbox[mouse.screen], awful.util.eval, awful.prompt.bash,
+    awful.util.getdir("cache") .. "/history_eval")
+  end),
+
+  key({ modkey, "Ctrl" }, "i", 
+  function ()
+    local s = mouse.screen
+    if mypromptbox[s].text then
+      mypromptbox[s].text = nil
+    elseif client.focus then
+      mypromptbox[s].text = nil
+      if client.focus.class then
+        mypromptbox[s].text = "Class: " .. client.focus.class .. " "
       end
-      awful.util.spawn('gschem')
-    end),
-    key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end),
-    key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end),
-    key({ modkey, "Mod1" },"v", function () awful.util.spawn('/home/perry/.bin/vim-start.sh') end),
-    key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end),
-    -- }}}
-
-    -- {{{ - POWER
-    key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end),
-    key({ modkey, "Mod1" },"s", function () 
-      os.execute('sudo pm-suspend')
-      awful.util.spawn('slock')
-    end),
-    key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end),
-    key({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end),
-    -- }}} 
-
-    -- {{{ - MEDIA
-    key({ modkey, "Mod1" },"p", mocp.play ),
-    key({ },"XF86AudioPlay", mocp.play ),
-    key({ modkey },"Down", function() mocp.play(); mocp.popup() end ),
-    key({ modkey },"Up", function () awful.util.spawn('mocp --previous');mocp.popup() end),
-    key({ }, "XF86AudioRaiseVolume", function() volume.vol("up","5") end),
-    key({ }, "XF86AudioLowerVolume", function() volume.vol("down","5") end),
-    key({ modkey }, "XF86AudioRaiseVolume",function() volume.vol("up","2")end),
-    key({ modkey }, "XF86AudioLowerVolume", function() volume.vol("down","2")end),
-    key({ },"XF86AudioMute", function() volume.vol() end),
-    key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end),
-    key({ },"XF86AudioNext", mocp.play ),
-    key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end),
-    -- }}} 
-
-    -- {{{ - SPECIAL keys
-    key({ modkey, "Control" }, "r", function ()
-      mypromptbox[mouse.screen].text = awful.util.escape(awful.util.restart())
-    end),
-    key({ modkey, "Shift" }, "q", awesome.quit),
-    -- }}} 
-
-    -- {{{ - LAYOUT MANIPULATION
-    key({ modkey }, "l", function () awful.tag.incmwfact(0.05) end),
-    key({ modkey }, "h", function () awful.tag.incmwfact(-0.05) end),
-    key({ modkey, "Control" }, "l", function () awful.tag.incmwfact(0.05) end),
-    key({ modkey, "Control" }, "h", function () awful.tag.incmwfact(-0.05) end),
-
-    key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end),
-    key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end),
-    -- table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end),
-    -- table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end),
-    key({ modkey, "Mod1" }, "l", function () awful.layout.inc(layouts, 1) end),
-    key({ modkey, "Mod1","Shift" }, "l", function () awful.layout.inc(layouts, -1) end),
-    -- }}}
-
-    -- {{{ - PROMPT
-    key({ modkey }, "F1", 
-    function ()
-      awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," >> ") }, mypromptbox[mouse.screen], awful.util.spawn, awful.completion.shell,
-      awful.util.getdir("cache") .. "/history")
-    end),
-
-    key({ modkey }, "F4", 
-    function ()
-      awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," L> ") }, mypromptbox[mouse.screen], awful.util.eval, awful.prompt.bash,
-      awful.util.getdir("cache") .. "/history_eval")
-    end),
-
-    key({ modkey, "Ctrl" }, "i", 
-    function ()
-      local s = mouse.screen
-      if mypromptbox[s].text then
-        mypromptbox[s].text = nil
-      elseif client.focus then
-        mypromptbox[s].text = nil
-        if client.focus.class then
-          mypromptbox[s].text = "Class: " .. client.focus.class .. " "
-        end
-        if client.focus.instance then
-          mypromptbox[s].text = mypromptbox[s].text .. "Instance: ".. client.focus.instance .. " "
-        end
-        if client.focus.role then
-          mypromptbox[s].text = mypromptbox[s].text .. "Role: ".. client.focus.role
-        end
+      if client.focus.instance then
+        mypromptbox[s].text = mypromptbox[s].text .. "Instance: ".. client.focus.instance .. " "
       end
-    end),
+      if client.focus.role then
+        mypromptbox[s].text = mypromptbox[s].text .. "Role: ".. client.focus.role
+      end
+    end
+  end),
 
-    -- }}}
+  -- }}}
 }
 -- {{{ - TAGS loop bindings
 for i=1, ( shifty.config.maxtags or 9 ) do
