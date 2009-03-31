@@ -505,7 +505,6 @@ clientkeys =
     awful.client.focus.byidx(-1)
   end),
 }
-table.insert(clientkeys)
 shifty.config.clientkeys = clientkeys
 -- }}}
 
