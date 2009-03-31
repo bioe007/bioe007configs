@@ -96,7 +96,7 @@ end
 function rename(tag, prefix, no_selectall, initial)
   local theme = beautiful.get()
   local t = tag or awful.tag.selected(mouse.screen)
-  local scr = tag.screen
+  local scr = t.screen
   local bg = nil
   local fg = nil
   local text = prefix or t.name or ""
