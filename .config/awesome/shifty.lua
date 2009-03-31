@@ -39,9 +39,9 @@ local io = io
 local tostring = tostring
 local tonumber = tonumber
 local wibox = wibox
+local print = print
 module("shifty")
 
-tags = {}
 index_cache = {}
 config = {}
 config.tags = {}
@@ -52,9 +52,6 @@ config.guess_position = true
 config.remember_index = true
 config.clientkeys = {}
 
--- create a table for each screen
-for s = 1, screen.count() do tags[s] = {} end
-
 --{{{ name2tag: matches string 'name' to return a tag object 
 -- @param name : name of tag to find
 -- @param scr : screen to look for tag on
@@ -62,7 +59,7 @@ for s = 1, screen.count() do tags[s] = {} end
 function name2tag(name, scr)
   local a, b = scr or 1, scr or screen.count()
   for s = a, b do
-    for i, t in ipairs(tags[s]) do
+    for i, t in ipairs(screen[s]:tags()) do
       if name == t.name then
         return t 
       end 
@@ -76,13 +73,13 @@ end
 -- @param tag : the tag object to find
 -- @return the index [or zero] or end of the list
 function tag2index(scr, tag)
-  -- local tags = screen[scr]:tags()
-  for i = 1, #tags[scr] do
-    if tags[scr][i] == tag then
+  local tags = screen[scr]:tags()
+  for i = 1, #tags do
+    if tags[i] == tag then
       return i
     end
   end
-  return #tags[scr]+1 
+  return #tags+1 
 end
 --}}}
 
@@ -133,9 +130,9 @@ function send(idx)
   local scr = client.focus.screen or mouse.screen
   local sel = awful.tag.selected(scr)
   local sel_idx = tag2index(scr,sel)
-  local target = awful.util.cycle(#tags[scr], sel_idx + idx)
-  awful.tag.viewonly(tags[scr][target])
-  awful.client.movetotag(tags[scr][target], client.focus)
+  local target = awful.util.cycle(#screen[scr]:tags(), sel_idx + idx)
+  awful.tag.viewonly(screen[scr]:tags()[target])
+  awful.client.movetotag(screen[scr]:tags()[target], client.focus)
 end
 --}}}
 
@@ -152,8 +149,8 @@ function shift_prev() set(awful.tag.selected(), { rel_index = -1 }) end
 function pos2idx(pos, scr)
   local v = 1
   if pos and scr then
-    for i = #tags[scr] , 1, -1 do
-      local t = tags[scr][i]
+    for i = #screen[scr]:tags() , 1, -1 do
+      local t = screen[scr]:tags()[i]
       if awful.tag.getproperty(t,"position") and awful.tag.getproperty(t,"position") <= pos then 
         v = i + 1
         break 
@@ -188,7 +185,7 @@ function tagtoscr(scr,t)
   vargs.screen = scr
   set(otag,vargs)
 
-  if #otag:clients() >= 0 then
+  if #otag:clients() > 0 then
     for _ , c in ipairs(otag:clients()) do
       c.screen = scr
       c:tags( { otag } )
@@ -256,7 +253,7 @@ function set(t, args)
   local sel = awful.tag.selected(scr)
   local sel_idx = (sel and tag2index(t.screen,sel)) or 0 --TODO: what happens with rel_idx if no tags selected
   local t_idx = tag2index(t.screen,t)
-  local limit = (not t_idx and #tags[t.screen] + 1) or #tags[t.screen]
+  local limit = (not t_idx and #screen[t.screen]:tags() + 1) or #screen[t.screen]:tags()
   local idx = nil
 
   if rel_index then
@@ -269,16 +266,16 @@ function set(t, args)
   elseif config.remember_index and index_cache[t.name] then
     idx = index_cache[t.name]
   elseif not t_idx then
-    idx = #tags[t.screen] + 1
+    idx = #screen[t.screen]:tags() + 1
   end
 
   -- if tag already in the table, remove it
-  if idx and t_idx then table.remove(tags[t.screen], t_idx) end
+  if idx and t_idx then table.remove(screen[t.screen]:tags(), t_idx) end
 
   -- if we have an index, insert the notification
   if idx then
     index_cache[t.name] = idx
-    table.insert(tags[t.screen], idx, t)
+    table.insert(screen[t.screen]:tags(), idx, t)
   end
 
   -- refresh taglist and return
@@ -292,22 +289,22 @@ end
 --  @param scr : optional screen number [mouse.screen]
 function tsort(scr)
   local scr = scr or mouse.screen
-  local a_tags = screen[scr]:tags()
+  local tags = screen[scr]:tags()
 
   local k = 1
-  for i=1,#a_tags do
-    cfg_t = config.tags[a_tags[i].name]
+  for i=1,#tags do
+    cfg_t = config.tags[tags[i].name]
     -- bail if this is not a configured tag?
     if cfg_t ~= nil then
-      if awful.tag.getproperty(a_tags[i+1], "position") ~= nil then
-        if cfg_t.position > awful.tag.getproperty(a_tags[i+1], "position") then
+      if awful.tag.getproperty(tags[i+1], "position") ~= nil then
+        if cfg_t.position > awful.tag.getproperty(tags[i+1], "position") then
           k = 1
-          nextpos = awful.tag.getproperty(a_tags[i+k], "position")
-          while nextpos ~= nil and cfg_t.position > nextpos and k <= #a_tags do
+          nextpos = awful.tag.getproperty(tags[i+k], "position")
+          while nextpos ~= nil and cfg_t.position > nextpos and k <= #tags do
             k = k+1
-            nextpos = awful.tag.getproperty(a_tags[i+k], "position")
+            nextpos = awful.tag.getproperty(tags[i+k], "position")
           end
-          set(a_tags[i],{rel_index=k})
+          set(tags[i],{rel_index=k})
           tsort(scr)
         end
       end
@@ -344,7 +341,7 @@ function add(args)
   if spawn and args.matched ~= true then awful.util.spawn(spawn, scr) end
   if run then run(t) end
   -- unless forbidden or if first tag on the screen, show the tag
-  if not (awful.tag.getproperty(t,"nopopup") or args.noswitch) or #tags[scr] == 1 then awful.tag.viewonly(t) end
+  if not (awful.tag.getproperty(t,"nopopup") or args.noswitch) or #screen[scr]:tags() == 1 then awful.tag.viewonly(t) end
 
   -- get the name or rename
   if args.name then t.name = args.name
@@ -364,12 +361,13 @@ end
 --@param tag : the tag to be deleted [current tag]
 function del(tag)
   local scr = mouse.screen or 1
+  local tags = screen[scr]:tags()
   local sel = awful.tag.selected(scr)
   local t = tag or sel
   local idx = tag2index(scr,t)
 
   -- should a tag ever be deleted if #tags[scr] < 1 ?
-  if #screen[scr]:tags() > 1 then
+  if #tags > 1 then
     if #(t:clients()) > 0 then return end
 
     -- this is also checked in sweep, but where is better? 
@@ -377,18 +375,17 @@ function del(tag)
       index_cache[t.name] = idx
 
       -- if the current tag is being deleted, move to a previous
-      if t == sel and #screen[scr]:tags() > 1 then
+      if t == sel and #tags > 1 then
         awful.tag.history.restore(scr)
         -- this is supposed to cycle if history is invalid?
         -- e.g. if many tags are deleted in a row
         if not awful.tag.selected(scr) then 
-          awful.tag.viewonly(tags[scr][awful.util.cycle(#tags[scr], idx - 1)]) 
+          awful.tag.viewonly(tags[scr][awful.util.cycle(#tags, idx - 1)]) 
         end
       end
 
       t.screen = nil
-      table.remove(tags[scr], idx)
-      awful.tag.history.update(scr)
+      awful.hooks.user.call("tags", scr)
     end
   end
 end
@@ -466,7 +463,7 @@ function match(c)
 
   -- if not matched or matches currently selected, see if we can leave at the current tag
   local sel = awful.tag.selected(c.screen)
-  if #tags[c.screen] > 0 and (not target_tag or (sel and target_tag == sel.name)) then
+  if #screen[c.screen]:tags() > 0 and (not target_tag or (sel and target_tag == sel.name)) then
     if typ == "dialog" or not (awful.tag.getproperty(sel,"exclusive") or awful.tag.getproperty(sel,"solitary")) or intrusive  then 
       client.focus = c
       c:raise()
@@ -504,7 +501,7 @@ end
 --  also handles deleting used and empty tags 
 function sweep()
   for s = 1, screen.count() do
-    for i, t in ipairs(tags[s]) do
+    for i, t in ipairs(screen[s]:tags()) do
       if #t:clients() == 0 then
         if not awful.tag.getproperty(t,"persist") and awful.tag.getproperty(t,"used") then
           if awful.tag.getproperty(t,"deserted") or not awful.tag.getproperty(t,"leave_kills") then
@@ -650,7 +647,6 @@ function completion(cmd, cur_pos, ncomp)
   return matches[ncomp], cur_pos
 end
 --}}}
-
 
 awful.hooks.tags.register(sweep)
 awful.hooks.arrange.register(sweep)
