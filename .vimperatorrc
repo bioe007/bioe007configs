@@ -2,8 +2,8 @@
 map <C-r> :restart<CR>
  
 " select next/previous tab
-map <C-l> gt
-map <C-h> gT
+" map <C-l> gt
+map gb gT
  
 " move current tab left/right
 map <C-L> :tabmove! +1<CR>
