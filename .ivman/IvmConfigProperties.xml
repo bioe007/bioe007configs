@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivm:PropertiesConfig version="0.1" xmlns:ivm="http://www.eikke.com/ivm">
+
+    <!-- Please see 'man IvmConfigProperties.xml' for details on how to edit this file. -->
+
+    <ivm:Option name="checkOnInit" value="false" />
+
+    <!-- ======================= KDE notifications ========================== -->
+    <!-- If you would like little notifications to pop up in KDE when interesting
+         things happen on your system, uncomment this block of options. -->
+    <!--
+    <ivm:Match name="hal.linux.subsystem" value="net">
+        <ivm:Property name="hal.net.interface_up">
+            <ivm:Action value="true" exec='kdialog &#45;-passivepopup "Network connection established on interface $hal.net.interface$" 4' />
+            <ivm:Action value="false" exec='kdialog &#45;-passivepopup "Network connection lost on interface $hal.net.interface$" 4' />
+        </ivm:Property>
+    </ivm:Match>
+    -->
+    <!-- ======================= end of KDE notifications =================== -->
+</ivm:PropertiesConfig>

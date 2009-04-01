@@ -105,7 +105,7 @@ ShowTime		= yes
 
 # Theme file. This can be absolute path or relative to
 # /usr/share/moc/themes/ (depends on installation prefix) or ~/.moc/themes/
-Theme			= bioe_moc_theme 
+Theme			= nu_moc_theme 
 
 # The theme used when running on on xterm
 # XTermTheme		= transparent-background

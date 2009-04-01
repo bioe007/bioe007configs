@@ -12,9 +12,7 @@ require("battery")
 require("markup")
 require("fs")
 require("volume")
-
 print("cachedir= " .. awful.util.getdir("cache"))
--- volumous.init("/home/perry/.config/awesome/themes/bio/vol_images/", 30, 30)
 
 -- {{{ Variable definitions
 -- This is a file path to a theme file which will defines colors.
@@ -24,7 +22,6 @@ beautiful.init(theme_path)
 icon_path = beautiful.iconpath 
 settings = {}
 settings.new_become_master = false
-settings.showmwfact = true
 
 settings.apps = {}
 settings.apps.terminal = "urxvtc"
@@ -35,18 +32,11 @@ settings.apps.music = "mocp --server"
 settings.apps.editor = os.getenv("EDITOR") or "vim"
 settings.apps.editor_cmd = settings.apps.terminal .. " -e " .. settings.apps.editor
 
-settings.sys = {}
-settings.sys.battwarn = false
-
 -- Default modkey.
 modkey = "Mod4"
-mytaglist = {}
+shifty.modkey = modkey
 
--- Define if we want to use titlebar on all applications.
-use_titlebar = false
-
--- Table of layouts to cover with awful.layout.inc, order matters.
--- layouts = {}
+--{{{ layouts
 layouts = {
     awful.layout.suit.tile,
     awful.layout.suit.tile.bottom,
@@ -54,73 +44,52 @@ layouts = {
     awful.layout.suit.magnifier,
     awful.layout.suit.floating
 }
+--}}}
 
+--{{{ configured tags
 shifty.config.tags = {
-    ["w1"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 1, } ,
-    ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false,               } ,
+    ["w2"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 2} ,
+    ["w1"] =     { layout = awful.layout.suit.max,          mwfact=0.60, exclusive = false, solitary = false, position = 1, init = true, screen = 1, slave = true } ,
+    ["ds"] =     { layout = awful.layout.suit.max,          mwfact=0.70, exclusive = false, solitary = false, position = 2, persist = false, nopopup = false, slave = false } ,
     ["web"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.65, exclusive = true , solitary = true , position = 4, spawn = settings.apps.browser  } ,
-    ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.64, exclusive = false, solitary = false, position = 3, nopopup = true, leave_kills = true, } ,
-    ["mail"] =   { layout = awful.layout.suit.tile.bottom,  mwfact=0.55, exclusive = false, solitary = false, position = 5, spawn = settings.apps.mail     } ,
+    ["dz"] =     { layout = awful.layout.suit.tile,         mwfact=0.70, exclusive = false, solitary = false, position = 3, nopopup = true, leave_kills = true, } ,
+    ["mail"] =   { layout = awful.layout.suit.tile,         mwfact=0.55, exclusive = false, solitary = false, position = 5, spawn = settings.apps.mail, slave = true     } ,
     ["vbx"] =    { layout = awful.layout.suit.tile.bottom,  mwfact=0.75, exclusive = true , solitary = true , position = 6,} ,
     ["media"] =  { layout = awful.layout.suit.float,                     exclusive = false, solitary = false, position = 8 } ,
-    ["office"] = { rel_index = 1, layout = awful.layout.suit.tile} ,
+    ["office"] = { position = 9, layout = awful.layout.suit.tile} ,
 }
+--}}}
 
+--{{{ application matching rules
 shifty.config.apps = {
-         { match = { "Navigator","Vimperator"                              } , tag = "web"                            } ,
-         { match = { "Shredder.*"                                          } , tag = "mail",                          } ,
-         { match = { "OpenOffice.*"                                        } , tag = "office",                        } ,
-         { match = { "pcb","gschem","PCB_Log"                              } , tag = "dz",                            } ,
+         { match = { "Navigator","Vimperator","Gran Paradiso"              } , tag = "web"                            } ,
+         { match = { "Shredder.*"                                          } , tag = "mail"                           } ,
+         { match = { "pcmanfm"                                             } , slave = true                           } ,
+         { match = { "OpenOffice.*"                                        } , tag = "office"                         } ,
+         { match = { "pcb","gschem"                                        } , tag = "dz", slave = false              } ,
+         { match = { "PCB_Log","Status","Page Manager"                     } , tag = "dz", slave = true               } ,
          { match = { "acroread","Apvlv"                                    } , tag = "ds",                            } ,
          { match = { "VBox.*","VirtualBox.*"                               } , tag = "vbx",                           } ,
-         { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw"          } , tag = "media",         nopopup = true, } ,
-         { match = { "XDosEmu", "MPlayer", "gimp", "Gnuplot", "galculator" } , float = true                           } ,
-         { match = { "VirtualBox","glxgears",                              } , float = true,                           } ,
+         { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw","easytag"} , tag = "media",         nopopup = true, } ,
+         { match = { "MPlayer", "Gnuplot", "galculator"                    } , float = true                           } ,
+         { match = { "VirtualBox",                                         } , float = true,                          } ,
+         { match = { "urxvt","sakura","vim"                                } , honorsizehints = false, slave = true   } ,
 }
+--}}}
 
-shifty.config.defaults = {
-    layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
-    run = function(tag) 
-        naughty.notify({ text = markup.fg( beautiful.fg_normal,  markup.font("monospace",markup.fg(beautiful.fg_sb_hi, 
-                            "Shifty Created: "..shifty.tag2index(mouse.screen,tag).." : "..tag.name))) }) 
-    end,
-}
+shifty.config.defaults={  layout = awful.layout.suit.tile.bottom, ncol = 1, floatBars=true,
+                            run = function(tag) 
+                            naughty.notify({ 
+                              text = markup.fg( beautiful.fg_normal,  markup.font("monospace",markup.fg(beautiful.fg_sb_hi, 
+                                                "Shifty Created: "
+                                                  ..(awful.tag.getproperty(tag,"position") or shifty.tag2index(mouse.screen,tag))..
+                                                    " : "..tag.name))) 
+                            }) end,
+                       }
 
 -- }}} 
 
 -- {{{ -- OWN functions
-
-function hideFloats()
-    local currtag = {}
-    local clients = {}
-    currtag = awful.tag.selectedlist(1)
-    clients = awful.client.visible(1)
-end
-
-
--- {{{ setMwbox - someday this may work :(
-local mwbox = nil
-function setMwbox(s)
-    print("creating box: " .. s)
-    if mwbox ~= nil then 
-        -- print("mwbox == " .. mwbox.box.screen)
-        naughty.destroy(mwbox) 
-        mwbox = nil
-    else
-        print("mwbox == nil")
-    end 
-    mwbox = naughty.notify({ 
-        text=s,
-        timeout = 1,
-        hover_timeout = 0.5,
-        screen = 1,
-        width = 120,
-        bg = beautiful.bg_focus
-    })
-    print("post box: ")
-    print(mwbox)
-end
----}}}
 
 --{{{ toggleTitlebar :: add a titlebar
 -- toggles wether client has titlebar or not
@@ -136,24 +105,46 @@ function toggleTitlebar(c)
 end
 -- }}}
 
+--{{{ run_or_raise Spawns cmd if no client can be found matching properties
+-- If such a client can be found, pop to first tag where it is visible, and give it focus
+-- @param cmd the command to execute
+-- @param properties a table of properties to match against clients.  Possible entries: any properties of the client object
+function run_or_raise(cmd, properties)
+   local clients = client.get()
+   for i, c in pairs(clients) do
+      if match(properties, c) then
+         local ctags = c:tags()
+         if table.getn(ctags) == 0 then
+            -- ctags is empty, show client on current tag
+            local curtag = awful.tag.selected()
+            awful.client.movetotag(curtag, c)
+         else
+            -- Otherwise, pop to first tag client is visible on
+            awful.tag.viewonly(ctags[1])
+         end
+         -- And then focus the client
+         client.focus = c
+         c:raise()
+         return
+      end
+   end
+   awful.util.spawn(cmd)
+end
+--}}}
+
+-- Returns true if all pairs in table1 are present in table2
+function match (table1, table2)
+   for k, v in pairs(table1) do
+      if table2[k] ~= v then
+         return false
+      end
+   end
+   return true
+end
+
 -- }}}
 
 -- {{{ -- Statusbar, menus & Widgets
--- Create a laucher widget and a main menu
-myawesomemenu = {
-    { "manual", settings.apps.terminal .. " -e man awesome" },
-    { "edit config", settings.apps.editor_cmd .. " " .. awful.util.getdir("config") .. "/rc.lua" },
-    { "restart", awesome.restart },
-    { "quit", awesome.quit }
-}
-
-mymainmenu = awful.menu.new({ items = { { "awesome", myawesomemenu, icon_path.."/awesome16.png" },
-                                        { "open terminal", terminal } }
-                           })
-
-mylauncher = awful.widget.launcher({ image = icon_path.."awesome48.png",
-                                     menu = mymainmenu })
-
 -- Create a systray
 mysystray = widget({ type = "systray", align = "right" })
 
@@ -161,6 +152,7 @@ mysystray = widget({ type = "systray", align = "right" })
 mywibox = {}
 mypromptbox = {}
 mylayoutbox = {}
+mytaglist = {}
 mytaglist.buttons =  { button({ }, 1, awful.tag.viewonly),
                       button({ modkey }, 1, awful.client.movetotag),
                       button({ }, 3, function () if instance then instance:hide() end instance = awful.menu.clients({ width=250 }) end),
@@ -195,55 +187,14 @@ datewidget:buttons({
   button({ }, 5, function() calendar.add_calendar(1) end), 
 })
 wicked.register(datewidget, wicked.widgets.date,
-   markup.fg(beautiful.fg_sb_hi, '%k:%M %D'))
+   markup.fg(beautiful.fg_sb_hi, '%k:%M'))
 
 -- }}}
 
--- {{{ -- CPU widgets
+-- {{{ -- CPU widget
 cpuwidget = widget({ type = 'textbox', name = 'cpuwidget', align = 'right' })
-cpuwidget.width = 51
+cpuwidget.width = 40
 wicked.register(cpuwidget, wicked.widgets.cpu, 'cpu:' .. markup.fg(beautiful.fg_sb_hi, '$1'))
-
-cpugraphwidget1 = widget({ type = 'graph',
-    name = 'cpugraphwidget1',
-    align = 'right'
-})
-
-cpugraphwidget1.height = 0.85
-cpugraphwidget1.width = 40
-cpugraphwidget1.bg = beautiful.bg_normal
-cpugraphwidget1.border_color = beautiful.bg_normal
-cpugraphwidget1.grow = 'left'
-
-cpugraphwidget1:plot_properties_set('cpu', {
-    fg = beautiful.widg_cpu_st ,
-    fg_center = beautiful.widg_cpu_mid ,
-    fg_end = beautiful.widg_cpu_end, 
-    vertical_gradient = true
-})
-
-wicked.register(cpugraphwidget1, wicked.widgets.cpu, '$2', 1, 'cpu')
-
-cpugraphwidget2 = widget({
-    type = 'graph',
-    name = 'cpugraphwidget2',
-    align = 'right'
-})
-
-cpugraphwidget2.height = 0.85
-cpugraphwidget2.width = 40
-cpugraphwidget2.bg = beautiful.bg_normal
-cpugraphwidget2.border_color = beautiful.bg_normal
-cpugraphwidget2.grow = 'left'
-
-cpugraphwidget2:plot_properties_set('cpu', {
-    fg = beautiful.widg_cpu_st ,
-    fg_center = beautiful.widg_cpu_mid ,
-    fg_end = beautiful.widg_cpu_end, 
-    vertical_gradient = true
-})
-
-wicked.register(cpugraphwidget2, wicked.widgets.cpu, '$3', 1, 'cpu')
 -- }}}
 
 -- {{{ -- MEMORY widgets
@@ -259,7 +210,7 @@ mocp.setwidget(mocpwidget)
 mocpwidget:buttons({
     button({ }, 1, function () mocp.play(); mocp.popup() end ),
     button({ }, 2, function () awful.util.spawn('mocp --toggle-pause') end),
-    button({ }, 4, function () awful.util.spawn('mocp --toggle-pause') end),
+    button({ }, 4, function () mocp.play(); mocp.popup() end),
     button({ }, 3, function () awful.util.spawn('mocp --previous'); mocp.popup() end),
     button({ }, 5, function () awful.util.spawn('mocp --previous'); mocp.popup() end)
 })
@@ -272,7 +223,7 @@ fswidget = widget({ type = "textbox", name = "fswidget", align = "right" })
 fs.init( fswidget, 
         { interval = 59, 
           parts = {   ['sda7'] = {label = "/"},
-                      ['sda5'] = {label = "dat"} } })
+                      ['sda5'] = {label = "d"} } })
 -- }}}
 
 -- {{{ -- BATTERY 
@@ -306,7 +257,6 @@ for s = 1, screen.count() do
                              button({ }, 4, function () awful.layout.inc(layouts, 1) end),
                              button({ }, 5, function () awful.layout.inc(layouts, -1) end) })
     -- Create a taglist widget
-    -- mytaglist[s] = shifty.taglist_new(s, shifty.taglist_label, mytaglist.buttons)
     mytaglist[s] = awful.widget.taglist.new(s, awful.widget.taglist.label.all, mytaglist.buttons)
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist.new(function(c)
@@ -317,20 +267,17 @@ for s = 1, screen.count() do
     mywibox[s] = wibox({ position = "top", fg = beautiful.fg_normal, bg = beautiful.bg_normal })
     -- Add widgets to the wibox - order matters
     mywibox[s].widgets = { 
-        mylauncher,
         mypromptbox[s], widget_spacer_l,
         mylayoutbox[s], widget_spacer_l,
         mytaglist[s], widget_spacer_l,
         mytasklist[s], widget_spacer_r,
-        fswidget, widget_spacer_r,
-        batterywidget, widget_spacer_r,
-        memwidget, widget_spacer_r,
-        cpuwidget, widget_spacer_r,
-        cpugraphwidget1,
-        cpugraphwidget2, widget_spacer_r,
-        mocpwidget, 
-        pb_volume, widget_spacer_r,
-        datewidget, s == 1 and mysystray or nil
+        s == 1 and fswidget or nil, s == 1 and widget_spacer_r,
+        s == 1 and batterywidget, s == 1 and widget_spacer_r,
+        s == 1 and memwidget, s == 1 and widget_spacer_r,
+        s == 1 and cpuwidget, s == 1 and widget_spacer_r,
+        s == 1 and mocpwidget, 
+        s == 1 and pb_volume, s == 1 and widget_spacer_r,
+        s == 1 and datewidget,s == 1 and widget_spacer_r, s == 1 and mysystray or nil
     } 
     mywibox[s].screen = s
 end
@@ -343,220 +290,219 @@ shifty.init()
 
 -- {{{ Mouse bindings
 root.buttons({
-    button({ }, 3, function () mymainmenu:toggle() end),
     button({ }, 4, awful.tag.viewnext),
     button({ }, 5, awful.tag.viewprev)
 })
 -- }}}
 
 -- {{{ Key bindings
-globalkeys = {}
-clientkeys = {}
 
--- {{{ - TAGS BINDINGS
+-- {{{ globalkeys
+globalkeys = 
+{
+
+  key({ modkey }, "space", awful.tag.viewnext),  -- move to next tag
+  key({ modkey, "Shift" }, "space", awful.tag.viewprev), -- move to previous tag
+
+  -- revelation
+  key({ modkey }, "e", revelation.revelation ),
+
+  -- shiftycentric
+  key({ modkey }, "Escape",  awful.tag.history.restore), -- move to prev tag by history
+  key({ modkey, "Shift" }, "n", shifty.send_prev), -- move client to prev tag
+  key({ modkey }, "n", shifty.send_next),  -- move client to next tag
+  key({ modkey,"Shift" }, "r",  shifty.rename), -- rename a tag
+  key({ modkey }, "d", shifty.del), -- delete a tag
+  key({ modkey }, "a",     shifty.add), -- creat a new tag
+  key({ modkey,"Shift"}, "a", function() shifty.add({ nopopup = true }) end), -- nopopup new tag
+
+  -- {{{ - APPLICATIONS
+  key({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end),
+
+  key({ modkey},"w", function () 
+    for s = 1, screen.count() do 
+      t = shifty.name2tag("web",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
+      end
+    end
+    awful.util.spawn(settings.apps.browser) 
+  end),
+  key({ modkey },"m", function () 
+    for s = 1, screen.count() do 
+      t = shifty.name2tag("mail",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
+      end
+    end
+    awful.util.spawn(settings.apps.mail) 
+  end),
+  key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end),
+  key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end),
+  key({ modkey, "Mod1", "Shift" },"v", function ()
+    for s = 1, screen.count() do 
+      t = shifty.name2tag("vbox",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
+      end
+    end
+    awful.util.spawn('VBoxSDL -vm xp2')
+  end),
+  key({ modkey },"g", function ()
+    for s = 1, screen.count() do 
+      t = shifty.name2tag("vbox",s)
+      if t ~= nil then
+        awful.tag.viewonly(t)
+        return
+      end
+    end
+    awful.util.spawn('gschem')
+  end),
+  key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end),
+  key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end),
+  key({ modkey, "Mod1" },"v", function () awful.util.spawn('/home/perry/.bin/vim-start.sh') end),
+  key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end),
+  -- }}}
+
+  -- {{{ - POWER
+  key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end),
+  key({ modkey, "Mod1" },"s", function () 
+    os.execute('sudo pm-suspend')
+    awful.util.spawn('slock')
+  end),
+  key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end),
+  key({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end),
+  -- }}} 
+
+  -- {{{ - MEDIA
+  key({ modkey, "Mod1" },"p", mocp.play ),
+  key({ },"XF86AudioPlay", mocp.play ),
+  key({ modkey },"Down", function() mocp.play(); mocp.popup() end ),
+  key({ modkey },"Up", function () awful.util.spawn('mocp --previous');mocp.popup() end),
+  key({ }, "XF86AudioRaiseVolume", function() volume.vol("up","5") end),
+  key({ }, "XF86AudioLowerVolume", function() volume.vol("down","5") end),
+  key({ modkey }, "XF86AudioRaiseVolume",function() volume.vol("up","2")end),
+  key({ modkey }, "XF86AudioLowerVolume", function() volume.vol("down","2")end),
+  key({ },"XF86AudioMute", function() volume.vol() end),
+  key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end),
+  key({ },"XF86AudioNext", mocp.play ),
+  key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end),
+  -- }}} 
+
+  -- {{{ - SPECIAL keys
+  key({ modkey, "Control" }, "r", function ()
+    mypromptbox[mouse.screen].text = awful.util.escape(awful.util.restart())
+  end),
+  key({ modkey, "Shift" }, "q", awesome.quit),
+  -- }}} 
+
+  -- {{{ - LAYOUT MANIPULATION
+  key({ modkey }, "l", function () awful.tag.incmwfact(0.05) end),
+  key({ modkey }, "h", function () awful.tag.incmwfact(-0.05) end),
+  key({ modkey, "Control" }, "l", function () awful.tag.incmwfact(0.05) end),
+  key({ modkey, "Control" }, "h", function () awful.tag.incmwfact(-0.05) end),
+
+  key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end),
+  key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end),
+  -- table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end),
+  -- table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end),
+  key({ modkey, "Mod1" }, "l", function () awful.layout.inc(layouts, 1) end),
+  key({ modkey, "Mod1","Shift" }, "l", function () awful.layout.inc(layouts, -1) end),
+  -- }}}
+
+  -- {{{ - PROMPT
+  key({ modkey }, "F1", 
+  function ()
+    awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," >> ") }, mypromptbox[mouse.screen], awful.util.spawn, awful.completion.shell,
+    awful.util.getdir("cache") .. "/history")
+  end),
+
+  key({ modkey }, "F4", 
+  function ()
+    awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," L> ") }, mypromptbox[mouse.screen], awful.util.eval, awful.prompt.bash,
+    awful.util.getdir("cache") .. "/history_eval")
+  end),
+
+  key({ modkey, "Ctrl" }, "i", 
+  function ()
+    local s = mouse.screen
+    if mypromptbox[s].text then
+      mypromptbox[s].text = nil
+    elseif client.focus then
+      mypromptbox[s].text = nil
+      if client.focus.class then
+        mypromptbox[s].text = "Class: " .. client.focus.class .. " "
+      end
+      if client.focus.instance then
+        mypromptbox[s].text = mypromptbox[s].text .. "Instance: ".. client.focus.instance .. " "
+      end
+      if client.focus.role then
+        mypromptbox[s].text = mypromptbox[s].text .. "Role: ".. client.focus.role
+      end
+    end
+  end),
+
+  -- }}}
+}
+-- {{{ - TAGS loop bindings
 for i=1, ( shifty.config.maxtags or 9 ) do
-  table.insert(globalkeys, key({ modkey }, i,
-  function () local t =  awful.tag.viewonly(shifty.getpos(i)) end))
-  table.insert(globalkeys, key({ modkey, "Control" }, i,
-  function () local t = shifty.getpos(i); t.selected = not t.selected end))
+  table.insert(globalkeys, key({ modkey }, i, function () local t =  awful.tag.viewonly(shifty.getpos(i)) end))
+  table.insert(globalkeys, key({ modkey, "Control" }, i, function () local t = shifty.getpos(i); t.selected = not t.selected end))
+  table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i, function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
+  -- move clients to other tags
   table.insert(globalkeys, key({ modkey, "Shift" }, i,
-  function () 
-    if client.focus then 
-      t = shifty.getpos(i)
-      awful.client.movetotag(t)
-      awful.tag.viewonly(t)
-    end 
-  end))
-  table.insert(globalkeys, key({ modkey, "Control", "Shift" }, i,
-  function () if client.focus then awful.client.toggletag(shifty.getpos(i)) end end))
+    function () 
+      if client.focus then 
+        local c = client.focus
+        slave = not ( client.focus == awful.client.getmaster(mouse.screen))
+        t = shifty.getpos(i)
+        awful.client.movetotag(t)
+        awful.tag.viewonly(t)
+        if slave then awful.client.setslave(c) end
+      end 
+    end))
 end
-
-table.insert(globalkeys, key({ modkey }, "Left", awful.tag.viewprev))
-table.insert(globalkeys, key({ modkey }, "Right", awful.tag.viewnext))
-table.insert(globalkeys, key({ modkey }, "space", awful.tag.viewnext))
-table.insert(globalkeys, key({ modkey, "Shift" }, "space", awful.tag.viewprev))
-table.insert(globalkeys, key({ modkey }, "Escape",  awful.tag.history.restore))
-table.insert(globalkeys, key({ modkey }, "e", revelation.revelation ))
-
-table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "j", shifty.prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "k",   shifty.next))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "j",     shifty.shift_prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "k",     shifty.shift_next))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "h",     shifty.send_prev))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "l",     shifty.send_next))
-table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "r",  shifty.rename))
-table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "w", shifty.del))
-table.insert(globalkeys, key({ modkey,"Shift", "Mod1"   }, "t",     shifty.add))
-table.insert(globalkeys, key({ modkey,"Shift", "Control"}, "t", function() shifty.add({ nopopup = true }) end))
----}}}
-
--- {{{ - APPLICATIONS
--- Standard program
-table.insert(globalkeys, key({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end))
-
--- application launching and controlling, Win+Alt
-table.insert(globalkeys, key({ modkey},"w", function () 
-  for k,v in pairs(shifty.tags[1]) do
-    if v.name == "web" then
-      awful.tag.viewonly(v)
-      return
-    end
-  end
-  awful.util.spawn(settings.apps.browser) end))
-table.insert(globalkeys, key({ modkey },"m", function () 
-  for k,v in pairs(shifty.tags[1]) do
-    if v.name == "mail" then
-      awful.tag.viewonly(v)
-      return
-    end
-  end
-  awful.util.spawn(settings.apps.mail) end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end))
-table.insert(globalkeys, key({ modkey, "Mod1", "Shift" },"v", function ()
-  for k,v in pairs(shifty.tags[1]) do
-    if v.name == "vbox" then
-      awful.tag.viewonly(v)
-      return
-    end
-  end
-  awful.util.spawn('VBoxSDL -vm xp2') end))
-table.insert(globalkeys, key({ modkey },"g", function ()
-  for k,v in pairs(shifty.tags[1]) do
-    if v.name == "dz" then
-      awful.tag.viewonly(v)
-      return
-    end
-  end
-  awful.util.spawn('gschem') end))
-table.insert(globalkeys, key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"v", function () awful.util.spawn('/home/perry/.bin/vim-start.sh') end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"i", function () awful.util.spawn('gtkpod') end))
 -- }}}
-
--- {{{ - POWER
-table.insert(globalkeys, key({ modkey, "Mod1" },"h", function () awful.util.spawn('sudo pm-hibernate') end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"s", function () 
-  os.execute('sudo pm-suspend')
-  awful.util.spawn('slock')
-end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"r", function () awful.util.spawn('sudo reboot') end))
-table.insert(globalkeys, key({ modkey, "Mod1" },"l", function () awful.util.spawn('slock') end))
 -- }}} 
 
--- {{{ - MEDIA
-table.insert(globalkeys, key({ modkey, "Mod1" },"p", mocp.play ))
-table.insert(globalkeys, key({ },"XF86AudioPlay", mocp.play ))
-table.insert(globalkeys, key({ modkey, "Mod1" },"j", function() mocp.play(); mocp.popup() end ))
-table.insert(globalkeys, key({ modkey, "Mod1" },"k", function () awful.util.spawn('mocp --previous');mocp.popup() end))
-table.insert(globalkeys, key({ "" }, "XF86AudioRaiseVolume", function() volume.vol("up","5") end))
-table.insert(globalkeys, key({ "" }, "XF86AudioLowerVolume", function() volume.vol("down","5") end))
-table.insert(globalkeys, key({ modkey }, "XF86AudioRaiseVolume",function() volume.vol("up","2")end))
-table.insert(globalkeys, key({ modkey }, "XF86AudioLowerVolume", function() volume.vol("down","2")end))
-table.insert(globalkeys, key({ "" },"XF86AudioMute", function() volume.vol() end))
-table.insert(globalkeys, key({ },"XF86AudioPrev", function () awful.util.spawn('mocp -r') end))
-table.insert(globalkeys, key({ },"XF86AudioNext", mocp.play ))
-table.insert(globalkeys, key({ },"XF86AudioStop", function () awful.util.spawn('mocp --stop') end))
--- }}} 
-
--- {{{ - SPECIAL keys
-table.insert(globalkeys, key({ modkey, "Control" }, "r", function ()
-  mypromptbox[mouse.screen].text =
-  awful.util.escape(awful.util.restart())
-end))
-table.insert(globalkeys, key({ modkey, "Shift" }, "q", awesome.quit))
--- }}} 
-
--- {{{ - CLIENT MANIPULATION
--- hiddenClient = nil
--- table.insert(clientkeys, key({modkey, "Shift"},"q", function ()
-  -- local c = client.focus()
--- 
-  -- if hiddenClient == nil then
-    -- hiddenClient= c
-    -- c.hide = true
-  -- else
-    -- c.hide = false
-    -- hiddenClient = nil
-  -- end
--- end))
-
-
-table.insert(clientkeys, key({ modkey, "Shift" },"t", function () toggleTitlebar(client.focus) end)) -- show client on all tags
-table.insert(clientkeys, key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end)) -- show client on all tags
-table.insert(clientkeys, key({ modkey }, "m", function (c) c.maximized_horizontal = not c.maximized_horizontal         -- maximize client
-                                                           c.maximized_vertical = not c.maximized_vertical end))
-table.insert(clientkeys, key({ modkey, "Shift" }, "c", function (c) c:kill() end))                                      -- kill client
-table.insert(clientkeys, key({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end))       -- change focus
-table.insert(clientkeys, key({ modkey }, "k", function () awful.client.focus.byidx(-1);  client.focus:raise() end))
-table.insert(clientkeys, key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end))     -- change order
-table.insert(clientkeys, key({ modkey, "Shift" }, "k", function () awful.client.swap.byidx(-1) end))
-table.insert(clientkeys, key({ modkey, "Control" }, "j", function () awful.screen.focus(1) end))        -- switch monitor focus
-table.insert(clientkeys, key({ modkey, "Control" }, "k", function () awful.screen.focus(-1) end))
-table.insert(clientkeys, key({ modkey, "Control" }, "space", awful.client.togglefloating))              -- toggle client float
-table.insert(clientkeys, key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end))  -- switch focused client with master
-table.insert(clientkeys, key({ modkey }, "o", awful.client.movetoscreen))   -- switch client to other screen
-table.insert(clientkeys, key({ modkey }, "Tab", function() awful.client.focus.history.previous(); client.focus:raise() end )) -- toggle client focus history
-table.insert(clientkeys, key({ modkey }, "u", awful.client.urgent.jumpto))      -- jump to urgent clients
--- table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end))		-- redraw clients
--- cycle client focus and position
-table.insert(clientkeys, key({ "Mod1" }, "Tab", function () 
-  local allclients = awful.client.visible(client.focus.screen)
-  for i,v in ipairs(allclients) do
-    if allclients[i+1] then
-      allclients[i+1]:swap(v)
+-- {{{ clientkeys
+clientkeys = 
+{
+  key({ modkey, "Shift" },"t", function () toggleTitlebar(client.focus) end),
+  key({ modkey, "Shift" },"0", function () client.focus.sticky = not client.focus.sticky end),  -- client on all tags
+  key({ modkey }, "m",                                                                          -- maximize client
+    function(c) 
+      c.maximized_horizontal = not c.maximized_horizontal 
+      c.maximized_vertical = not c.maximized_vertical 
     end
-  end
-  awful.client.focus.byidx(-1)
-end))
--- }}}
-
--- {{{ - LAYOUT MANIPULATION
-table.insert(globalkeys, key({ modkey }, "l", function () awful.tag.incmwfact(0.05) end))
-table.insert(globalkeys, key({ modkey }, "h", function () awful.tag.incmwfact(-0.05) end))
-table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incmwfact(0.05) end))
-table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incmwfact(-0.05) end))
-
-table.insert(globalkeys, key({ modkey, "Shift" }, "h", function () awful.tag.incnmaster(1) end))
-table.insert(globalkeys, key({ modkey, "Shift" }, "l", function () awful.tag.incnmaster(-1) end))
--- table.insert(globalkeys, key({ modkey, "Control" }, "h", function () awful.tag.incncol(1) end))
--- table.insert(globalkeys, key({ modkey, "Control" }, "l", function () awful.tag.incncol(-1) end))
-table.insert(globalkeys, key({ modkey, "Mod1" }, "l", function () awful.layout.inc(layouts, 1) end))
--- }}}
-
--- {{{ - PROMPT
-table.insert(globalkeys, key({ modkey }, "F1", 
-    function ()
-        awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," >> ") }, mypromptbox[mouse.screen], awful.util.spawn, awful.completion.bash,
-        awful.util.getdir("cache") .. "/history")
-    end))
-
-table.insert(globalkeys, key({ modkey }, "F4", 
-    function ()
-        awful.prompt.run({ prompt = markup.fg( beautiful.fg_sb_hi," L> ") }, mypromptbox[mouse.screen], awful.util.eval, awful.prompt.bash,
-        awful.util.getdir("cache") .. "/history_eval")
-    end))
-    
-table.insert(globalkeys, key({ modkey, "Ctrl" }, "i", 
-    function ()
-        local s = mouse.screen
-        if mypromptbox[s].text then
-            mypromptbox[s].text = nil
-        elseif client.focus then
-            mypromptbox[s].text = nil
-            if client.focus.class then
-                mypromptbox[s].text = "Class: " .. client.focus.class .. " "
-            end
-            if client.focus.instance then
-                mypromptbox[s].text = mypromptbox[s].text .. "Instance: ".. client.focus.instance .. " "
-            end
-            if client.focus.role then
-                mypromptbox[s].text = mypromptbox[s].text .. "Role: ".. client.focus.role
-            end
-        end
-    end))
-
+  ),
+  key({ modkey, "Shift" }, "c", function (c) c:kill() end),                                     -- kill client
+  key({ modkey }, "j", function () awful.client.focus.byidx(1); client.focus:raise() end),      -- change focus
+  key({ modkey }, "k", function () awful.client.focus.byidx(-1);  client.focus:raise() end),
+  key({ modkey, "Shift" }, "j", function () awful.client.swap.byidx(1) end),                    -- change order
+  key({ modkey, "Shift" }, "k", function () awful.client.swap.byidx(-1) end),
+  key({ modkey, }, "s", function () awful.screen.focus(1) end), -- switch screen focus
+  key({ modkey, "Control" }, "space", awful.client.togglefloating),              -- toggle client float
+  key({ modkey, "Control" }, "Return", function () client.focus:swap(awful.client.master()) end),  -- switch focused client with master
+  key({ modkey, "Shift" }, "s", awful.client.movetoscreen),   -- switch client to other screen
+  key({ modkey }, "Tab", function() awful.client.focus.history.previous(); client.focus:raise() end ), -- toggle client focus history
+  key({ modkey }, "u", awful.client.urgent.jumpto),      -- jump to urgent clients
+  -- table.insert(clientkeys, key({ modkey, "Shift" }, "r", function () client.focus:redraw() end)		-- redraw clients
+  -- cycle client focus and position
+  key({ "Mod1" }, "Tab", function () 
+    local allclients = awful.client.visible(client.focus.screen)
+    for i,v in ipairs(allclients) do
+      if allclients[i+1] then
+        allclients[i+1]:swap(v)
+      end
+    end
+    awful.client.focus.byidx(-1)
+  end),
+}
+shifty.config.clientkeys = clientkeys
 -- }}}
 
 -- Set keys
@@ -567,6 +513,7 @@ root.keys(globalkeys)
 -- {{{ Hooks
 -- Hook function to execute when focusing a client.
 awful.hooks.focus.register(function (c)
+  c.urgent = false
   if not awful.client.ismarked(c) then
       c.border_color = beautiful.border_focus
   end
@@ -598,72 +545,6 @@ awful.hooks.mouse_enter.register(function (c)
   end
 end)
 
--- Hook function to execute when a new client appears.
-awful.hooks.manage.register( function (c)
-  -- If we are not managing this application at startup, move it to the screen where the mouse is.
-  -- We only do it for filtered windows (i.e. no dock, etc).
-  if not startup and awful.client.focus.filter(c) then
-    c.screen = mouse.screen
-  end
-
-  if use_titlebar then
-    -- Add a titlebar
-    awful.titlebar.add(c, { modkey = modkey })
-  end
-  -- Add mouse bindings
-  c:buttons({
-    button({ }, 1, function (c) client.focus = c; c:raise() end),
-    button({ modkey }, 1, function (c) awful.mouse.client.move() end),
-    button({ modkey }, 3, awful.mouse.client.resize ),
-    -- button({ modkey, "Shift" }, 1, function (c) revelation.revelation()
-    -- end )
-  })
-  -- New client may not receive focus
-  -- if they're not focusable, so set border anyway.
-  if #(awful.tag.selected().clients(awful.tag.selected())) > 1 then
-    c.border_width = beautiful.border_width
-  else
-    c.border_width = 0
-  end
-  c.border_color = beautiful.border_normal
-
-  -- Check if the application should be floating.
-  local cls = c.class
-  local inst = c.instance
-  if ( string.find( c.name,"Preferences" ) ) ~= nil then
-    -- a fix for ffx's preferences window. should clean this up
-    awful.titlebar.add( c, { modkey = modkey } )
-    awful.client.floating.set( c,true )
-  end
-
-  if c.name == "glxgears" then 
-    awful.client.floating.set( c,true )
-    awful.titlebar.add( c, { modkey = modkey } )
-  end
-
-  if not settings.new_become_master then
-    awful.client.setslave(c)
-  end
-
-  -- Honor size hints: for all but terminals
-  if c.class == "urxvt" or c.class == "URxvt" then
-    c.size_hints_honor = false
-  else
-    c.size_hints_honor = true
-  end
-
-  -- Do this after tag mapping, so you don't see it on the wrong tag for a split second.
-  client.focus = c
-
-  -- Set key bindings
-  c:keys(clientkeys)
-
-  if awful.client.floating.get(c) then
-    awful.placement.no_offscreen(c) -- this always seems to stick the client at 0,0 (incl titlebar)
-  end
-
-end)
-
 -- Hook function to execute when arranging the screen (tag switch, new client, etc)
 awful.hooks.arrange.register(function (screen)
   local layout = awful.layout.getname(awful.layout.get(screen))
@@ -693,16 +574,4 @@ end)
 
 -- }}}
 
--- local hks = awful.hooks.registered() 
--- for i,h in pairs(hks) do
-    -- print("hook name " .. h)
--- end
--- hks = nil
-
--- print("calling findhook")
--- if findhook("timer","fs")==true then 
-    -- print("found fs: ")
--- else
-    -- print("not found")
--- end
 -- vim:set filetype=lua fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent: --

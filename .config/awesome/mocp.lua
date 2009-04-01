@@ -30,7 +30,7 @@ local function state()
 
   fd = io.popen('pgrep -fx mocp')
 
-  if fd:read() ~= nil then 
+  if fd ~= nil then 
     fd:close()
 
     fd = io.popen('mocp -i')
@@ -69,6 +69,7 @@ local function setTitle()
       end
     end
   end
+  fd:close()
 
 end
 ---}}}
@@ -143,7 +144,7 @@ function popup()
   np.strng = markup.fg( beautiful.fg_focus, markup.font("monospace", np.strng.."  "))  
   mocbox = naughty.notify({ 
     title = markup.font("monospace","Now Playing:"),
-    text = np.strng, hover_timeout = ( settings.hovertime or 3 ), timeout = 0,
+    text = np.strng, hover_timeout = ( settings.hovertime or 3 ), timeout = 3,
     -- icon = "/usr/share/icons/gnome/24x24/actions/edia-playback-start.png", icon_size = 24,
     run = function() play(); popup() end
   })
