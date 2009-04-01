@@ -267,9 +267,9 @@ for s = 1, screen.count() do
     mywibox[s] = wibox({ position = "top", fg = beautiful.fg_normal, bg = beautiful.bg_normal })
     -- Add widgets to the wibox - order matters
     mywibox[s].widgets = { 
+        widget_spacer_l, mylayoutbox[s], widget_spacer_l,
+        mytaglist[s], 
         mypromptbox[s], widget_spacer_l,
-        mylayoutbox[s], widget_spacer_l,
-        mytaglist[s], widget_spacer_l,
         mytasklist[s], widget_spacer_r,
         s == 1 and fswidget or nil, s == 1 and widget_spacer_r,
         s == 1 and batterywidget, s == 1 and widget_spacer_r,
