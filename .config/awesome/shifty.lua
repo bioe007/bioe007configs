@@ -197,6 +197,7 @@ function tagtoscr(scr,t)
   if config.tags[name] ~= nil then
     tsort(scr)
   end
+  awful.tag.viewonly(otag)
   return otag
 end
 ---}}}
