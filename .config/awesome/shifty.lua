@@ -180,23 +180,26 @@ end
 function tagtoscr(scr,t)
   if not scr or scr < 1 or scr > screen.count() then return end
   local otag = t or awful.tag.selected() 
-
-  local vargs = {}
-  vargs.screen = scr
+  local oscr = otag.screen
+  local vargs = { screen = scr }
   set(otag,vargs)
 
   if #otag:clients() > 0 then
     for _ , c in ipairs(otag:clients()) do
-      c.screen = scr
-      c:tags( { otag } )
+      if not c.sticky then
+        c.screen = scr
+        c:tags( { otag } )
+      end
     end
   end
+  awful.hooks.user.call("tags",scr)
   awful.tag.history.restore()
 
   -- if this is a configured tag, then sort
-  if config.tags[name] ~= nil then
+  if awful.tag.getproperty(otag,"position") ~= nil then
     tsort(scr)
   end
+  awful.screen.focus(scr)
   awful.tag.viewonly(otag)
   return otag
 end
