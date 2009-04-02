@@ -24,7 +24,7 @@ terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 screen -t util
 screen -t make
 # screen -t irssi irssi
-# screen -t mocp mocp
+screen -t mocp mocp
 select 0
 # screen -t ttyS0
 # screen -t ttyUSB0
