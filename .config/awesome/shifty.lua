@@ -181,10 +181,10 @@ function tagtoscr(scr,t)
   if not scr or scr < 1 or scr > screen.count() then return end
   local otag = t or awful.tag.selected() 
   local oscr = otag.screen
+  local rel_scr = oscr - scr
   local vargs = { screen = scr }
 
   set(otag,vargs)
-
 
   if #otag:clients() > 0 then
     for _ , c in ipairs(otag:clients()) do
@@ -196,7 +196,6 @@ function tagtoscr(scr,t)
   end
   awful.hooks.user.call("tags",scr)
 
-  awful.screen.focus(oscr)
   awful.tag.history.restore(oscr)
 
   -- if this is a configured tag, then sort
@@ -204,7 +203,7 @@ function tagtoscr(scr,t)
     tsort(scr)
   end
   awful.tag.viewonly(otag)
-  awful.screen.focus(scr)
+  awful.screen.focus(rel_scr)
   return otag
 end
 ---}}}
