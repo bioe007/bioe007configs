@@ -1,6 +1,7 @@
 #!/bin/bash
 #
-#
+# auth: bioe007
+# 
 # to start vim with its own colors
 cmd="$(which vim)"
 xrdb -load ~/.Xdefaults.light
@@ -21,6 +22,6 @@ else
   cmd="$cmd --servername $srv --remote-silent $files"
 fi
 
-urxvtc -name vim -e sh -c "$cmd" &
+urxvt -name vim -e sh -c "$cmd" &
 
 xrdb -load ~/.Xdefaults
