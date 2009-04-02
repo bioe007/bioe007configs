@@ -12,9 +12,7 @@
 
     <!-- mount command.  default is autodetected.  Must be specified with
          umountcommand. -->
-    <!--
-    <ivm:Option name="mountcommand" value="mount '$hal.block.device$'" />
-    -->
+    <ivm:Option name="mountcommand" value="pmount '$hal.block.device$'" />
 
     <!-- umount command.  default is autodetected.  Must be specified with
          mountcommand. -->

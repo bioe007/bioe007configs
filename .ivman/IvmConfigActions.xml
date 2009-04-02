@@ -19,6 +19,12 @@
         </ivm:Match>
     </ivm:Match>
     -->
+    <ivm:Match name="hal.volume.disc.type" value="cd_rom">
+        <ivm:Match name="hal.volume.disc.has_data" value="true">
+                <ivm:Option name="exec" value="awenotify 'CD: $hal.info.label$" />
+            <!-- </ivm:Match> -->
+        </ivm:Match>
+    </ivm:Match>
 
     <!-- When attaching a wireless card, if we connect to network with Nickname 'QUT-Wireless',
          start 'vpnc-connect' to connect to VPN; when we remove wireless card, disconnect
