@@ -215,6 +215,9 @@ globalkeys =
   key({ modkey, "Shift" }, "d", shifty.del),      -- delete a tag
   key({ modkey, "Shift" }, "n", shifty.send_prev),-- move client to prev tag
   key({ modkey          }, "n", shifty.send_next),-- move client to next tag
+  key({ modkey,"Control"}, "n", function() 
+    shifty.tagtoscr(awful.util.cycle(screen.count(), mouse.screen +1))
+  end),-- move client to next tag
   key({ modkey          }, "a",     shifty.add),  -- creat a new tag
   key({ modkey,         }, "r",  shifty.rename),  -- rename a tag
   key({ modkey, "Shift" }, "a",                   -- nopopup new tag
