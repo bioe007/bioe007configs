@@ -318,8 +318,6 @@ function tsort(scr)
       end
     end
   end
-
-  awful.hooks.user.call("tags",scr)
 end
 --}}}
 
