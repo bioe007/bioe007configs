@@ -300,16 +300,17 @@ function tsort(scr)
 
   local k = 1
   for i=1,#tags do
-    cfg_t = config.tags[tags[i].name]
+    ipos = awful.tag.getproperty(tags[i],"position")
     -- bail if this is not a configured tag?
-    if cfg_t ~= nil then
-      if awful.tag.getproperty(tags[i+1], "position") ~= nil then
-        if cfg_t.position > awful.tag.getproperty(tags[i+1], "position") then
+    if ipos ~= nil then
+      nextpos = awful.tag.getproperty(tags[i+1], "position")
+      if nextpos ~= nil then
+        if ipos > nextpos then
           k = 1
-          nextpos = awful.tag.getproperty(tags[i+k], "position")
-          while nextpos ~= nil and cfg_t.position > nextpos and k <= #tags do
+          newpos = awful.tag.getproperty(tags[i+k], "position")
+          while newpos ~= nil and ipos > newpos and k <= #tags do
             k = k+1
-            nextpos = awful.tag.getproperty(tags[i+k], "position")
+            newpos = awful.tag.getproperty(tags[i+k], "position")
           end
           set(tags[i],{rel_index=k})
           tsort(scr)
@@ -318,6 +319,7 @@ function tsort(scr)
     end
   end
 
+  awful.hooks.user.call("tags",scr)
 end
 --}}}
 
