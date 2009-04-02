@@ -72,7 +72,6 @@ shifty.config.apps = {
          { match = { "VBox.*","VirtualBox.*"                               } , tag = "vbx",                           } ,
          { match = { "Mplayer.*","Mirage","gimp","gtkpod","Ufraw","easytag"} , tag = "media",         nopopup = true, } ,
          { match = { "MPlayer", "Gnuplot", "galculator"                    } , float = true                           } ,
-         { match = { "VirtualBox",                                         } , float = true,                          } ,
          { match = { "urxvt","sakura","vim"                                } , honorsizehints = false, slave = true   } ,
 }
 --}}}
@@ -308,17 +307,21 @@ globalkeys =
   key({ modkey }, "e", revelation.revelation ),
 
   -- shiftycentric
-  key({ modkey }, "Escape",  awful.tag.history.restore), -- move to prev tag by history
-  key({ modkey, "Shift" }, "n", shifty.send_prev), -- move client to prev tag
-  key({ modkey }, "n", shifty.send_next),  -- move client to next tag
-  key({ modkey,"Shift" }, "r",  shifty.rename), -- rename a tag
-  key({ modkey }, "d", shifty.del), -- delete a tag
-  key({ modkey }, "a",     shifty.add), -- creat a new tag
-  key({ modkey,"Shift"}, "a", function() shifty.add({ nopopup = true }) end), -- nopopup new tag
+  key({ modkey            }, "Escape",  awful.tag.history.restore), -- move to prev tag by history
+  key({ modkey, "Shift"   }, "n",       shifty.send_prev),          -- move client to prev tag
+  key({ modkey            }, "n",       shifty.send_next),          -- move client to next tag
+  key({ modkey, "Control" }, "n",       function ()                 -- move a tag to next screen
+    shifty.tagtoscr(awful.util.cycle(screen.count(), mouse.screen +1))
+  end),
+  key({ modkey, "Shift"   }, "r",       shifty.rename),             -- rename a tag
+  key({ modkey            }, "d",       shifty.del),                -- delete a tag
+  key({ modkey            }, "a",       shifty.add),                -- creat a new tag
+  key({ modkey, "Shift"   }, "a",       function() shifty.add({ nopopup = true }) end), -- nopopup new tag
 
   -- {{{ - APPLICATIONS
   key({ modkey }, "Return", function () awful.util.spawn(settings.apps.terminal) end),
 
+  -- run or raise type behavior but with benefits of shifty
   key({ modkey},"w", function () 
     for s = 1, screen.count() do 
       t = shifty.name2tag("web",s)
@@ -339,11 +342,10 @@ globalkeys =
     end
     awful.util.spawn(settings.apps.mail) 
   end),
-  key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end),
-  key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end),
+
   key({ modkey, "Mod1", "Shift" },"v", function ()
     for s = 1, screen.count() do 
-      t = shifty.name2tag("vbox",s)
+      t = shifty.name2tag("vbx",s)
       if t ~= nil then
         awful.tag.viewonly(t)
         return
@@ -353,7 +355,7 @@ globalkeys =
   end),
   key({ modkey },"g", function ()
     for s = 1, screen.count() do 
-      t = shifty.name2tag("vbox",s)
+      t = shifty.name2tag("dz",s)
       if t ~= nil then
         awful.tag.viewonly(t)
         return
@@ -361,6 +363,9 @@ globalkeys =
     end
     awful.util.spawn('gschem')
   end),
+
+  key({ modkey, "Mod1" },"f", function () awful.util.spawn(settings.apps.filemgr) end),
+  key({ modkey, "Mod1" },"c", function () awful.util.spawn("galculator") end),
   key({ modkey, "Mod1", "Shift" } ,"g", function () awful.util.spawn('gimp') end),
   key({ modkey, "Mod1" },"o", function () awful.util.spawn('/home/perry/.bin/octave-start.sh') end),
   key({ modkey, "Mod1" },"v", function () awful.util.spawn('/home/perry/.bin/vim-start.sh') end),
