@@ -4,7 +4,6 @@
 # 
 # to start vim with its own colors
 cmd="$(which vim)"
-xrdb -load ~/.Xdefaults.light
 
 if [ "$#" -gt "0" ] ; then
   files="$@"
@@ -22,6 +21,4 @@ else
   cmd="$cmd --servername $srv --remote-silent $files"
 fi
 
-urxvt -name vim -e sh -c "$cmd" &
-
-xrdb -load ~/.Xdefaults
+urxvt -bg '#2e3436' +tr -name vim -e sh -c "$cmd" &
