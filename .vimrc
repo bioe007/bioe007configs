@@ -24,6 +24,7 @@ if &t_Co == 256
   colorscheme oblivion
 endif
 
+set tags=./tags,./TAGS,tags,TAGS,/usr/include/tags
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 
 
