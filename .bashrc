@@ -62,6 +62,7 @@ alias p="sudo pacman"
 alias y="yaourt"
 alias cds="cd $SANDBOX"
 alias mv="mv -i"
+alias t="ctags -R"
 
 # 
 # correctly set path for octave use
