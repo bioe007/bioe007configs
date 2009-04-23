@@ -304,12 +304,6 @@ UseCursorSelection	= no
 #  %d file duration in XX:YY form
 #  %D file duration, number of seconds
 #
-# No pipes/redirects can be used directly, but writing a shell
-# script can do the job.
-#
-# Example:
-#
-#OnSongChange = "/home/jack/.moc/myscript %a %r"
 OnSongChange = "/home/perry/.bin/mochg artist %a songtitle %t album %r"
 
 # OnStop
