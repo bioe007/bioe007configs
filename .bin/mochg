@@ -2,7 +2,9 @@
 # a helper script to update my awesome mocp widget
 #
 # this script accepts key value pairs and passes them to the mocp module via awesome-client
-# echo time >> ~/mocdbg
+# 
+# uncomment below for debugging output
+# echo "mochg called: " $(date) " args: $@"
 if [ "$#" -lt "2" ] ; then
   # echo 'setting stop' >> ~/mocdbg
   echo 'mocp.update("state","STOP")' | awesome-client
