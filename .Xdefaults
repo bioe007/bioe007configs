@@ -20,18 +20,18 @@ URxvt.urlLauncher: firefox
 ! }}}
 
 ! {{{ appearance
-URxvt*transparent:        true
+! URxvt*transparent:        true
 URxvt.cursorBlink:        true
 URxvt.cursorOnTime:       400
 URxvt.cursorOffTime:      140
-Rxvt*font:               xft:Terminus:pixelsize=12:autohint=true
-Rxvt*boldFont:           xft:Terminus:bold:pixelsize=12:bold:autohint=true
+Rxvt*font:               xft:Terminus:pixelsize=14:autohint=true
+Rxvt*boldFont:           xft:Terminus:bold:pixelsize=14:bold:autohint=true
 URxvt*internalBorder:     3
 URxvt*jumpScroll:         true
 URxvt*scrollTtyOutput:      false
-URxvt*tintColor:          grey
-URxvt*shading:            10
-URxvt*fading:             0
+! URxvt*tintColor:          grey
+! URxvt*shading:            10
+! URxvt*fading:             0
 !URxvt*fadeColor:          grey
 URxvt*scrollBar:          False
 !URxvt*scrollBar_floating:          scrollBar_floatingtrue
@@ -47,14 +47,14 @@ URxvt*scrollBar:          False
 !   0-7 low-intensity
 !   8-15 high-intensity 
 ! 
-! URxvt*background:         #000000
+URxvt*background:         #000000
 URxvt*foreground:         #cfcfcf
 URxvt*colorBD:            lightyellow
 URxvt*colorUL:            yellow   
 URxvt*cursorColor:        #07A5FF
 
 ! black
-! URxvt*color0:  #000000
+URxvt*color0:  #000000
 URxvt*color8:  #999999
 !
 ! ! red
