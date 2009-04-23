@@ -6,20 +6,27 @@ if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
   eval `dbus-launch --sh-syntax --exit-with-session`
 fi
 
-# test -z "$(mount | grep samba)" && /home/perry/.bin/cifsmnt
-# xcompmgr & # xcompmgr causes high cpu usage now
+# until i make mocp.lua smarter, always start mocp to satisfy widget
+mocp --server
+xcompmgr -n &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
 
 # feh --bg-scale "/home/perry/images/awesome/my-bg_brn.png" &
+nitrogen --restore
 
 # unclutter -idle 1
-RXVT_SOCKET="$HOME/.var/rxvt-unicode"
-urxvtd -q -o -f &
+# RXVT_SOCKET="$HOME/.var/rxvt-unicode"
+# urxvtd -q -o -f &
 
 #sync PRIMARY with clipboard 
 autocutsel -s PRIMARY -buttonup -fork
 exec awesome 
+# exec openbox-session
+# exec xmonad
+# startkde
+# exec dwm
+# exec echinus
 # /home/perry/atm 
 # eval `ssh-agent`
 # ssh-add
