@@ -18,6 +18,16 @@ CVSROOT=":ext:phargrave@10.1.1.16:/srv/Engineering/ph1000/cvs_root_bcsi"
 CVSEDITOR="/usr/bin/vim" 
 EDITOR="/usr/bin/vim"
 
+# a hack for awesome+java
+AWT_TOOLKIT="MToolkit"
+
+# geda stuff
+GEDADATA="/usr/share/gEDA"
+
+# pager
+PAGER="vimpager"
+MANPAGER="$PAGER"
+
 # required for tasking compiler
 LM_LICENSE_FILE=/home/perry/.wine/drive_c/cc51/license.dat
 CC51INC=/home/perry/.wine/drive_c/cc51/include
@@ -27,21 +37,10 @@ CC51LIB=/home/perry/.wine/drive_c/cc51/lib
 TASKPATH="$HOME/.wine/drive_c/cc51/bin"      # path to tasking binaries
 DYNCPATH="$HOME/.wine/drive_c/DCRABBIT_9.21" # path to dynamic-C
 
-# a hack for awesome+java
-AWT_TOOLKIT=MToolkit 
-
-# geda stuff
-GEDADATA="/usr/share/gEDA"
-
-# pager
-PAGER="vimpager"
-MANPAGER="$PAGER"
-
 export CFLAGS CXXFLAGS CHOST CVSROOT CVSEDITOR LM_LICENSE_FILE CC51INC CC51LIB LFS MALLOC_CHECK_
 export PAGER MANPAGER AWT_TOOLKIT EDITOR GEDADATA
 
-complete -cf sudo
-
+# alias for tasking 8051 compiler
 WINECMD=$(which wine)
 alias cc51="$WINECMD    ${TASKPATH}/cc51.exe"     # compiler
 alias mpp51="$WINECMD   ${TASKPATH}/mpp51.exe"    # macro preprocessor
@@ -49,6 +48,7 @@ alias asm51="$WINECMD   ${TASKPATH}/asm51.exe"    # assembler
 alias ld51="$WINECMD    ${TASKPATH}/link51.exe"   # linker
 alias ihex51="$WINECMD  ${TASKPATH}/ihex51.exe"   # hex converter
 alias dync="$WINECMD    ${DYNCPATH}/Dccl_cmp.exe" # dyn-c compiler
+alias mk51="wine ~/.wine/drive_c/cc51/bin/mk51.exe"
 
 # required for man to operate correctly using utf-8
 alias man='LC_ALL=C man'
@@ -64,7 +64,6 @@ alias cds="cd $SANDBOX"
 alias mv="mv -i"
 alias t="ctags -R"
 
-# 
 # correctly set path for octave use
 alias octave="LD_LIBRARY_PATH=/opt/octave/lib:$LD_LIBRARY_PATH PATH=/opt/octave/bin:$PATH /opt/octave/bin/octave"
 
@@ -90,6 +89,7 @@ else
     PS1="\[\e]2;\j:\w\a\e[35;1m\]\\$\[\e[0m\] "
     TERM="rxvt-256color"
 fi
+
 # 
 # directory colors, dont work with 'dumb' shells
 if [ "$SHELL" != "dumb" ] ; then 
@@ -102,3 +102,6 @@ fi
 
 # needed to fix the 
 shopt -s checkwinsize
+
+# sudo completion
+complete -cf sudo
