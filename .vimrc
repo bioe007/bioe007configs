@@ -24,7 +24,7 @@ if &t_Co == 256
   colorscheme oblivion
 endif
 
-set tags=./tags,./TAGS,tags,TAGS,/usr/include/tags
+set tags=./tags,./TAGS,tags,TAGS,/usr/avr/include/tags,/usr/include/tags
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 
 
@@ -52,7 +52,7 @@ set sessionoptions=blank,buffers,curdir,folds,help,winsize
 " first list the available options and complete the longest common part, then
 " have further <Tab>s cycle through the possibilities:
 set wildmode=list:longest,full
-set wildignore=*.o,*.obj,*.bak,*.exe,.* 
+set wildignore=*.o,*.obj,*.bak,*.exe
 
 set shortmess+=r " use [RO] for '[readonly]' to save space in the message line:
 set showmode     " display the current mode
@@ -145,12 +145,12 @@ map ,B :sp $HOME/.bashrc<CR><C-W>_
 map ,X :sp $HOME/.Xdefaults<CR><C-W>_
 ",A open .awesome rc.lua & theme
 map ,A :sp $HOME/.config/awesome/rc.lua<CR><C-W>=
+
 " Spacebar toggles a fold, zi toggles all folding, zM closes all folds
 " noremap  <silent>  <space> :exe 'silent! normal! za'.(foldlevel('.')?'':'l')<cr>
+
 " create tags files quickly
 map <F8> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-" map <F9> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-" map <F10> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 " toggle taglist
 map <silent> ,t :TlistToggle<CR> :colorscheme oblivion<CR>
 
@@ -163,8 +163,6 @@ noremap <silent> ,< :call CommentLinePincer('<!-- ', ' -->')<CR>+
 noremap <silent> ,! :call CommentLineToEnd('! ')<CR>+
 noremap <silent> ,- :call CommentLineToEnd('-- ')<CR>+
 noremap <silent> ,] :call CommentLinePincer('--[[ ', ' --]]')<CR>+
-
-" nmap ,c <Plug>CRV_CRefVimNormal
 
 " Make shift-insert work like in Xterm
 map <S-Insert> <MiddleMouse>
