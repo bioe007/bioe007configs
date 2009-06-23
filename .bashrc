@@ -1,4 +1,6 @@
 SANDBOX=${HOME}/sandbox
+HISTSIZE=10000
+HISTCONTROL=ignoreboth
 
 # this fixes troubles with glibc and malloc debugging
 # 0 = Do not generate an error message, and do not kill the program
@@ -105,3 +107,6 @@ shopt -s checkwinsize
 
 # sudo completion
 complete -cf sudo
+
+shopt -s histappend
+
