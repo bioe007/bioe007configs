@@ -8,12 +8,12 @@ fi
 
 # until i make mocp.lua smarter, always start mocp to satisfy widget
 mocp --server
-xcompmgr -n &
+# xcompmgr -n &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
 
 # feh --bg-scale "/home/perry/images/awesome/my-bg_brn.png" &
-nitrogen --restore
+# nitrogen --restore
 
 # unclutter -idle 1
 # RXVT_SOCKET="$HOME/.var/rxvt-unicode"
