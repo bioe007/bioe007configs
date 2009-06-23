@@ -16,9 +16,9 @@ echo $srv
 # no existing vim server found use default master
 if [ -z "$srv" ] ; then 
   srv="master" 
-  cmd="$cmd --servername $srv $files"
+  cmd="$cmd --servername $srv \"$files\""
 else
-  cmd="$cmd --servername $srv --remote-silent $files"
+  cmd="$cmd --servername $srv --remote-silent \"$files\""
 fi
 
 urxvt -bg '#2e3436' +tr -name vim -e sh -c "$cmd" &
