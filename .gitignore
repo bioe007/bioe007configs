@@ -33,8 +33,9 @@
 .var
 .dvdcss
 .moc
-.irssi/config .irssi/config.autosave
-*irssi/*theme
+.irssi/config 
+.irssi/config.autosave
+.irssi/*theme
 docs
 funnies
 software
@@ -78,7 +79,6 @@ sandbox
 *authority*
 .inkscape
 .feh*
-
 .bin
 .dosemu
 .config/*txt
@@ -89,7 +89,6 @@ sandbox
 .config/mirage
 .ufrawrc
 .viminfo
-
 .gftp
 .gvimrc
 .msmtprc
@@ -101,8 +100,12 @@ sandbox
 .gegl-0.0
 .mc
 .macromedia
-.links.htoprc.config/gtk-2.0/gtkfilechooser.ini.config/transmission/
+.config/transmission/
 .config/xarchiver
 .gconfd
 .htoprc
-
+*.torrent
+*.mpg
+*.flv
+*.zip
+*.ppt
