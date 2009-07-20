@@ -262,11 +262,12 @@
  zx ............. Update folds, re-apply 'foldlevel', 
 ============================================================
  *Miscellaneous*
- :sh<CR> :!c<CR> ... start shell, execute command c in shell
+ :sh     :!c     ... start shell, execute command c in shell
  K ................. lookup keyword under cursor with man
- :make<CR> ......... make, read errors and jump to first
- :cn<CR> :cp<CR> ... display the next, previous error
- :cl<CR> :cf<CR> ... list all errors, read errors from file
+ :make     ......... make, read errors and jump to first
+ :cn     :cp     ... display the next, previous error
+ :cl     :cf     ... list all errors, read errors from file
+ :cc ............... reshow current error message
  ^L ^G ............. redraw screen, show filename and pos
  g^G ............... show cursor column, line, and char pos
  ga ................ show ASCII value of char under cursor
