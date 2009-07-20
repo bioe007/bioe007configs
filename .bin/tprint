@@ -3,7 +3,7 @@
 # simple script to print text files
 #
 MINARG="1"
-USAGE="-e \ntprint [-C] <filename>\n"
+USAGE="-e \n\ttprint [-C][-E<filter>] <filename>\n"
 INFILE=""
 
 # base enscript and lpr options
