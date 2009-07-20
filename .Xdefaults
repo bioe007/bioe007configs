@@ -4,19 +4,19 @@ URxvt*loginShell:       false
 URxvt*saveLines:        5500
 URxvt*geometry:         180x25
 ! URxvt*meta8:            true   /* teh fail w/vim and irssi+screen */
-URxvt*cutchars:         `"()'*<>[]{|}
-/* match left-mouse-button */
-URxvt*matcher.button:   1                   
-URxvt*urlLauncher:      firefox
+
 /* places a hardcopy in home dir when print is pressed */
 URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
 
-! {{{ mark-and-yank
-URxvt.keysym.M-u: perl:mark-yank-urls:activate_mark_mode
-URxvt.underlineURLs: true
-URxvt.perl-lib: /home/perry/.urxvt/
-URxvt.perl-ext: selection,mark-yank-urls
-URxvt.urlLauncher: firefox
+! {{{ URLs mark-and-yank
+URxvt*cutchars:         `"()'*<>[]{|}
+/* match left-mouse-button */
+URxvt*matcher.button:   1                   
+URxvt.keysym.M-u:       perl:mark-yank-urls:activate_mark_mode
+URxvt.underlineURLs:    true
+URxvt.perl-lib:         /home/perry/.urxvt/
+URxvt.perl-ext:         selection,mark-yank-urls
+URxvt.urlLauncher:      firefox
 ! }}}
 
 ! {{{ appearance
@@ -24,14 +24,23 @@ URxvt.urlLauncher: firefox
 URxvt.cursorBlink:        true
 URxvt.cursorOnTime:       400
 URxvt.cursorOffTime:      140
+
+! {{{ FONT handling
 Rxvt*font:               xft:Terminus:pixelsize=14:autohint=true
 Rxvt*boldFont:           xft:Terminus:bold:pixelsize=14:bold:autohint=true
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.rgba: rgb
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintslight 
+! }}}
+
 URxvt*internalBorder:     3
 URxvt*jumpScroll:         true
-URxvt*scrollTtyOutput:      false
-! URxvt*tintColor:          grey
-! URxvt*shading:            10
-! URxvt*fading:             0
+URxvt*scrollTtyOutput:    true
+!URxvt*tintColor:          grey
+!URxvt*shading:            10
+!URxvt*fading:             0
 !URxvt*fadeColor:          grey
 URxvt*scrollBar:          False
 !URxvt*scrollBar_floating:          scrollBar_floatingtrue
@@ -39,6 +48,14 @@ URxvt*scrollBar:          False
 !URxvt*scrollColor:                 #000000
 !URxvt*inheritPixmap:      false
 !URxvt*reverseVideo:       false
+
+! {{{ CURSOR
+Xcursor.theme: default
+Xcursor.theme_core: true
+Xcursor.size: 15
+! Blog'ed http://www.jukie.net/~bart/blog/tag/urxvt
+! }}}
+
 ! }}}
 
 ! {{{ colors
@@ -89,21 +106,6 @@ URxvt*color15: #DEDEDE
 
 ! }}}
 
-! {{{ FONT handling
-Xft.antialias: 1
-Xft.hinting: 1
-Xft.rgba: rgb
-Xft.lcdfilter:  lcddefault
-Xft.hintstyle:  hintslight 
-! }}}
-
-! {{{ CURSOR
-Xcursor.theme: default
-Xcursor.theme_core: true
-Xcursor.size: 15
-! Blog'ed http://www.jukie.net/~bart/blog/tag/urxvt
-! }}}
-
 ! {{{ irssi
 !   -- also: set 'vbell on' in screen
 !   --       set 'bell_msg' "\a in window!"
@@ -112,4 +114,4 @@ urxvt*urgentOnBell: true
 ! weechat*urgentOnBell:true
 ! }}}
 
-! vim: set fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent
+! vim:set fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
