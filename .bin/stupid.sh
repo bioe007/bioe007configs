@@ -47,11 +47,12 @@ syncmaster () {
 # {{{ soyo 
 soyo () {
   lvds
-  if [ -z "$(xrandr | grep 1440x900_60 | grep -w "**$")" ] ; then
-    # sudo xrandr --newmode 1440x900_60.00  106.47  1440 1520 1672 1904  900 901 904 932  -HSync +Vsync
+#| grep -w "**$")" ] ; then 
+  if [ -z "$(xrandr | grep '1680x1050_68.00') ]; then 
     sudo xrandr --newmode 1680x1050_68.00  168.71  1680 1792 1976 2272  1050 1051 1054 1092  -HSync +Vsync
     sudo xrandr --addmode VGA  1680x1050_68.00
   fi
+  echo in soyo
   sudo xrandr --output VGA --mode 1680x1050_68.00 --right-of LVDS
 }
 # }}}
