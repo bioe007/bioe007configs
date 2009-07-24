@@ -6,3 +6,6 @@ cmd='echo naughty.notify({text="'${text}'"})'
 $cmd | awesome-client
 
 # echo $(date) : awenotify : "$@" : "$cmd" | tee -a  ~/awenotifydbg
+
+
+# vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:

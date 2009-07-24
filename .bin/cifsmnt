@@ -22,3 +22,8 @@ case "$1" in
   test -z "$(mount | grep shared)" && sudo mount -t cifs $SRV/shared /mnt/samba/shared -o $MNTOPTS || echo "Already Mounted shared"
   ;;
 esac
+
+
+
+
+# vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:

@@ -66,4 +66,4 @@ if __name__ == "__main__":
 
   display(vol)
 
-# vim: set filetype=python fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent nu:
+# vim: set filetype=python fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent :
