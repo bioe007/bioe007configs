@@ -277,4 +277,5 @@
  :loadview [f ] .... load view configuration [from file f ]
  ^@ ^K ^ \ Fn ^Fn .. unmapped keys
 ============================================================
- vim:tw=60:wiw=60:ts=8:noet:ft=help:
+
+ vim:tw=60:wiw=60:ts=8:noet:norl:ft=help:
