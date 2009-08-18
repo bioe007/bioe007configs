@@ -1,0 +1,303 @@
+# gtkrc for rezlooks engine by perry hargrave aka bioe007
+#
+# loosely based on the themes:
+#
+# Simple (xfce engine)
+# Candido-Graphite
+# 
+
+gtk-icon-sizes = "panel-menu=12,12:panel=12,12:gtk-button=12,12:gtk-large-toolbar=16,16:gtk-small-toolbar=12,12"
+
+style "default"
+{
+# widgets
+  GtkWidget::focus-line-pattern                = "\0"
+  GtkWidget::focus-line-width                  = 0
+  GtkWidget::focus_padding                     = 0 
+  GtkWidget::interior_focus                    = 5
+  GtkWidget::internal_padding                  = 4
+
+# buttons
+  GtkButton::default_border                    = {0, 0, 0, 0}
+  GtkButton::default_outside_border            = {0, 0, 0, 0}
+  GtkButton::child_displacement_x              = 0
+  GtkButton::child_displacement_y              = 0
+  GtkButton::default_spacing                   = 3
+  GtkButton::focus-padding                     = 1
+  GtkCheckButton::indicator_size               = 12
+  GtkRadioButton::indicator_size               = 12 #size of the indicator for the roll over
+
+# handles
+  GtkPaned::handle_full_size                   = 1
+  GtkPaned::handle_size = 3
+
+# ranges
+  GtkRange::slider_width = 12
+  GtkRange::stepper_size = 1 # toolbar arrows
+  GtkRange::trough_border = 0
+  GtkRange::stepper_spacing  = 0
+
+# bars
+  GtkScrollbar::min_slider_length = 30
+  GtkScrollbar::has_backward_stepper           = 1
+  GtkScrollbar::min_slider_length              = 20 # smallest size of scroll bar slider to match size of buttons (4 X 4), it looks good in User inter Pref.
+  GtkStatusbar::shadow_type                    = none # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
+  GtkToolbar::shadow_type                      = none # same as ^ but for toolbar 
+  GtkMenuBar::shadow_type                      = none # ^^ for menubar... 8O
+  GtkMenuBar::internal-padding = 0
+
+  ExoIconBar::focus_padding                    = 2 
+  GtkMenuItem::selected_shadow_type            = none
+  GtkMenuItem::internal_padding                = 2
+  GtkExpander::expander_size = 12 
+  GtkTreeView::expander_size = 11
+  GtkTreeView::odd_row_color                   = "#cccccc" 
+  GtkTreeView::even_row_color                  = "#cccccc" 
+
+  xthickness = 1
+  ythickness = 1
+
+  fg[NORMAL]        = "#505050" # mouseover, Most text
+  fg[PRELIGHT]      = "#cfcfcf" # text on buttons (hover)
+  fg[ACTIVE]        = "#505050" # text on unfocused tabs
+  fg[SELECTED]      = "#cfcfcf" # selected text on lists
+  fg[INSENSITIVE]   = "#b1b1b1" # greyed "unused" text
+
+  bg[NORMAL]		    = "#cfcfcf"   # entire background
+  bg[PRELIGHT]		  = "#f6f7f8" # button prelightsExpand prelight bg
+  bg[ACTIVE]		    = "#e5e6e7"   # selected taskbar items
+  bg[SELECTED]	  	= "#68696b" # selected taskbar items???
+  bg[INSENSITIVE]	  = "#e2e3e4" # greyed buttons
+
+  base[NORMAL]		  = "#dfdfdf"   # window background - like the active panel in thunar
+  base[PRELIGHT]	  = "#3d3e3f"   # menubar outline colour
+  base[ACTIVE]		  = "#68696b"   # selected item background (out of focus)
+  base[SELECTED]	  = "#68696b"   # selected hilight,tab/slider background, & menu stripeMenu active item in active window
+  base[INSENSITIVE]	= "#e0e0e0" # greyed sliders
+
+  text[NORMAL]		  = "#505050" # text in general
+  text[PRELIGHT]	  = "#505050" # hover text (on buttons)
+  text[ACTIVE]		  = "#cfcfcf" # greyed text out of use (on highlight)
+  text[SELECTED]	  = "#cfcfcf" # selected text (on highlight)
+  text[INSENSITIVE]	= "#b1b1b1" # greyed text arrows
+
+  engine "rezlooks" 
+  {
+    scrollbar_color    = "#505050" 
+    menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
+    menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
+    listviewitemstyle  = 0       # 0 = flat, 1 = 3d-ish (gradient)
+    # progressbarstyle  = 2       # 0 = candy bar, 1 = flat 	
+    # scrollbarstyle			= 1	  # 0 = strokes in the scrollbar, 1 = no strokes	
+    menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
+    menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
+    # cornerstyle 		 = 1       # 0 = rounded, 1 = not rounded
+    animation          = FALSE
+  }
+}
+
+
+style "progressbar" = "default"
+{
+  bg[PRELIGHT]      = "#505050" #progress bar color e2e2e2"
+  xthickness = 0
+  ythickness = 0
+  engine "xfce"
+  {
+  }
+ 
+}
+
+style "wide" = "default"
+{
+  xthickness = 2
+  ythickness = 2
+}
+
+style "button" = "default"
+{
+  xthickness = 2
+  ythickness = 1
+  bg[NORMAL]		  = "#cfcfcf"      # button background
+  bg[ACTIVE]		  = "#505050"      # pressed color
+  bg[SELECTED]		= "#505050"    # check and radio button color 
+  bg[INSENSITIVE]	= "#e2e3e4"    # greyed buttons
+  bg[PRELIGHT]    = "#545454" 
+
+  fg[PRELIGHT]    = "#cfcfcf" # text on highlight
+  fg[ACTIVE]      = "#cfcfcf" # text when button pressed
+  
+  text[PRELIGHT]  = "#cfcfcf" # text on prelighted combobox
+}
+style "combo" = "button"
+{
+  xthickness = 3
+  ythickness = 3
+  fg[ACTIVE]        = "#505050" # nc - text
+  base[INSENSITIVE] = "#ffffff"
+}
+
+style "notebook" = "wide"
+{
+  bg[NORMAL] = "#cfcfcf" #e2e3e4" # inner window background colour
+  bg[ACTIVE] = "#acacac" # d4d5d6" # out of focus tabs
+}
+
+
+style "tasklist" = "default"
+{
+  xthickness = 5
+  ythickness = 3
+}
+
+style "menu" = "default"
+{
+  xthickness = 2
+  ythickness = 1
+  bg[NORMAL] = "#ecedee"
+}
+
+style "menu-item" = "default"
+{
+  xthickness = 2
+  ythickness = 1
+  fg[PRELIGHT] = "#cfcfcf"
+  text[PRELIGHT] = "#cfcfcf"
+}
+
+style "tree" = "default"
+{
+  xthickness = 2
+  ythickness = 2
+  GtkTreeView::odd_row_color = "#3d3e3f" #ffffff"
+  GtkTreeView::even_row_color = "#3d3e3f" #fcfcfc"
+}
+
+style "frame-title" = "default"
+{
+  fg[NORMAL] = "#404040"
+}
+
+##################################################---------- PANEL & pager
+style "panel" = "button"
+{
+  xthickness = 2
+  ythickness = 1
+}
+
+style "pager" = "panel"
+{
+    xthickness = 1
+    ythickness = 1
+
+    bg[SELECTED]      = "#545454" 
+    fg[SELECTED]      = "#505050"
+
+}
+
+style "tooltips" = "default"
+{
+  xthickness = 4
+  ythickness = 4
+  bg[NORMAL] = { 1.0,1.0,0.75 }
+}
+
+
+style "bar" = "default"
+{
+# for some reason to get this 'no line separator' i've got to keep the engine "other" block, otw the line shows up no matter what.
+
+    GtkStatusbar::shadow_type = GTK_SHADOW_NONE  # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
+    GtkToolbar::shadow_type = GTK_SHADOW_NONE  # same as ^ but for toolbar 
+    GtkMenuBar::shadow_type = GTK_SHADOW_NONE  # ^^ for menubar... 8O
+    xthickness = 4
+    ythickness = 1
+
+     engine "pixmap"
+     {
+     } 
+}
+style "bleach" = "default"
+{
+  fg[NORMAL]        = "#ffffff" # mouseover, Most text
+  fg[PRELIGHT]      = "#ffffff" # text on buttons (hover)
+  fg[ACTIVE]        = "#ffffff" # text on unfocused tabs
+  fg[SELECTED]      = "#ffffff" # selected text on lists
+  fg[INSENSITIVE]   = "#ffffff" # greyed "unused" text
+
+  bg[NORMAL]		    = "#ffffff"   # entire background
+  bg[PRELIGHT]		  = "#ffffff" # button prelightsExpand prelight bg
+  bg[ACTIVE]		    = "#ffffff"   # selected taskbar items
+  bg[SELECTED]	  	= "#ffffff" # selected taskbar items???
+  bg[INSENSITIVE]	  = "#ffffff" # greyed buttons
+
+  base[NORMAL]		  = "#ffffff"   # window background - like the active panel in thunar
+  base[PRELIGHT]	  = "#ffffff"   # menubar outline colour
+  base[ACTIVE]		  = "#ffffff"   # selected item background (out of focus)
+  base[SELECTED]	  = "#ffffff"   # selected hilight,tab/slider background, & menu stripeMenu active item in active window
+  base[INSENSITIVE]	= "#ffffff" # greyed sliders
+
+  text[NORMAL]		  = "#505050" # text in general
+  text[PRELIGHT]	  = "#505050" # hover text (on buttons)
+  text[ACTIVE]		  = "#cfcfcf" # greyed text out of use (on highlight)
+  text[SELECTED]	  = "#cfcfcf" # selected text (on highlight)
+  text[INSENSITIVE]	= "#b1b1b1" # greyed text arrows
+
+}
+# widget styles
+class "GtkWidget" style "default"
+class "GtkRange"  style "wide"
+class "GtkFrame"  style "wide"
+class "GtkEntry"  style "button"
+class "GtkMenuItem"    style "menu-item"
+class "GtkStatusbar"   style "bar" #"wide"
+class "GtkMenuBar"   style "bar" #default" #"wide"
+class "GtkMenu"   style "default" #"wide"
+class "GtkStatusbar"   style "bar" #"wide"
+class "GtkNotebook"    style "notebook"
+class "GtkProgressBar" style "progressbar"
+widget_class "*MenuBar*"           style "bar"
+class "*MenuBar*"                  style "bar"
+class "*Statusbar*"   style "bar" #"wide"
+widget_class "*Statusbar*"   style "bar" #"wide"
+widget_class "*MenuItem.*" style "menu-item"
+
+# buttons & boxes 
+class         "*Button*"                style "button"
+widget_class  "*Button*"                style "button"
+widget_class  "*<GtkToggleButton>*"     style "button"
+widget_class  "*.GtkComboBox.*"         style "combo"
+class         "*GtkCombo*"              style "combo"
+widget_class  "*.GtkCombo.*"            style "combo"
+class         "*GtkEntry*"              style "combo"
+widget_class  "*.GtkEntry.*"            style "combo"
+widget_class  "*<GtkSpinButton>*"       style "combo"
+widget_class  "*.GtkCombo.*.GtkButton"  style "combo"
+widget_class  "*<GtkCheckButton>*"      style "combo"
+widget_class  "*<GtkRadioButton>*"      style "combo"
+
+# tooltips stuff
+widget_class "*.tooltips.*.GtkToggleButton" style "tasklist"
+widget "gtk-tooltips" style "tooltips"
+
+# treeview stuff
+widget_class "*.GtkTreeView.GtkButton" style "tree"
+widget_class "*.GtkCTree.GtkButton" style "tree"
+widget_class "*.GtkList.GtkButton" style "tree"
+widget_class "*.GtkCList.GtkButton" style "tree"
+widget_class "*.GtkFrame.GtkLabel" style "frame-title"
+
+# notebook stuff
+widget_class "*.GtkNotebook.*.GtkEventBox" style "notebook"
+widget_class "*.GtkNotebook.*.GtkViewport" style "notebook"
+
+# Panel & pager
+widget_class "*Panel*GtkToggleButton" style "panel"
+widget_class "*Panel*GtkButton" style "panel"
+class "*Panel*" style "panel"
+class "*notif*" style "panel"
+class "*Notif*" style "panel"
+class "*Tray*" style "panel"
+class "*tray*" style "panel"
+widget_class "*Pager*"             style "pager"
+class "*Pager*"                    style "pager"
