@@ -4,82 +4,103 @@
 #
 # Simple (xfce engine)
 # Candido-Graphite
+#
+# FIXME: the progress bar requiring xfce engine to look 'flat', have tried
+# rezlooks options to no success, it always looks etched in to something. Also
+# tried various other engines (clearlooks, pixmap, gflat)
 # 
 
 gtk-icon-sizes = "panel-menu=12,12:panel=12,12:gtk-button=12,12:gtk-large-toolbar=16,16:gtk-small-toolbar=12,12"
 
+#{{{ base style
+
 style "default"
 {
-# widgets
-  GtkWidget::focus-line-pattern                = "\0"
-  GtkWidget::focus-line-width                  = 0
-  GtkWidget::focus_padding                     = 0 
-  GtkWidget::interior_focus                    = 5
-  GtkWidget::internal_padding                  = 4
+# {{{ class settings
+  # {{{  widgets
+  GtkWidget::focus-line-pattern = "\009\000\009"
+  GtkWidget::focus-line-width     = 2
+  GtkWidget::focus_padding      = 0
+  GtkWidget::interior_focus       = 5
+  GtkWidget::internal_padding     = 4
+  GtkWidget::wide-separators     = 1
+  # }}}
 
-# buttons
-  GtkButton::default_border                    = {0, 0, 0, 0}
-  GtkButton::default_outside_border            = {0, 0, 0, 0}
-  GtkButton::child_displacement_x              = 0
-  GtkButton::child_displacement_y              = 0
-  GtkButton::default_spacing                   = 3
-  GtkButton::focus-padding                     = 1
-  GtkCheckButton::indicator_size               = 12
-  GtkRadioButton::indicator_size               = 12 #size of the indicator for the roll over
+  # {{{ buttons
+  GtkButton::default_border         = {0, 0, 0, 0}
+  GtkButton::default_outside_border = {0, 0, 0, 0}
+  GtkButton::child_displacement_x   = 0
+  GtkButton::child_displacement_y   = 0
+  GtkButton::default_spacing        = 3
+  GtkButton::focus-padding          = 1
+  GtkCheckButton::indicator_size    = 12  #size of the indicator for the roll over
+  GtkRadioButton::indicator_size    = 12 
+  # }}}
 
-# handles
-  GtkPaned::handle_full_size                   = 1
-  GtkPaned::handle_size = 3
+  # {{{ handles
+  GtkPaned::handle_full_size = 1
+  GtkPaned::handle_size      = 3
+  # }}}
 
-# ranges
-  GtkRange::slider_width = 12
-  GtkRange::stepper_size = 1 # toolbar arrows
-  GtkRange::trough_border = 0
-  GtkRange::stepper_spacing  = 0
+  # {{{ ranges
+  GtkRange::slider_width    = 12
+  GtkRange::stepper_size    = 1 # toolbar arrows
+  GtkRange::trough_border   = 0
+  GtkRange::stepper_spacing = 0
+  # }}}
 
-# bars
-  GtkScrollbar::min_slider_length = 30
-  GtkScrollbar::has_backward_stepper           = 1
-  GtkScrollbar::min_slider_length              = 20 # smallest size of scroll bar slider to match size of buttons (4 X 4), it looks good in User inter Pref.
-  GtkStatusbar::shadow_type                    = none # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
-  GtkToolbar::shadow_type                      = none # same as ^ but for toolbar 
-  GtkMenuBar::shadow_type                      = none # ^^ for menubar... 8O
-  GtkMenuBar::internal-padding = 0
+  # {{{ bars
+  GtkScrollbar::min_slider_length    = 30
+  GtkScrollbar::has_backward_stepper = 1
+  GtkScrollbar::min_slider_length    = 20 # smallest size of scroll bar slider to match size of buttons (4 X 4), it looks good in User inter Pref.
+  GtkStatusbar::shadow_type          = GTK_SHADOW_NONE # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
+  # FIXME:  GtkProgressBar::shadow_type          = GTK_SHADOW_NONE # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
+  GtkToolbar::shadow_type            = GTK_SHADOW_NONE # same as ^ but for toolbar
+  GtkMenuBar::shadow_type            = GTK_SHADOW_NONE # ^^ for menubar... 8O
+  GtkMenuBar::internal-padding       = 0
+  # }}}
 
-  ExoIconBar::focus_padding                    = 2 
-  GtkMenuItem::selected_shadow_type            = none
-  GtkMenuItem::internal_padding                = 2
-  GtkExpander::expander_size = 12 
-  GtkTreeView::expander_size = 11
-  GtkTreeView::odd_row_color                   = "#cccccc" 
-  GtkTreeView::even_row_color                  = "#cccccc" 
+  ExoIconBar::focus_padding         = 2
+  GtkMenuItem::selected_shadow_type = GTK_SHADOW_NONE 
+  GtkMenuItem::internal_padding     = 2
+  GtkExpander::expander_size        = 12
+  GtkTreeView::expander_size        = 11
+  GtkTreeView::odd_row_color        = "#cccccc"
+  GtkTreeView::even_row_color       = "#cccccc"
 
   xthickness = 1
   ythickness = 1
 
+#}}}
+
+#{{{ colors
+
   fg[NORMAL]        = "#505050" # mouseover, Most text
+  bg[NORMAL]        = "#cfcfcf"   # entire background
+  base[NORMAL]      = "#dfdfdf"   # window background - like the active panel in thunar
+  text[NORMAL]      = "#505050" # text in general
+
   fg[PRELIGHT]      = "#cfcfcf" # text on buttons (hover)
+  bg[PRELIGHT]      = "#f6f7f8" # button prelightsExpand prelight bg
+  base[PRELIGHT]    = "#3d3e3f"   # menubar outline colour
+  text[PRELIGHT]    = "#505050" # hover text (on buttons)
+
   fg[ACTIVE]        = "#505050" # text on unfocused tabs
+  bg[ACTIVE]        = "#e5e6e7"   # selected taskbar items
+  base[ACTIVE]      = "#68696b"   # selected item background (out of focus)
+  text[ACTIVE]      = "#cfcfcf" # greyed text out of use (on highlight)
+
   fg[SELECTED]      = "#cfcfcf" # selected text on lists
+  bg[SELECTED]      = "#68696b" # selected taskbar items???
+  base[SELECTED]    = "#68696b"   # selected hilight,tab/slider background, & menu stripeMenu active item in active window
+  text[SELECTED]    = "#cfcfcf" # selected text (on highlight)
+
   fg[INSENSITIVE]   = "#b1b1b1" # greyed "unused" text
+  bg[INSENSITIVE]   = "#e2e3e4" # greyed buttons
+  base[INSENSITIVE] = "#e0e0e0" # greyed sliders
+  text[INSENSITIVE] = "#b1b1b1" # greyed text arrows
 
-  bg[NORMAL]		    = "#cfcfcf"   # entire background
-  bg[PRELIGHT]		  = "#f6f7f8" # button prelightsExpand prelight bg
-  bg[ACTIVE]		    = "#e5e6e7"   # selected taskbar items
-  bg[SELECTED]	  	= "#68696b" # selected taskbar items???
-  bg[INSENSITIVE]	  = "#e2e3e4" # greyed buttons
-
-  base[NORMAL]		  = "#dfdfdf"   # window background - like the active panel in thunar
-  base[PRELIGHT]	  = "#3d3e3f"   # menubar outline colour
-  base[ACTIVE]		  = "#68696b"   # selected item background (out of focus)
-  base[SELECTED]	  = "#68696b"   # selected hilight,tab/slider background, & menu stripeMenu active item in active window
-  base[INSENSITIVE]	= "#e0e0e0" # greyed sliders
-
-  text[NORMAL]		  = "#505050" # text in general
-  text[PRELIGHT]	  = "#505050" # hover text (on buttons)
-  text[ACTIVE]		  = "#cfcfcf" # greyed text out of use (on highlight)
-  text[SELECTED]	  = "#cfcfcf" # selected text (on highlight)
-  text[INSENSITIVE]	= "#b1b1b1" # greyed text arrows
+#}}}
 
   engine "rezlooks" 
   {
@@ -87,19 +108,19 @@ style "default"
     menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
     menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
     listviewitemstyle  = 0       # 0 = flat, 1 = 3d-ish (gradient)
-    # progressbarstyle  = 2       # 0 = candy bar, 1 = flat 	
-    # scrollbarstyle			= 1	  # 0 = strokes in the scrollbar, 1 = no strokes	
-    menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
-    menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
+    progressbarstyle  = 1       # 0 = candy bar, 1 = flat 	
+    # scrollbarstyle = 1	  # 0 = strokes in the scrollbar, 1 = no strokes	
     # cornerstyle 		 = 1       # 0 = rounded, 1 = not rounded
     animation          = FALSE
   }
 }
+#}}}
 
+#{{{ child styles
 
 style "progressbar" = "default"
 {
-  bg[PRELIGHT]      = "#505050" #progress bar color e2e2e2"
+  bg[PRELIGHT]      = "#505050" 
   xthickness = 0
   ythickness = 0
   engine "xfce"
@@ -118,25 +139,36 @@ style "button" = "default"
 {
   xthickness = 2
   ythickness = 1
-  bg[NORMAL]		  = "#cfcfcf"      # button background
-  bg[ACTIVE]		  = "#505050"      # pressed color
-  bg[SELECTED]		= "#505050"    # check and radio button color 
-  bg[INSENSITIVE]	= "#e2e3e4"    # greyed buttons
-  bg[PRELIGHT]    = "#545454" 
+  bg[NORMAL]      = "#cfcfcf"      # button background
+  bg[ACTIVE]      = shade(0.8,"#505050")      # pressed color
+  bg[SELECTED]    = shade(0.5,"#545454")    # check and radio button color
+  bg[INSENSITIVE] = "#e2e3e4"    # greyed buttons
+  bg[PRELIGHT]    = shade(1.7,"#545454")
 
-  fg[PRELIGHT]    = "#cfcfcf" # text on highlight
-  fg[ACTIVE]      = "#cfcfcf" # text when button pressed
+  fg[PRELIGHT]    = "#dfcfcf" # text on highlight
+  fg[ACTIVE]      = "#efefef" # text when button pressed
   
   text[PRELIGHT]  = "#cfcfcf" # text on prelighted combobox
+  text[ACTIVE]  = "#000000" # text on prelighted combobox
 }
+
 style "combo" = "button"
 {
+  GtkWidget::focus-line-width     = 1
   xthickness = 3
   ythickness = 3
   fg[ACTIVE]        = "#505050" # nc - text
   base[INSENSITIVE] = "#ffffff"
 }
 
+style "scale" = "combo"
+{
+  GtkWidget::focus_padding      = 1
+  fg[NORMAL]    = "#68696b"   # color of focus box
+  # bg[PRELIGHT]    = "#ff0000" #"#68696b"  # slider color on hover
+  # bg[NORMAL]    = "#ff0000"
+
+}
 style "notebook" = "wide"
 {
   bg[NORMAL] = "#cfcfcf" #e2e3e4" # inner window background colour
@@ -169,8 +201,8 @@ style "tree" = "default"
 {
   xthickness = 2
   ythickness = 2
-  GtkTreeView::odd_row_color = "#3d3e3f" #ffffff"
-  GtkTreeView::even_row_color = "#3d3e3f" #fcfcfc"
+  GtkTreeView::odd_row_color = "#3d3e3f"
+  GtkTreeView::even_row_color = "#3d3e3f"
 }
 
 style "frame-title" = "default"
@@ -208,8 +240,8 @@ style "bar" = "default"
 # for some reason to get this 'no line separator' i've got to keep the engine "other" block, otw the line shows up no matter what.
 
     GtkStatusbar::shadow_type = GTK_SHADOW_NONE  # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
-    GtkToolbar::shadow_type = GTK_SHADOW_NONE  # same as ^ but for toolbar 
-    GtkMenuBar::shadow_type = GTK_SHADOW_NONE  # ^^ for menubar... 8O
+    GtkToolbar::shadow_type   = GTK_SHADOW_NONE  # same as ^ but for toolbar
+    GtkMenuBar::shadow_type   = GTK_SHADOW_NONE  # ^^ for menubar... 8O
     xthickness = 4
     ythickness = 1
 
@@ -217,6 +249,8 @@ style "bar" = "default"
      {
      } 
 }
+
+# for debugging 
 style "bleach" = "default"
 {
   fg[NORMAL]        = "#ffffff" # mouseover, Most text
@@ -244,6 +278,10 @@ style "bleach" = "default"
   text[INSENSITIVE]	= "#b1b1b1" # greyed text arrows
 
 }
+
+#}}}
+
+
 # widget styles
 class "GtkWidget" style "default"
 class "GtkRange"  style "wide"
@@ -276,6 +314,11 @@ widget_class  "*.GtkCombo.*.GtkButton"  style "combo"
 widget_class  "*<GtkCheckButton>*"      style "combo"
 widget_class  "*<GtkRadioButton>*"      style "combo"
 
+widget_class "*GtkHScale*"         style "scale"
+class "*GtkHScale*"                style "scale"
+widget_class "*GtkVScale*"         style "scale"
+class "*GtkVScale*"                style "scale"
+
 # tooltips stuff
 widget_class "*.tooltips.*.GtkToggleButton" style "tasklist"
 widget "gtk-tooltips" style "tooltips"
@@ -301,3 +344,9 @@ class "*Tray*" style "panel"
 class "*tray*" style "panel"
 widget_class "*Pager*"             style "pager"
 class "*Pager*"                    style "pager"
+
+
+
+
+
+# vim:set filetype=gtkrc textwidth=80 fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent:
