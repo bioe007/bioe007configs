@@ -5,27 +5,17 @@ if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
   eval `dbus-launch --sh-syntax --exit-with-session`
 fi
 
+echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+
 # xcompmgr -n &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
+# xsetroot -cursor_name left_ptr
 
-# feh --bg-scale "/home/perry/images/awesome/my-bg_brn.png" &
-# nitrogen --restore
-
-# unclutter -idle 1
-# RXVT_SOCKET="$HOME/.var/rxvt-unicode"
-# urxvtd -q -o -f &
 
 #sync PRIMARY with clipboard 
 autocutsel -s PRIMARY -buttonup -fork
-# exec awesome -c ~/defrc.lua
+
+# exec awesome -c ~/.config/awesome/shifty.rc.lua
 exec awesome 
-# exec openbox-session
-# exec xmonad
-# startkde
-# startxfce4
-# exec dwm
-# exec echinus
-# /home/perry/atm 
-# eval `ssh-agent`
-# ssh-add
+#-c /etc/xdg/awesome/rc.lua
