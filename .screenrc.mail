@@ -1,0 +1,46 @@
+startup_message off
+vbell off
+defscrollback 2048
+defutf8 on
+defflow off
+autodetach on
+hardcopydir ~/.var
+
+# message and marking color
+# sorendition b0
+# attrcolor b ".I"
+# cleans screen after closing a text editor
+altscreen on
+
+# for 256 colors
+term screen-256color
+terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
+
+screen -t mutt mutt
+screen -t imap offlineimap 
+select 0
+
+setenv DISPLAY=':0.0'
+##### keybindings
+# escape ^^a
+bind ',' prev
+bind '.' next
+# bind ```` last
+bind k
+bind ^j
+bind ^k
+bind 'K' kill
+bind 'q' quit
+
+hardstatus alwayslastline
+hardstatus string '%{= kk}%w %-=%{= kK}  %c %LD, %LM %d %Y'
+
+# set the second mark, write to the screen-exchange
+# file, and use xsel to synchronize the paste buffer
+# with the X selection.
+# bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel -n < /tmp/screen-exchange'"
+bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel < /tmp/screen-exchange'"
+
+
+
+# vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
