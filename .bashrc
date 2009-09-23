@@ -4,11 +4,11 @@ HISTSIZE=10000
 HISTCONTROL=ignoreboth
 
 shopt -s checkwinsize
-
 shopt -s histappend
 
-# sudo completion
+# completion
 complete -cf sudo
+complete -cf man
 
 
 # }}}
@@ -86,7 +86,7 @@ alias y="yaourt"
 alias cds="cd $SANDBOX"
 alias mv="mv -i"
 alias t="ctags -R"
-alias grep="grep -n"
+alias grepn="grep -n"
 
 # correctly set path for octave use
 alias octave="LD_LIBRARY_PATH=/opt/octave/lib:$LD_LIBRARY_PATH PATH=/opt/octave/bin:$PATH /opt/octave/bin/octave"
@@ -100,7 +100,6 @@ if [ "$TERM" = "linux" ]; then
     PS1="\[\e[32;1m\]\u@\H \\$ \[\e[0m\]"
 elif [ "$(pgrep vim | grep -cw "$PPID")" -gt "0" ] ; then 
     PS1="\e]0;VIMSHELL \j:\w\a\e[35;1m\]\\$\[\e[0m\] "
-    clear
     echo 'you are in vimshell'
     # if xinit is running, assume in an xterm 
     if [[ "$(pgrep xinit)" ]] ; then
@@ -108,9 +107,10 @@ elif [ "$(pgrep vim | grep -cw "$PPID")" -gt "0" ] ; then
     fi
 elif [ "$TERM" = "screen-256color" ]; then
     # in screen PS2 never really gets updated
-    # PS1="\e]2;screen \e[36;1m\]\j:\w\a\\$\[\e[0m\] "
-    # PS1="\[\e]2;screen\e[36;1m\]\j:\w\\$\[\e[0m\] "
-    PS1="\[\e]0;SCREEN \a\e[34;6m\]\j \e[0m\]\e[34;1m\]\W\e[0m\]\e[36;1m\] \\$\[\e[0m\] "
+    # PS1="\e[0m\]\W \e[36;1m\]\\$\e[0m\] "
+    PS1="\[\e]2;\j:\w\a\e[30;1m\]\W \e[36;1m\]\\$\[\e[0m\] "
+    # PS1="\e[36;1m\]\\$\[\e[0m\] "
+    # PS1="\[\e]0;SCREEN \a\e[34;6m\]\j \e[0m\]\e[34;1m\]\W\e[0m\]\e[36;1m\] \\$\[\e[0m\] "
 else
     # We're not on the console, assume an x session
     PS1="\[\e]2;\j:\w\a\e[35;1m\]\\$\[\e[0m\] "
@@ -118,6 +118,7 @@ else
 fi
 # }}}
 
+# exp zsh - done
 # {{{ directory colors
 # dont work with 'dumb' shells
 if [ "$SHELL" != "dumb" ] ; then 
@@ -139,9 +140,9 @@ st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.svgz=01;31:*.arj=01;31:\
 *.h=01;33:*.c=01;36:*.hex=00;44:*.map=04;32:*.o=00,32";
 
   export LS_COLORS
-  alias ls='ls --group-directories-first -h --color=auto'
+  alias ls='ls -Lh --group-directories-first --color=auto'
 else
-  alias ls='ls -Fh --group-directories-first'
+  alias ls='ls -h -L --group-directories-first'
 fi
 # }}}
 
