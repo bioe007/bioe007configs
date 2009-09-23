@@ -22,39 +22,39 @@ lvds () {
     iloop="$((iloop + 1))"
   done
   # check for LVDS in native mode
-  if [ -z "$(xrandr | grep ^LVDS | grep -w 1280x800)" ]; then
-    sudo xrandr --output LVDS --mode 1280x800
-    echo 'Setting LVDS to 1280x800'
+  if [ -z "$(xrandr | grep ^LVDS1 | grep -w 1280x800)" ]; then
+    sudo xrandr --output LVDS1 --mode 1280x800
+    echo 'Setting LVDS1 to 1280x800'
     iloop="0"
   fi
 }
 # }}}
 
 off () {
-  xrandr --output VGA --off
+  xrandr --output VGA1 --off
 }
 # {{{ syncmaster 
 syncmaster () {
   lvds
   if [ -z "$(xrandr | grep 1280x1024_59 | grep -w "**$")" ] ; then
     sudo xrandr --newmode 1280x1024_59.00 106.97 1280 1360 1496 1712 1024 1025 1028 1059 -HSync +Vsync
-    sudo xrandr --addmode VGA 1280x1024_59.00
+    sudo xrandr --addmode VGA1 1280x1024_59.00
   fi
-  sudo xrandr --output VGA --mode 1280x1024_59.00 --left-of LVDS
+  sudo xrandr --output VGA1 --mode 1280x1024_59.00 --left-of LVDS1
 }
 # }}}
 
 # {{{ soyo 
 soyo () {
   lvds
-#| grep -w "**$")" ] ; then 
+  #| grep -w "**$")" ] ; then 
   if [ -z "$(xrandr | grep '1680x1050_68.00')" ]; then 
     sudo xrandr --newmode 1680x1050_68.00  168.71  1680 1792 1976 2272  1050 1051 1054 1092  -HSync +Vsync
-    sudo xrandr --addmode VGA  1680x1050_68.00
+    sudo xrandr --addmode VGA1  1680x1050_68.00
   fi
   echo in soyo
-  # sudo xrandr --output VGA --mode 1680x1050_68.00 --right-of LVDS
-  sudo xrandr --output VGA --mode 1680x1050_68.00 --above LVDS
+  # sudo xrandr --output VGA1 --mode 1680x1050_68.00 --right-of LVDS1
+  sudo xrandr --output VGA1 --mode 1680x1050_68.00 --above LVDS1
 }
 # }}}
 
@@ -62,7 +62,7 @@ mgen() {
   mline="$(gtf 1440 900 ${refresh} | grep Modeline | sed s/Modeline\ // | tr -d '"' )"
 
 }
-  
+
 # {{{ setup 
 setup () {
   answer=""
@@ -78,10 +78,10 @@ setup () {
     echo $mline
 
     sudo xrandr --newmode $mline
-    sudo xrandr --addmode VGA "$(echo $mline | cut -f 1 -d ' ')"
-    sudo xrandr --output VGA --mode $(echo $mline | cut -f 1 -d ' ') --right-of LVDS
+    sudo xrandr --addmode VGA1 "$(echo $mline | cut -f 1 -d ' ')"
+    sudo xrandr --output VGA1 --mode $(echo $mline | cut -f 1 -d ' ') --right-of LVDS1
     if [ ! -z "$oline" ] ; then
-      sudo xrandr --delmode VGA $(echo $oline | cut -f 1 -d ' ')
+      sudo xrandr --delmode VGA1 $(echo $oline | cut -f 1 -d ' ')
     fi
 
     refresh="$(( refresh + 1 ))"
@@ -93,8 +93,8 @@ setup () {
     elif [ "$answer" == "b" ]; then 
       if [ ! -z "$oline" ]; then
         echo "restoring previous: refresh=$refresh"
-        sudo xrandr --addmode VGA "$(echo $oline | cut -f 1 -d ' ')"
-        sudo xrandr --output VGA --mode "$(echo $oline | cut -f 1 -d ' ')" --right-of LVDS
+        sudo xrandr --addmode VGA1 "$(echo $oline | cut -f 1 -d ' ')"
+        sudo xrandr --output VGA1 --mode "$(echo $oline | cut -f 1 -d ' ')" --right-of LVDS1
       else
         echo "no old line to restore"
       fi
@@ -124,4 +124,4 @@ else
   lvds
 fi
 
-# vim:set filetype=sh fdm=marker tabstop=2 shiftwidth=2 expandtab smarttab autoindent smartindent: --
+# vim:set filetype=sh fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: 
