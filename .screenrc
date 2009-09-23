@@ -48,3 +48,9 @@ hardstatus string '%{= .kK}[%= %{= .K}%?%-Lw%{K}%?%{K}[ %{W}%n%{K}:%{W}%f%{K}:%{
 # with the X selection.
 # bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel -n < /tmp/screen-exchange'"
 bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel < /tmp/screen-exchange'"
+
+
+
+
+
+# vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
