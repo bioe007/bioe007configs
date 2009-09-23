@@ -1,3 +1,4 @@
+! pointer = default
 ! This works with Trust Silverline Direct Access keyboard
 ! Use ! for comments
 
@@ -9,6 +10,7 @@ keycode 230 = XF86Favorites
 keycode 178 = XF86WWW
 
 !keycode 129 = 
+keycode 162 = XF86Calculator
 keycode 162 = XF86AudioPlay
 keycode 164 = XF86AudioStop
 keycode 160 = XF86AudioMute
@@ -17,9 +19,20 @@ keycode 153 = XF86AudioNext
 keycode 176 = XF86AudioRaiseVolume
 keycode 174 = XF86AudioLowerVolume
 
+
+keycode 179 = XF86Tools
+
 ! keycode 117 = F15
 
+! remove Lock = Caps_Lock
+! keysym Escape = Caps_Lock
+! keysym Caps_Lock = Escape
+! add Lock = Caps_Lock
+
+remove Mod4 = Super_L
 remove Lock = Caps_Lock
 keysym Escape = Caps_Lock
-keysym Caps_Lock = Escape
+keysym Super_L = Escape
+keysym Caps_Lock = Super_L
 add Lock = Caps_Lock
+add Mod4 = Super_L
