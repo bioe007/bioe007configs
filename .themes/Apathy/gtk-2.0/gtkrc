@@ -12,8 +12,8 @@ style "default"
 {
 # widgets
   GtkWidget::focus-line-pattern                = "\0"
-  GtkWidget::focus-line-width                  = 0
-  GtkWidget::focus_padding                     = 0 
+  # GtkWidget::focus-line-width                  = 0
+  # GtkWidget::focus_padding                     = 0 
   GtkWidget::interior_focus                    = 5
   GtkWidget::internal_padding                  = 4
 
