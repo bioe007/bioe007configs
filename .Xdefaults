@@ -49,14 +49,10 @@ URxvt*scrollBar:          False
 !URxvt*inheritPixmap:      false
 !URxvt*reverseVideo:       false
 
-! {{{ CURSOR
-Xcursor.theme: default
-Xcursor.theme_core: true
-Xcursor.size: 15
 ! Blog'ed http://www.jukie.net/~bart/blog/tag/urxvt
-! }}}
 
 ! }}}
+
 
 ! {{{ colors
 ! 
@@ -106,6 +102,12 @@ URxvt*color15: #DEDEDE
 
 ! }}}
 
+! {{{ CURSOR
+Xcursor.theme: Neutral_Plus 
+Xcursor.theme_core: true
+Xcursor.size: 15
+! }}}
+
 ! {{{ irssi
 !   -- also: set 'vbell on' in screen
 !   --       set 'bell_msg' "\a in window!"
@@ -113,5 +115,6 @@ urxvt*urgentOnBell: true
 ! irssi*urgentOnBell:true
 ! weechat*urgentOnBell:true
 ! }}}
+
 
 ! vim:set fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
