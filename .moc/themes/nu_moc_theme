@@ -1,10 +1,10 @@
 # Author: bioe007
 
 background           = blue     default
-frame                = blue     default
-window_title         = yellow   default   bold
+frame                = white     default
+window_title         = white   default   bold
 directory            = default  default
-selected_directory   = magenta  default   dim
+selected_directory   = black  blue   dim
 playlist             = default  default
 selected_playlist    = magenta  default
 file                 = default  default
