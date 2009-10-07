@@ -64,9 +64,6 @@ else
         cmd="$cmd --servername $srv $options"
     fi
 
-    echo "$cmd"
-    echo 'call vimpop'
-
     echo 'tagPop("vim")' | awesome-client > /dev/null 2>&1
     exec $cmd
     exit $?
