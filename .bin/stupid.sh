@@ -13,6 +13,7 @@
 # echo $PREFMODE
 # exit 0
 
+VIDEOSTATEFILE="$HOME/.var/video_state"
 
 # {{{ lvds 
 lvds () {
@@ -108,20 +109,24 @@ setup () {
 }
 # }}}
 
+write_state() {
+    echo "$1" > $VIDEOSTATEFILE
+    exit 1
+}
+
 if [[ "$1" == "--setup" ]] ; then 
-  setup
-  exit 0
+  setup|| write_state "error"
 elif [[ "$1" == "--sync" ]] ; then
-  syncmaster
-  exit 0
+  syncmaster|| write_state "error"
 elif [[ "$1" == "--soyo" ]] ; then
-  soyo
-  exit 0
+  soyo || write_state "error"
 elif [[ "$1" == "--off" ]] ; then
-  off
-  exit 0 
+  off || write_state "error"
 else
-  lvds
+  lvds || write_state "error"
 fi
+
+write_state $( echo $1 | tr -d '-')
+exit 0 
 
 # vim:set filetype=sh fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: 
