@@ -7,7 +7,8 @@ fi
 
 echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
 
-# xcompmgr -n &
+xset +dpms dpms 300 900 0 &
+xcompmgr -n &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
 # xsetroot -cursor_name left_ptr
