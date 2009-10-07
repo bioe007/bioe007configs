@@ -12,6 +12,7 @@ set titlestring=""
 
 
 map <C-r> :restart<CR>
+map <S-Space> :nohlsearch<CR>
  
 " select next/previous tab
 " map <C-l> gt
