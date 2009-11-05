@@ -1,29 +1,66 @@
 #!/bin/bash
 #
-# cifsmnt
+# cifsmnt: a simple script to mount cifs shares
+#
+# iterates the list SHARES and mounts|umounts $MNTPATH/$SHARE[] network shares
+#
+# configuration is through CIFS_{UID,GID,PORT} and reads credentials from $CIFS_CRED
+# set SRV,SHARES and MNTPATH as needed
+#
+# makes use of awenotify script to send messages to awesome window manager's notifications or just defaults to echo
+# commands. 
 # 
-if [ ! -r "/home/perry/.cifs.conf" ] ; then
-  echo "$0 : failed to read $HOME/.cifs.conf"
+CMDNAME="$(basename $0)"
+REPORT="$CMDNAME: "
+
+if [ -x "$HOME/.bin/awenotify" ]; then
+    mecho="$HOME/.bin/awenotify"
+else
+    mecho="echo"
+fi
+
+
+SRV='//10.1.1.16'
+CIFS_UID="perry"
+CIFS_GID="users"
+CIFS_PORT="139"
+CIFS_CRED="$HOME/.cifs.conf"
+
+MNTOPTS="credentials=$CIFS_CRED,uid=$CIFS_UID,gid=$CIFS_GID,port=$CIFS_PORT"
+MNTPATH="$HOME/samba"
+SHARES=( 'phargrave' 'shared' )
+
+if [ ! -r "$CIFS_CRED" ] ; then
+    $mecho "$CMDNAME : failed to read $CIFS_CRED"
+
   exit 1
 fi
 
-SRV='//10.1.1.16'
-MNTOPTS="credentials=/home/perry/.cifs.conf,uid=perry,gid=users,port=139"
+if [ "$(stat -c %a $CIFS_CRED)" -ne "600" ] ; then 
+    $mecho "$REPORT\r\tWarning: $CIFS_CRED is not mode 600"
+fi
 
 case "$1" in
+
   -u )
-    echo "$0: Unmounting shares"
-    test ! -z "$(mount | grep -w phargrave)" && sudo umount /mnt/samba/phargrave 
-    test ! -z "$(mount | grep -w shared)" && sudo umount /mnt/samba/shared 
+    REPORT="$REPORT Unmounting shares"
+    for share in ${SHARES[@]} ; do 
+        test ! -z "$(mount | grep -w $share)" && sudo umount "$MNTPATH/$share"\
+            && REPORT="$REPORT\r\t$share unmounted"\
+            || REPORT="$REPORT\r\t$share not mounted"
+    done
   ;;
+
   * )
-  echo "$0: Mounting shares"
-  test -z "$(mount | grep phargrave)" && sudo mount -t cifs $SRV/phargrave /mnt/samba/phargrave -o $MNTOPTS || echo "Already Mounted phargr"
-  test -z "$(mount | grep shared)" && sudo mount -t cifs $SRV/shared /mnt/samba/shared -o $MNTOPTS || echo "Already Mounted shared"
+    REPORT="$REPORT Mounting shares"
+    for share in ${SHARES[@]} ; do 
+        test -z "$(mount | grep $share)" && sudo mount -t cifs $SRV/$share $MNTPATH/$share -o $MNTOPTS\
+            && REPORT="$REPORT\r\tMounted: $share"\
+            || REPORT="$REPORT\r\tAlready Mounted: $share"
+    done
   ;;
 esac
 
+$mecho "$REPORT"
 
-
-
-# vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
+# vim:set filetype=sh textwidth=120 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
