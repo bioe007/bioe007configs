@@ -17,7 +17,9 @@ term screen-256color
 terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 
 screen -t mutt mutt
+screen -t abook abook
 screen -t imap offlineimap 
+select 1
 select 0
 
 setenv DISPLAY=':0.0'
@@ -33,7 +35,7 @@ bind 'K' kill
 bind 'q' quit
 
 hardstatus alwayslastline
-hardstatus string '%{= kk}%w %-=%{= kK}  %c %LD, %LM %d %Y'
+hardstatus string '%{= kK}0.Mutt 1.ABook%{= kk}%w %-=%{= kK}  %c %LD, %LM %d %Y'
 
 # set the second mark, write to the screen-exchange
 # file, and use xsel to synchronize the paste buffer
