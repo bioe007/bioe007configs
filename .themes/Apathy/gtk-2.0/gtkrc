@@ -112,6 +112,10 @@ style "wide" = "default"
 {
   xthickness = 2
   ythickness = 2
+  GtkWidget::wide-separators = 1
+  GtkWidget::separator-width = 1
+  GtkWidget::separator-height = 7
+
 }
 
 style "button" = "default"
