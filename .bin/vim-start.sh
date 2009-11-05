@@ -11,11 +11,20 @@ cmd="$(which vim)"
 options=""
 files=""
 
+TABNEW=""
+
 # store cli options
 if [ "$#" -gt "0" ] ; then
     if [ ! -z "$(echo $@ | grep "\-\-")" ] ; then
         while [ ! -z "$( echo "$1" | grep "^\-\-" )" ] ; do
-            options="$options $1"
+            case "$1" in 
+                --tn )
+                TABNEW="1"
+                ;;
+            * )
+                options="$options $1"
+                ;;
+            esac
             shift
         done
         cmd="$cmd $options"
@@ -57,7 +66,12 @@ else
     if [ ! -z "$files" ] && [ -z "$options" ] ; then
 
         # quikcly split the current buffer before adding the files
-        $cmd --servername $srv --remote-send ':sp<CR>'
+        if [ -z "$TABNEW" ]; then
+            $cmd --servername $srv --remote-send ':sp<CR>'
+        else
+            $cmd --servername $srv --remote-send ':tabnew<CR>'
+        fi
+
         cmd="$cmd -c :sp --servername $srv $options --remote-silent  $files"
 
     elif [ -z "$files" ] && [ ! -z "$options" ] ; then
