@@ -1,0 +1,122 @@
+#!/bin/bash
+#
+# easy diff visible in vimpager
+# wrote because i'm too lazy to type `diff -wu $1 $2 | vimpager`
+#
+# perry hargrave >perrydothargraveatgmaildotcom<
+# aka bioe007
+#
+SELFNAME="`basename $0`"
+DIFFCMD=${DIFFCMD:-`which diff`}
+DIFFOPTS=${DIFFOPTS:-"wu"}
+PGR=${PAGER:-`which less`}
+
+
+#{{{ usage()
+usage() {
+    cat << EOF >&2 
+Usage as diff substitute
+    $SELFNAME [-<diff options>] <file1> <file2>
+
+    This invokes: 
+        basecmd=$DIFFCMD -$DIFFOPTS <file1> <file2>| $PGR
+
+Usage for pacman:
+    $SELFNAME [-p|--pac]
+    
+    This invokes a find operation to look for files suffixed with '.pacnew'
+    in the /etc directory. Each pair of foo.conf and foo.conf.pacnew are 
+    diff'ed and displayed in the $PAGER
+EOF
+}
+#}}}
+
+#{{{ error()
+error() {
+    echo "ERROR: $SELFNAME: $1"
+    exit 1
+}
+#}}}
+
+#{{{ dodiff()
+dodiff() {
+
+    i_diff="0"
+    i_last="${#fileList[*]}"
+
+    while [ $i_diff -lt $i_last ]; do
+
+        if [ -r "${fileList[$i_diff]}" ] && [ -r "${fileList[$((i_diff+1))]}" ] ; then
+
+            echo "trying: $DIFFCMD -$DIFFOPTS ${fileList[$i_diff]} ${fileList[$((i_diff+1))]} | $PGR"
+
+            $DIFFCMD -$DIFFOPTS ${fileList[$i_diff]} ${fileList[$((i_diff+1))]} | $PGR
+
+            i_diff=$((i_diff+2))
+        else
+            error "One or more specifed files unreadable"
+            break
+        fi
+    done
+}
+#}}}
+
+#{{{ pacmode()
+pacmode() {
+
+        echo "$SELFNAME: pacman mode... looking for *.pacnew in /etc/"
+
+        i_pfiles=0
+        while read line ; do
+            echo "$SELFNAME: Found $line"
+            fileList[$i_pfiles]="${line%.pacnew}"
+            i_pfiles=$((i_pfiles+1))
+
+            fileList[$i_pfiles]="$line"
+            i_pfiles=$((i_pfiles+1))
+
+        done < <(find /etc -type f -regex ".*pacnew" )
+
+}
+#}}}
+
+SW="1"
+iFile=0
+fileList[$iFile]=""
+while [ "$#" -gt "0" ]; do
+    case "$1" in
+
+        # parse real options
+        -* )
+
+        if [ "$1" == ".-pac" ] || [ "$1" == "-p" ] ; then
+            pacmode
+        elif [ "$1" == "-h" ] || [ "$1" == "--help" ] ; then
+            usage
+            exit 1
+        else
+            DIFFOPTS=${1#-*}
+            echo $DIFFOPTS
+        fi
+        ;;
+
+
+        # check files
+        * ) 
+            if [ -r "$1" ] ; then
+                fileList[$iFile]="$1"
+                iFile=$((iFile+1))
+            else
+                error "Can't parse command or file: \`$1'"
+                usage
+                exit 1
+            fi
+        ;;
+    esac
+
+    shift $SW
+done
+    
+dodiff
+
+# vim:set ft=sh fdm=marker ts=4 sw=4 et sta ai si: 
