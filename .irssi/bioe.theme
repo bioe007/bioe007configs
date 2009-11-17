@@ -2,7 +2,7 @@
 #
 # a theme for irssi, originally stolen from bruenig. some minor tweaks here
 #
-# if you're trying to make this look like a sshot of mine you'kk also need nm.pl
+# if you're trying to make this look like a sshot of mine you'll also need nm.pl
 # and adv_windowlist.pl
 #
 # then have to /set statusbar window correctly:
@@ -56,7 +56,7 @@ abstracts = {
   line_start = "%W!%n              ";
 
   # timestamp styling, nothing by default
-  timestamp = "%K$*";
+  timestamp = "%K$*%n";
 
   # any kind of text that needs hilighting, default is to bold
   hilight = "%_$*%_";
@@ -65,7 +65,7 @@ abstracts = {
   error = "%R$*%n";
 
   # channel name is printed
-  channel = "%_$*%_";
+  # channel = "%_$*%_";
 
   # nick is printed
   nick = "%_$*%_";
@@ -274,6 +274,7 @@ abstracts = {
   # hilight with specified color, $0 = color, $1 = text
   sb_act_hilight_color = "$0$1-%n";
 };
+
 formats = {
   "fe-common/irc" = {
     own_action = "{ownaction $[-8]0} $1";
@@ -287,8 +288,8 @@ formats = {
     pubmsg_me_channel = "{pubmsgmenick {menick $[-10]0$3}{msgchannel $1}}$2";
     pubmsg_hilight = "{pubmsghinick $0 $0 $[-10]1$3%n}$2";
     pubmsg_hilight_channel = "{pubmsghinick $0 $[-10]1$4{msgchannel $2}}$3";
-    pubmsg = "{pubmsgnick {pubnick $[-10]0$2}}$1";
-    pubmsg_channel = "{pubmsgnick {pubnick $[-10]0$2}}$1";
+    pubmsg = "{pubmsgnick {pubnick %B$[-10]0}$2}$1";
+    pubmsg_channel = "{pubmsgnick {pubnick %B$[-10]0}$2}$1";
     msg_private_query = "{privmsgnick $[-10]0}$2";
   };
 };
