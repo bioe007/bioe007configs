@@ -62,7 +62,6 @@ lvds () {
 # $2 = mode name
 # $3 = modeline
 ext_on () {
-    echo 'in ext_on'
     if (( $# < 3 )); then
         echo "$0: ext_on: no argument supplied"
     fi
@@ -222,9 +221,6 @@ else
 fi
 # }}}
 
-echo $FUNCTION 
-echo $EXTPOS
-exit 1
 ${FUNCTION} || werror "$FUNCTION"
 
 write_state $( echo $1 | tr -d '-')
