@@ -1,132 +1,234 @@
 #!/bin/bash 
 #
+# A simple script to setup external momnitors using the xrandr 1.3 utility.
+#
+# Author: bioe007 perrydothargraveatgmail.com
+#
+#
 # Modeline "1280x1024_60.00"  108.88  1280 1360 1496 1712  1024 1025 1028 1060  -HSync +Vsync
 # 
-# for samsung syncmaster 191t
-# sudo xrandr --newmode 1280x1024_59.00 106.97 1280 1360 1496 1712 1024 1025 1028 1059 -HSync +Vsync
 #
-# for soyo 22" screen
-# sudo xrandr --newmode 1440x900_60.00  106.47  1440 1520 1672 1904  900 901 904 932  -HSync +Vsync
+#0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
 # preferred mode grab
 # PREFMODE="$(xrandr | grep ^\ .*+)"
 # echo $PREFMODE
 # exit 0
+DISP_LOCAL="LVDS1"
+DISP_LOCAL_NATIVE="1280x800"
+DISP_EXT1="VGA1"
 
 VIDEOSTATEFILE="$HOME/.var/video_state"
+WP_CMD="`which nitrogen` --restore"
+
+# default position, can be changed from cli args 
+EXTPOS="--right-of"
+
+# my screens
+# add indices here and modelines below for new screens
+I_SOYO=0
+I_SYNC=1
+
+MODELINES[I_SOYO]="1680x1050_69.00  171.19  1680 1792 1976 2272  1050 1051 1054 1092  -HSync +Vsync"
+MODELINES[I_SYNC]="1280x1024_60.00  108.88  1280 1360 1496 1712  1024 1025 1028 1060  -HSync +Vsync"
+
+isnumber() {
+    if [[ -z "$(echo $1 | tr -d '[0-9]')" ]] ; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 # {{{ lvds 
 lvds () {
-  # wait until display is valid
-  while [[ -z "$DISPLAY" ]] ; do
-    sleep 1
-    iloop="$((iloop + 1))"
-  done
-  # check for LVDS in native mode
-  if [ -z "$(xrandr | grep ^LVDS1 | grep -w 1280x800)" ]; then
-    sudo xrandr --output LVDS1 --mode 1280x800
-    echo 'Setting LVDS1 to 1280x800'
-    iloop="0"
-  fi
+    # wait until display is valid
+    iloop=0
+    while [[ -z "$DISPLAY" ]] ; do
+        sleep 1
+        iloop=$((iloop + 1))
+    done
+
+    # check for LVDS in native mode
+    if [ -z "$(xrandr | grep ^$DISP_LOCAL | grep -w $DISP_LOCAL_NATIVE)" ]; then
+        echo 'Setting $DISP_LOCAL to $DISP_LOCAL_NATIVE'
+        xrandr --output $DISP_LOCAL --mode $DISP_LOCAL_NATIVE
+    fi
 }
 # }}}
 
-off () {
-  xrandr --output VGA1 --off
-}
-# {{{ syncmaster 
-syncmaster () {
-  lvds
-  if [ -z "$(xrandr | grep 1280x1024_59 | grep -w "**$")" ] ; then
-    sudo xrandr --newmode 1280x1024_59.00 106.97 1280 1360 1496 1712 1024 1025 1028 1059 -HSync +Vsync
-    sudo xrandr --addmode VGA1 1280x1024_59.00
-  fi
-  sudo xrandr --output VGA1 --mode 1280x1024_59.00 --left-of LVDS1
+# {{{ ext_on sets up external display
+# $1 = display
+# $2 = mode name
+# $3 = modeline
+ext_on () {
+    echo 'in ext_on'
+    if (( $# < 3 )); then
+        echo "$0: ext_on: no argument supplied"
+    fi
+
+    if [ -z "$(xrandr | grep $2)" ]; then 
+        xrandr --newmode $3
+        xrandr --addmode $1 $2
+        echo 'mode not found'
+    fi
+
+    xrandr --output $DISP_EXT1 --mode $2 $EXTPOS $DISP_LOCAL
 }
 # }}}
 
-# {{{ soyo 
-soyo () {
-  lvds
-  #| grep -w "**$")" ] ; then 
-  if [ -z "$(xrandr | grep '1680x1050_68.00')" ]; then 
-    sudo xrandr --newmode 1680x1050_68.00  168.71  1680 1792 1976 2272  1050 1051 1054 1092  -HSync +Vsync
-    sudo xrandr --addmode VGA1  1680x1050_68.00
-  fi
-  echo in soyo
-  # sudo xrandr --output VGA1 --mode 1680x1050_68.00 --right-of LVDS1
-  sudo xrandr --output VGA1 --mode 1680x1050_68.00 --above LVDS1
+ext_off () {
+    xrandr --output $DISP_EXT1 --off
 }
-# }}}
 
+# mgen takes 3 params
+# $1 X res, $2 Y res, $3 refresh rate
+# updates the value of modeline
 mgen() {
-  mline="$(gtf 1440 900 ${refresh} | grep Modeline | sed s/Modeline\ // | tr -d '"' )"
-
+    modeline="$(gtf $1 $2 $3 | grep Modeline | sed s/Modeline\ // | tr -d '"' )"
 }
 
 # {{{ setup 
+# $1 = x res $2 = y res [optional $3 = starting refresh rate]
 setup () {
-  answer=""
-  mline=""
-  oline=""
+    answer=""
+    modeline=""
+    oldmodeline=""
+    INITREFRESH=$3
 
-  # default refresh is what i liked best
-  refresh="59"
-  while [[ ! "$answer" == "y" ]] ; do
+    # default refresh is what i liked best
+    refresh=${INITREFRESH:-59}
+    while [[ ! "$answer" == "y" ]] ; do
+        # {{{ check that output & refresh rate are working well
 
-    mline="$(gtf 1680 1050 ${refresh} | grep Modeline | sed s/Modeline\ // | tr -d '"' )"
-    # mline="$(mgen $1 $2 ${refresh})"
-    echo $mline
+        mgen $1 $2 ${refresh}
+        echo "Trying: $modeline"
 
-    sudo xrandr --newmode $mline
-    sudo xrandr --addmode VGA1 "$(echo $mline | cut -f 1 -d ' ')"
-    sudo xrandr --output VGA1 --mode $(echo $mline | cut -f 1 -d ' ') --right-of LVDS1
-    if [ ! -z "$oline" ] ; then
-      sudo xrandr --delmode VGA1 $(echo $oline | cut -f 1 -d ' ')
-    fi
+        ext_on $DISP_EXT1 "$(echo $modeline | cut -f 1 -d ' ')" "${modeline}"
 
-    refresh="$(( refresh + 1 ))"
+        if [ -n "$oldmodeline" ] ; then
+            xrandr --delmode $DISP_EXT1 $(echo $oldmodeline | cut -f 1 -d ' ')
+        fi
 
-    echo -n "like this setting? [y/N/b]"
-    read answer
-    if [ "$answer" == "y" ]; then
-      break
-    elif [ "$answer" == "b" ]; then 
-      if [ ! -z "$oline" ]; then
-        echo "restoring previous: refresh=$refresh"
-        sudo xrandr --addmode VGA1 "$(echo $oline | cut -f 1 -d ' ')"
-        sudo xrandr --output VGA1 --mode "$(echo $oline | cut -f 1 -d ' ')" --right-of LVDS1
-      else
-        echo "no old line to restore"
-      fi
-    else
-      oline="$mline"
-    fi
-  done
+        refresh=$(( refresh + 1 ))
 
-  echo "exiting with refresh=$((refresh -1))"
-  echo "modeline=$mline"
+        # {{{ check if we should stop or backup now
+        echo -n "like this setting? [y/N/b]"
+        read answer
+        if [ "$answer" == "y" ]; then
+            break
+        elif [ "$answer" == "b" ]; then 
+            if [ -n "$oldmodeline" ]; then
+                echo "restoring previous: refresh=$refresh"
+                refresh=$(( refresh - 1))
+                ext_on $DISP_EXT1 "$(echo $oldmodeline | cut -f 1 -d ' ')" "${oldmodeline}"
+                xrandr --delmode $DISP_EXT1 $(echo $modeline | cut -f 1 -d ' ')
+            else
+                echo "no old line to restore"
+            fi
+        else
+            oldmodeline="$modeline"
+        fi
+        # }}}
+    done
+    # }}}
+
+    echo "exiting with refresh=$((refresh -1))"
+    echo "modeline=$modeline"
 }
 # }}}
 
-write_state() {
-    echo "$1" > $VIDEOSTATEFILE
+werror() {
+    echo -e "$(basename $0): ERROR: $@"
+    write_state "error"
     exit 1
 }
 
-if [[ "$1" == "--setup" ]] ; then 
-  setup|| write_state "error"
-elif [[ "$1" == "--sync" ]] ; then
-  syncmaster|| write_state "error"
-elif [[ "$1" == "--soyo" ]] ; then
-  soyo || write_state "error"
-elif [[ "$1" == "--off" ]] ; then
-  off || write_state "error"
+write_state() {
+    echo "$1" > $VIDEOSTATEFILE
+}
+
+FUNCTION=""
+SHIFTDIST=1
+# {{{ cli arguments
+if (( $# > 0 )) ; then
+    # {{{ have some arguments then parse them
+    while (( $# > 0 )) ; do
+        case $1 in
+
+            "--off")
+            FUNCTION="ext_off"
+            ;;
+
+            --pos*)
+            if [[ -z "$2" ]] ; then
+                werror
+            else
+                EXTPOS="$2"
+                EXTPOS="--${EXTPOS#--}"
+                SHIFTDIST=2
+            fi
+            ;;
+
+            "--setup" )
+            # {{{
+            if (( $# >= 3 )) ; then
+                # append any numeric arguments to the setup functions params
+                for arg in $2 $3 $4 ; do
+                    # ISNUM=$?
+                    # if (( $ISNUM == 0 )) ; then
+                    if isnumber "$arg" ; then
+
+                        # add arg to list and increment number of args used
+                        ARGS[$SHIFTDIST]=$arg
+                        SHIFTDIST=$((SHIFTDIST+1))
+                    else
+                        # exit the for loop
+                        break;
+                    fi
+                done
+
+                FUNCTION="setup ${ARGS[@]}"
+            else
+                echo "$(basename $0): insufficient argument number"
+                echo -e "\t--setup XRES YRES [initial refresh]"
+            fi
+            ;;
+            # }}}
+
+            --*)
+            # {{{ select a pre-existing screen based on this argument
+            SCRNAME="$(echo ${1#--} | tr [a-z] [A-Z])"
+            ISCR="I_$SCRNAME"
+            if [[ -n "${!ISCR}" ]] ; then
+                FUNCTION="ext_on $DISP_EXT1 $(echo ${MODELINES[${!ISCR}]} | cut -f 1 -d ' ') ${MODELINES[${!ISCR}]}"
+            else
+                werror "$SCRNAME not found"
+            fi
+            ;;
+            # }}}
+
+            *)
+            werror "Unknown option $1"
+        esac
+
+        shift $SHIFTDIST
+        SHIFTDIST=1
+    done
+    # }}}
 else
-  lvds || write_state "error"
+# if there are no args just set lvds
+    FUNCTION="lvds"
 fi
+# }}}
+
+echo $FUNCTION 
+echo $EXTPOS
+exit 1
+${FUNCTION} || werror "$FUNCTION"
 
 write_state $( echo $1 | tr -d '-')
+$WP_CMD
 exit 0 
 
-# vim:set filetype=sh fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent: 
+# vim:set filetype=sh fdm=marker tabstop=4 sw=4 expandtab smarttab autoindent smartindent: 
