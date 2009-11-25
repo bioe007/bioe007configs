@@ -62,17 +62,22 @@ lvds () {
 # $2 = mode name
 # $3 = modeline
 ext_on () {
+    echo in ext_on
     if (( $# < 3 )); then
         echo "$0: ext_on: no argument supplied"
     fi
 
-    if [ -z "$(xrandr | grep $2)" ]; then 
-        xrandr --newmode $3
-        xrandr --addmode $1 $2
-        echo 'mode not found'
+    EXTDISP=$1
+    EXTMODENAME=$2
+    shift 2
+    EXTMODELINE="$@"
+
+    if [ -z "$(xrandr | grep "$2")" ]; then 
+        xrandr --newmode $EXTMODELINE
+        xrandr --addmode $EXTDISP $EXTMODENAME
     fi
 
-    xrandr --output $DISP_EXT1 --mode $2 $EXTPOS $DISP_LOCAL
+    xrandr --output $DISP_EXT1 --mode $EXTMODENAME $EXTPOS $DISP_LOCAL
 }
 # }}}
 
@@ -103,7 +108,7 @@ setup () {
         mgen $1 $2 ${refresh}
         echo "Trying: $modeline"
 
-        ext_on $DISP_EXT1 "$(echo $modeline | cut -f 1 -d ' ')" "${modeline}"
+        ext_on "$DISP_EXT1" "$(echo $modeline | cut -f 1 -d ' ')" "${modeline}"
 
         if [ -n "$oldmodeline" ] ; then
             xrandr --delmode $DISP_EXT1 $(echo $oldmodeline | cut -f 1 -d ' ')
