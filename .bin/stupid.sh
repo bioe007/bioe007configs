@@ -228,7 +228,7 @@ fi
 
 ${FUNCTION} || werror "$FUNCTION"
 
-write_state $( echo $1 | tr -d '-')
+write_state $( echo $SCRNAME | tr -d '-')
 $WP_CMD
 exit 0 
 
