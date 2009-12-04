@@ -58,7 +58,7 @@ else
     # if the server is running and no files are being opened or options/commands
     # passed, then just exit
     if [ -z "$files" ] && [ -z "$options" ] ; then
-        echo "Server running, no file arguments, no cli options. vim-start exiting"
+        echo "$(basename $0):Server running, no file arguments, no cli options. vim-start exiting"
         exit 0
     fi
 
