@@ -1,15 +1,24 @@
 " restart Vimperator
 
+" appearance
+set go-=mbrT
+set showtabline=0
+
 " completion options
 set complete=lsh
 set defsearch="google"
 set editor="/home/perry/.bin/vim-start.sh"
 set focuscontent=true
-set guioptions-=mTB
 set history=1500
 set newtab="help,downloads"
 set titlestring=""
 
+" search opts
+set smartcase
+
+set focuscontent
+
+map Y :exe ":tinyurl "+getBrowser().contentWindow.location.href<CR>
 
 map <C-r> :restart<CR>
 map <S-Space> :nohlsearch<CR>
@@ -38,18 +47,6 @@ javascript <<EOF
 EOF
 
  
-" add the bookmark star to vimperator's statusbar 
-" javascript <<EOF
-" (function(){
- " var bookPanel = document.createElement("statusbarpanel");
- " bookPanel.setAttribute("id", "book-panel-clone");
- " bookPanel.appendChild(document.getElementById("dwhelper-monitored-context-submenu"));
- " bookPanel.firstChild.setAttribute("style", "padding: 0; max-height: 16px;");
- " document.getElementById("status-bar")
- " .insertBefore(bookPanel, document.getElementById("security-button"));
- " })();
-" EOF
-
 " combos tried
 echo ".vimperatorrc sourced"
  
