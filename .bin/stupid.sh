@@ -78,6 +78,9 @@ ext_on () {
     fi
 
     xrandr --output $DISP_EXT1 --mode $EXTMODENAME $EXTPOS $DISP_LOCAL
+
+    # at least for me, if i set VGA1 then sometimes LVDS gets borked
+    lvds
 }
 # }}}
 
