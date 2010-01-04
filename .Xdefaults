@@ -9,7 +9,7 @@ URxvt*geometry:         180x25
 URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
 
 ! {{{ URLs mark-and-yank
-URxvt*cutchars:         `"()'*<>[]{|}
+URxvt*cutchars:         '`"()\'*<>[]{|}'
 /* match left-mouse-button */
 URxvt*matcher.button:   1                   
 URxvt.keysym.M-u:       perl:mark-yank-urls:activate_mark_mode
@@ -49,7 +49,7 @@ URxvt*scrollBar:          False
 !URxvt*inheritPixmap:      false
 !URxvt*reverseVideo:       false
 
-! Blog'ed http://www.jukie.net/~bart/blog/tag/urxvt
+! Bloged http://www.jukie.net/~bart/blog/tag/urxvt
 
 ! }}}
 
@@ -60,46 +60,101 @@ URxvt*scrollBar:          False
 !   0-7 low-intensity
 !   8-15 high-intensity 
 ! 
-URxvt*background:         #000000
-URxvt*foreground:         #cfcfcf
-URxvt*colorBD:            lightyellow
-URxvt*colorUL:            yellow   
-URxvt*cursorColor:        #07A5FF
-
-! black
-URxvt*color0:  #000000
-URxvt*color8:  #999999
-!
-! ! red
-URxvt*color1:  #DE1923
-URxvt*color9:  #FF6050
-!
-! ! green
-URxvt*color2:  #559933
-URxvt*color10: #66D077
-
-! ! yellow
-URxvt*color3:  #FF9922
-URxvt*color11: #FFFFAF
-
-! ! blue
-URxvt*color4:  #3579A8
-URxvt*color12: #0023FA
-
-! ! orange
-URxvt*color5:  #FF9F08
-URxvt*color13: #FFAF31
-
-! ! cyan
-URxvt*color6:  #00BBDD
-URxvt*color14: #0DEBFF
-
-! white
-URxvt*color7:  #cfcfcf
-URxvt*color15: #DEDEDE
-
+! {{{intensity b
+! URxvt*background:         #000000
+! URxvt*foreground:         #cfcfcf
+! URxvt*colorBD:            lightyellow
+! URxvt*colorUL:            yellow   
+! URxvt*cursorColor:        #07A5FF
+! 
+!black
+! URxvt*color0:  #000000
+! URxvt*color8:  #999999
+! !
+! red
+! URxvt*color1:  #DE1923
+! URxvt*color9:  #FF6050
+! !
+! green
+! URxvt*color2:  #559933
+! URxvt*color10: #66D077
+! 
+! yellow
+! URxvt*color3:  #FF9922
+! URxvt*color11: #FFFFAF
+! 
+! blue
+! URxvt*color4:  #3579A8
+! URxvt*color12: #0023FA
+! 
+! orange
+! URxvt*color5:  #FF9F08
+! URxvt*color13: #FFAF31
+! 
+! cyan
+! URxvt*color6:  #00BBDD
+! URxvt*color14: #0DEBFF
+! 
+!white
+! URxvt*color7:  #cfcfcf
+! URxvt*color15: #DEDEDE
 ! }}}
 
+! }}}
+!
+URxvt*background:         #9e9e9e
+URxvt*foreground:         #222222
+URxvt*colorBD:            lightyellow
+URxvt*colorUL:            yellow   
+URxvt*cursorColor:        #098225
+! URxvt*color0: #000000
+! URxvt*color1: #660000
+! URxvt*color2: #006600
+! URxvt*color3: #996600
+! URxvt*color4: #000066
+! URxvt*color5: #660066
+! URxvt*color6: #006666
+! URxvt*color7: #999999
+! URxvt*color8: #555555
+! URxvt*color9: #CC3333
+! URxvt*color10: #33CC33
+! URxvt*color11: #CCCC33
+! URxvt*color12: #3333CC
+! URxvt*color13: #CC33CC
+! URxvt*color14: #33CCCC
+! URxvt*color15: #FFFFFF
+
+
+!black
+URxvt*color0:  #232323
+URxvt*color8:  #000000
+
+!red
+URxvt*color1:  #b3141c
+URxvt*color9:  #a90b13
+!green
+URxvt*color2:  #002300
+URxvt*color10: #114423
+
+!yellow
+URxvt*color3:  #dfe113
+URxvt*color11: #FFFFAF
+
+!blue
+URxvt*color4:  #15156c
+URxvt*color12: #15158f
+
+!orange
+URxvt*color5:  #9f3f05
+URxvt*color13: #9f3f05
+
+!cyan
+URxvt*color6:  #094757
+URxvt*color14: #0a546a
+
+! !white
+URxvt*color7:  #bdbdbd
+URxvt*color15: #ffffff
 ! }}}
 
 ! {{{ CURSOR
