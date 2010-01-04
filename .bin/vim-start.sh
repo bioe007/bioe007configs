@@ -85,10 +85,7 @@ fi
 
 # opens vim in urxvt
 # urxvt -bg '#2e3436' +tr -name vim -e sh -c "$cmd" &
-urxvt -bg '#2e3436' +tr -name vim -e zsh -c "$cmd" &
-
-
-
+urxvt +tr -name vim -e zsh -c "$cmd" &
 
 
 # vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
