@@ -56,7 +56,7 @@ abstracts = {
   line_start = "%W!%n              ";
 
   # timestamp styling, nothing by default
-  timestamp = "%K$*%n";
+  timestamp = "%k$*%n";
 
   # any kind of text that needs hilighting, default is to bold
   hilight = "%_$*%_";
@@ -116,7 +116,7 @@ abstracts = {
 
   # $0 = nick mode, $1 = nick
   ownmsgnick = "{msgnick $0 $1-}";
-  ownnick = "%Y$*%n";
+  ownnick = "%b$*%n";
 
   # public message in channel, $0 = nick mode, $1 = nick
   pubmsgnick = "{msgnick $0 $1-}";
@@ -124,7 +124,7 @@ abstracts = {
 
   # public message in channel meant for me, $0 = nick mode, $1 = nick
   pubmsgmenick = "{msgnick $0 $1-}%Y";
-  menick = "%Y$*%n";
+  menick = "%b$*%n";
 
   # public highlighted message in channel
   # $0 = highlight color, $1 = nick mode, $2 = nick
@@ -151,19 +151,19 @@ abstracts = {
   ##
 
   # used internally by this theme
-  action_core = "%W*  $*%n%|";
+  action_core = "%b*  $*%n%|";
 
   # generic one that's used by most actions
   action = "{action_core $*} ";
 
   # own action, both private/public
-  ownaction = "%Y*  $*%n%|";
+  ownaction = "%b*  $*%n%|";
 
   # own action with target, both private/public
   ownaction_target = "{action_core $0}%K:%c$1%n ";
 
   # private action sent by others
-  pvtaction = "%W (*) $*%n ";
+  pvtaction = "%b (*) $*%n ";
   pvtaction_query = "{action $*}";
 
   # public action sent by others
@@ -256,7 +256,7 @@ abstracts = {
   # prompt = "%K$*#%n ";
   prompt = "%b>%n ";
 
-  sb = " %c %n$* %c%n";
+  sb = " %c %k$* %c%n";
   sbmode = "[%c+%n$*]";
   sbaway = "[%9away%n]";
   sbservertag = ":$0 (change with ^X)";
@@ -277,19 +277,19 @@ abstracts = {
 
 formats = {
   "fe-common/irc" = {
-    own_action = "{ownaction $[-8]0} $1";
-    action_public = "{pubaction $[-8]0}$1";
+    own_action = "{ownaction $[-6]0} $1";
+    action_public = "{pubaction $[-6]0}$1";
   };
   "fe-common/core" = {
-    own_msg = "{ownmsgnick {ownnick $[-10]0$2}}$1";
-    own_msg_channel = "{ownmsgnick {ownnick $[-10]0$3}{msgchannel $1}}$2";
-    own_msg_private_query = "{ownprivmsgnick {ownprivnick $[-10]2}}$1";
-    pubmsg_me = "{pubmsgmenick {menick $[-10]0}$2}$1";
-    pubmsg_me_channel = "{pubmsgmenick {menick $[-10]0$3}{msgchannel $1}}$2";
-    pubmsg_hilight = "{pubmsghinick $0 $0 $[-10]1$3%n}$2";
-    pubmsg_hilight_channel = "{pubmsghinick $0 $[-10]1$4{msgchannel $2}}$3";
-    pubmsg = "{pubmsgnick {pubnick $[-10]0$2}}$1";
-    pubmsg_channel = "{pubmsgnick {pubnick $[-10]0$2}}$1";
-    msg_private_query = "{privmsgnick $[-10]0}$2";
+    own_msg = "{ownmsgnick {ownnick $[-8]0$2}}$1";
+    own_msg_channel = "{ownmsgnick {ownnick $[-8]0$3}{msgchannel $1}}$2";
+    own_msg_private_query = "{ownprivmsgnick {ownprivnick $[-8]2}}$1";
+    pubmsg_me = "{pubmsgmenick {menick $[-8]0}$2}$1";
+    pubmsg_me_channel = "{pubmsgmenick {menick $[-8]0$3}{msgchannel $1}}$2";
+    pubmsg_hilight = "{pubmsghinick $0 $0 $[-8]1$3%n}$2";
+    pubmsg_hilight_channel = "{pubmsghinick $0 $[-8]1$4{msgchannel $2}}$3";
+    pubmsg = "{pubmsgnick {pubnick $[-8]0$2}}$1";
+    pubmsg_channel = "{pubmsgnick {pubnick $[-8]0$2}}$1";
+    msg_private_query = "{privmsgnick $[-8]0}$2";
   };
 };
