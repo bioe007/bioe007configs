@@ -41,7 +41,8 @@ bind 'K' kill
 #screen, with the time and date and with the current window highlighted                                                                            
 hardstatus alwayslastline
 # hardstatus string '%{= .kK}[%= %{= .b}%?%-Lw%{b}%?%{m}->%{C}%n%{Y}:%{C}%f%{w}:%{C}%t%?(%u)%?%{m}<-%{b}%?%+Lw%?%?%= %{b}][%{= .C}%c %{b}]'
-hardstatus string '%{= .kK}[%= %{= .K}%?%-Lw%{K}%?%{K}[ %{W}%n%{K}:%{W}%f%{K}:%{W}%t%?(%u)%?%{K} ]%{K}%?%+Lw%?%?%= %{K}][%{= .W} %c %{K}]'
+# hardstatus string '%{= .w}[%= %{= .k}%?%-Lw%{w}%?%{W}[ %n:%f:%t%?(%u)%? ]%{k}%?%+LW%?%?%= %{w}][%{= .k} %c %{w}]'
+hardstatus string '%{= .w}[%= %{= .c}%?%-Lw%{c}%?%{k}[ %n:%f:%t%?(%u)%? ]%{c}%?%+LW%?%?%= %{w}][%{= .k} %c %{w}]'
 
 # set the second mark, write to the screen-exchange
 # file, and use xsel to synchronize the paste buffer
