@@ -202,10 +202,10 @@ Allow24bitOutput	= yes
 #UseRealtimePriority	= no
 
 # Size of the in-memory cache for file tags in KB.
-TagsCacheSize		= 256
+TagsCacheSize		= 512
 
 # Number items in the playlist.
-PlaylistNumbering	= yes
+PlaylistNumbering	= no
 
 # Main window layoutis can be configured. You can change the position and the
 # size of the menus (directory and playlist). You have 3 layouts ant switch
@@ -238,8 +238,9 @@ PlaylistNumbering	= yes
 # Layout1 = "playlist:0,0,100%,10 directory:0,10,100%,FILL"
 #
 # Default configuration:
-Layout1		= "directory:0,0,100%,40% playlist:0,40%,100%,60%"
-Layout2		= "directory:0,0,100%,100% playlist:0,0,100%,100%"
+Layout1		= "playlist:0,40%,100%,60% directory:0,0,100%,40%"
+Layout2		= "directory:0,80%,100%,FILL playlist:0,0,100%,80%"
+# Layout3		= "directory:0,0,100%,100% playlist:0,0,100%,100%"
 Layout3		= "directory:0,0,30%,100% playlist:30%,0,70%,100%"
 
 # When the song changes, should the menu be scrolled so that the currently
@@ -284,14 +285,10 @@ CanStartInPlaylist	= yes
 UseCursorSelection	= no
 
 # Set the terminal title when running under xterm.
-#SetXtermTitle		= yes
+SetXtermTitle		= yes
 
 # Display full paths instead of just file names in the playlist.
-#PlaylistFullPaths	= yes
-
-
-
-
+PlaylistFullPaths	= no
 
 # OnSongChange
 # Specify the full path (i.e. no ~) of an executable to run
