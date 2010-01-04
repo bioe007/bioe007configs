@@ -62,7 +62,6 @@ lvds () {
 # $2 = mode name
 # $3 = modeline
 ext_on () {
-    echo in ext_on
     if (( $# < 3 )); then
         echo "$0: ext_on: no argument supplied"
     fi
@@ -72,7 +71,7 @@ ext_on () {
     shift 2
     EXTMODELINE="$@"
 
-    if [ -z "$(xrandr | grep "$2")" ]; then 
+    if [ -z "$(xrandr | grep "$EXTMODENAME")" ]; then 
         xrandr --newmode $EXTMODELINE
         xrandr --addmode $EXTDISP $EXTMODENAME
     fi
@@ -98,13 +97,16 @@ mgen() {
 # {{{ setup 
 # $1 = x res $2 = y res [optional $3 = starting refresh rate]
 setup () {
-    answer=""
+    # variables hold the current and previous modelines
     modeline=""
     oldmodeline=""
-    INITREFRESH=$3
 
     # default refresh is what i liked best
+    INITREFRESH=$3
     refresh=${INITREFRESH:-59}
+
+    # user input 
+    answer=""
     while [[ ! "$answer" == "y" ]] ; do
         # {{{ check that output & refresh rate are working well
 
