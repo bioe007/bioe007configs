@@ -7,6 +7,9 @@ if [ -z "$(echo $PATH | grep perry)" ] ; then
     export MOZILLA_FIVE_HOME="/usr/lib/xulrunner-1.9.1"
 fi
 
+if [ -r "$HOME/.var/dbus_session_bus_address" ] ; then
+    . "$HOME/.var/dbus_session_bus_address"
+fi
 
 # {{{ History 
 
@@ -73,7 +76,8 @@ st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.svgz=01;31:*.arj=01;31:\
 *.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:\
 *.yuv=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.mid=00;36:*.midi=00;36:\
 *.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:\
-*.h=01;33:*.c=01;36:*.hex=00;44:*.map=04;32:*.o=00,32:*.lua=01;36:*.R=01;36";
+*.h=01;33:*.c=01;36:*.hex=00;44:*.map=04;32:*.lua=01;36:*.R=01;36\
+*.py=01;36:*.pyc=01;32";
   export LS_COLORS
   alias ls='ls -Lh --group-directories-first --color=auto'
 else
@@ -118,7 +122,6 @@ bindkey '\eOc' forward-word
 alias p="sudo pacman"
 alias pc="sudo pacman-color"
 alias y="yaourt"
-
 alias vi="/usr/bin/vim"
 alias vim="/home/perry/.bin/vim-start.sh"
 alias :q="exit"
@@ -126,7 +129,7 @@ alias cds="cd $SANDBOX"
 alias mv="mv -i"
 alias t="ctags -R"
 alias grepn="grep -n"
-
+alias vp="vimpager"
 alias R="PAGER=\"`which less`\" `which R` --save --quiet"
 
 
