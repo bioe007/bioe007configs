@@ -107,27 +107,10 @@ URxvt*foreground:         #222222
 URxvt*colorBD:            lightyellow
 URxvt*colorUL:            yellow   
 URxvt*cursorColor:        #098225
-! URxvt*color0: #000000
-! URxvt*color1: #660000
-! URxvt*color2: #006600
-! URxvt*color3: #996600
-! URxvt*color4: #000066
-! URxvt*color5: #660066
-! URxvt*color6: #006666
-! URxvt*color7: #999999
-! URxvt*color8: #555555
-! URxvt*color9: #CC3333
-! URxvt*color10: #33CC33
-! URxvt*color11: #CCCC33
-! URxvt*color12: #3333CC
-! URxvt*color13: #CC33CC
-! URxvt*color14: #33CCCC
-! URxvt*color15: #FFFFFF
-
 
 !black
 URxvt*color0:  #232323
-URxvt*color8:  #000000
+URxvt*color8:  #434343
 
 !red
 URxvt*color1:  #b3141c
@@ -149,11 +132,11 @@ URxvt*color5:  #9f3f05
 URxvt*color13: #9f3f05
 
 !cyan
-URxvt*color6:  #094757
+URxvt*color6:  #083a47
 URxvt*color14: #0a546a
 
 ! !white
-URxvt*color7:  #bdbdbd
+URxvt*color7:  #dddddd
 URxvt*color15: #ffffff
 ! }}}
 
