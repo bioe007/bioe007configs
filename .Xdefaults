@@ -102,8 +102,8 @@ URxvt*scrollBar:          False
 
 ! }}}
 !
-URxvt*background:         #9e9e9e
-URxvt*foreground:         #222222
+URxvt*background:         #222222
+URxvt*foreground:         #9e9eae
 URxvt*colorBD:            lightyellow
 URxvt*colorUL:            yellow   
 URxvt*cursorColor:        #098225
@@ -113,31 +113,32 @@ URxvt*color0:  #232323
 URxvt*color8:  #434343
 
 !red
-URxvt*color1:  #b3141c
-URxvt*color9:  #a90b13
+URxvt*color1:  #c43239
+URxvt*color9:  #d44f55
+
 !green
-URxvt*color2:  #002300
-URxvt*color10: #114423
+URxvt*color2:  #369336
+URxvt*color10: #4eae4e
 
 !yellow
-URxvt*color3:  #dfe113
-URxvt*color11: #FFFFAF
+URxvt*color3:  #a2ae4e
+URxvt*color11: #bcc967
 
 !blue
-URxvt*color4:  #15156c
-URxvt*color12: #15158f
+URxvt*color4:  #5367cb
+URxvt*color12: #6279ec
 
 !orange
-URxvt*color5:  #9f3f05
-URxvt*color13: #9f3f05
+URxvt*color5:  #ba5112
+URxvt*color13: #cd682b
 
 !cyan
-URxvt*color6:  #083a47
-URxvt*color14: #0a546a
+URxvt*color6:  #22bbb9
+URxvt*color14: #46cdb5
 
 ! !white
-URxvt*color7:  #dddddd
-URxvt*color15: #ffffff
+URxvt*color7:  #999999
+URxvt*color15: #bbbbbb
 ! }}}
 
 ! {{{ CURSOR
