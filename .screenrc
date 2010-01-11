@@ -21,9 +21,9 @@ altscreen on
 term screen-256color
 terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 
-screen -t util
-screen -t make
-screen -t irssi irssi
+# screen -t util
+# screen -t make
+# screen -t irssi irssi
 select 0
 
 setenv DISPLAY=':0.0'
@@ -41,8 +41,8 @@ bind 'K' kill
 #screen, with the time and date and with the current window highlighted                                                                            
 hardstatus alwayslastline
 # hardstatus string '%{= .kK}[%= %{= .b}%?%-Lw%{b}%?%{m}->%{C}%n%{Y}:%{C}%f%{w}:%{C}%t%?(%u)%?%{m}<-%{b}%?%+Lw%?%?%= %{b}][%{= .C}%c %{b}]'
-# hardstatus string '%{= .w}[%= %{= .k}%?%-Lw%{w}%?%{W}[ %n:%f:%t%?(%u)%? ]%{k}%?%+LW%?%?%= %{w}][%{= .k} %c %{w}]'
-hardstatus string '%{= .w}[%= %{= .c}%?%-Lw%{c}%?%{k}[ %n:%f:%t%?(%u)%? ]%{c}%?%+LW%?%?%= %{w}][%{= .k} %c %{w}]'
+# hardstatus string '%{= .K}[%= %{= .K}%?%-Lw%{w}%?%{W}[ %n:%f:%t%?(%u)%? ]%{K}%?%+LW%?%?%= %{w}][%{= .k} %c %{K}]'
+hardstatus string '%{= .K}[%= %{= .c}%?%-Lw%{c}%?%{W}[ %n:%f:%t%?(%u)%? ]%{c}%?%+LW%?%?%= %{K}][%{= .k} %c %{K}]'
 
 # set the second mark, write to the screen-exchange
 # file, and use xsel to synchronize the paste buffer
