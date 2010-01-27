@@ -105,7 +105,7 @@ ShowTime		= yes
 
 # Theme file. This can be absolute path or relative to
 # /usr/share/moc/themes/ (depends on installation prefix) or ~/.moc/themes/
-Theme			= nu_moc_theme 
+Theme			= bdark
 
 # The theme used when running on on xterm
 # XTermTheme		= transparent-background
@@ -238,10 +238,10 @@ PlaylistNumbering	= no
 # Layout1 = "playlist:0,0,100%,10 directory:0,10,100%,FILL"
 #
 # Default configuration:
-Layout1		= "playlist:0,40%,100%,60% directory:0,0,100%,40%"
-Layout2		= "directory:0,80%,100%,FILL playlist:0,0,100%,80%"
-# Layout3		= "directory:0,0,100%,100% playlist:0,0,100%,100%"
+Layout1		= "playlist:0,0,FILL,FILL"
+Layout2		= "playlist:0,40%,100%,60% directory:0,0,100%,40%"
 Layout3		= "directory:0,0,30%,100% playlist:30%,0,70%,100%"
+# Layout3		= "directory:0,80%,100%,FILL playlist:0,0,100%,80%"
 
 # When the song changes, should the menu be scrolled so that the currently
 # played file is visible?
@@ -279,6 +279,10 @@ CanStartInPlaylist	= yes
 # Examples:
 # ExecCommand1		= "cp %f /mnt/usb_drive"
 # ExecCommand2		= "/home/joe/now_playing %i"
+ExecCommand1            = "mv %f /home/perry/.var/mp3trash"
+ExecCommand2            = "rm -r %f"
+ExecCommand3            = "rm -r /home/perry/.var/mp3trash/*"
+
 
 # Display the cursor in the line with the selected file. This can be usefu with
 # a braille display.
