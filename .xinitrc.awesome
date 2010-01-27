@@ -5,18 +5,17 @@ if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
   eval `dbus-launch --sh-syntax --exit-with-session`
 fi
 
-echo "DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+# so i can source this into screen terminals that exist across X sessions
+echo "export DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" | tee $HOME/.var/dbus_session_bus_address
 
 xset +dpms dpms 300 900 0 &
+xset +fp $HOME/.fonts/misc,$HOME/.fonts/new,$HOME/.fonts/profont-x11 &
 xcompmgr -n &
+unclutter -noevents -idle 3 -root &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
-# xsetroot -cursor_name left_ptr
-
 
 #sync PRIMARY with clipboard 
 autocutsel -s PRIMARY -buttonup -fork
 
-# exec awesome -c ~/.config/awesome/shifty.rc.lua
-exec awesome 
-#-c /etc/xdg/awesome/rc.lua
+exec ck-launch-session awesome 
