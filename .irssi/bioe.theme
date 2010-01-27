@@ -56,7 +56,7 @@ abstracts = {
   line_start = "%W!%n              ";
 
   # timestamp styling, nothing by default
-  timestamp = "%k$*%n";
+  timestamp = "%w$*%n";
 
   # any kind of text that needs hilighting, default is to bold
   hilight = "%_$*%_";
@@ -151,19 +151,20 @@ abstracts = {
   ##
 
   # used internally by this theme
-  action_core = "%b*  $*%n%|";
+  action_core = "%y*  $*%n%|";
 
   # generic one that's used by most actions
   action = "{action_core $*} ";
 
   # own action, both private/public
-  ownaction = "%b*  $*%n%|";
+  # ownaction = "%G*  $*%n%|";
+  ownaction = "%G%9*  $*%|";
 
   # own action with target, both private/public
   ownaction_target = "{action_core $0}%K:%c$1%n ";
 
   # private action sent by others
-  pvtaction = "%b (*) $*%n ";
+  pvtaction = "%m%9 (*) $*%n ";
   pvtaction_query = "{action $*}";
 
   # public action sent by others
@@ -182,11 +183,11 @@ abstracts = {
   notice = "%K-%M$*%K-%n ";
   pubnotice_channel = "%K:%m$*";
   pvtnotice_host = "%K(%m$*%K)";
-  servernotice = "%g!$*%n ";
+  servernotice = "%m!$*%n ";
 
   # CTCPs
   ownctcp = "[%r$0%K(%R$1-%K)] ";
-  ctcp = "%g$*%n";
+  ctcp = "%M$*%n";
 
   # wallops
   wallop = "%W$*%n: ";
@@ -203,11 +204,11 @@ abstracts = {
   names_nick_op = "{names_nick $*}";
   names_nick_halfop = "{names_nick $*}";
   names_nick_voice = "{names_nick $*}";
-  names_users = "[%g$*%n]";
-  names_channel = "%G$*%n";
+  names_users = "[%y$*%n]";
+  names_channel = "%Y$*%n";
 
   # DCC
-  dcc = "%g$*%n";
+  dcc = "%y$*%n";
   dccfile = "%_$*%_";
 
   # DCC chat, own msg/action
@@ -241,22 +242,22 @@ abstracts = {
   sb_info_bg = "%8";
 
   # background for topicbar (same default)
-  sb_topic_bg = "%K";
+  sb_topic_bg = "%G";
 
   # text at the beginning of statusbars. sb-item already puts
   # space there,so we don't use anything by default.
-  sbstart = "%K%n";
+  sbstart = "%n";
   # text at the end of statusbars. Use space so that it's never
   # used for anything.
   sbend = " ";
 
-  topicsbstart = ">>";
-  topicsbend = "<<";
+  topicsbstart = "%c%9:%N";
+  topicsbend = "%c%9:%N";
 
   # prompt = "%K$*#%n ";
-  prompt = "%b>%n ";
+  prompt = "%G%9>%n ";
 
-  sb = " %c %k$* %c%n";
+  sb = "%c%g$* %c%n";
   sbmode = "[%c+%n$*]";
   sbaway = "[%9away%n]";
   sbservertag = ":$0 (change with ^X)";
@@ -288,8 +289,8 @@ formats = {
     pubmsg_me_channel = "{pubmsgmenick {menick $[-8]0$3}{msgchannel $1}}$2";
     pubmsg_hilight = "{pubmsghinick $0 $0 $[-8]1$3%n}$2";
     pubmsg_hilight_channel = "{pubmsghinick $0 $[-8]1$4{msgchannel $2}}$3";
-    pubmsg = "{pubmsgnick {pubnick $[-8]0$2}}$1";
-    pubmsg_channel = "{pubmsgnick {pubnick $[-8]0$2}}$1";
+    pubmsg = "{pubmsgnick {pubnick %w$[-8]0}$2}$1";
+    pubmsg_channel = "{pubmsgnick {pubnick %w$[-8]0}$2}$1";
     msg_private_query = "{privmsgnick $[-8]0}$2";
   };
 };
