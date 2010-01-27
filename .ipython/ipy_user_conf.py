@@ -57,7 +57,7 @@ def main():
     o.log = 0
     o.messages = 1
     o.pprint = 1
-    o.prompt_in1 = '\C_DarkGray\Y1\C_Black [\C_DarkGray\N\C_Black]:\C_NoColor '
+    o.prompt_in1 = '\C_Green\Y1\C_White [\C_Green\N\C_White]:\C_NoColor '
     o.prompt_in2 = '   .\D.: '
     o.prompt_out = '\C_White[\C_LightPurple\N\C_White] '
     o.prompts_pad_left = 1
@@ -83,9 +83,9 @@ def main():
 
     # Try one of these color settings if you can't read the text easily
     # autoexec is a list of IPython commands to execute on startup
-    o.autoexec.append('%colors LightBG')
+    # o.autoexec.append('%colors LightBG')
     #o.autoexec.append('%colors NoColor')
-    #o.autoexec.append('%colors Linux')
+    o.autoexec.append('%colors Linux')
     
     # for sane integer division that converts to float (1/2 == 0.5)
     #o.autoexec.append('from __future__ import division')
