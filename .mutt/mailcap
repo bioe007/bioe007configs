@@ -1,7 +1,0 @@
-application/pdf;      acroread -tempFile %s; ; test=test -n "$DISPLAY"
-application/pdf;      pdftotext -layout %s -; copiousoutput
-text/html;            lynx -dump %s; nametemplate=%s.html; copiousoutput
-application/ms-tnef;  tnef -w %s
-application/msword; antiword %s; copiousoutput
-image/*; mirage %s
-
