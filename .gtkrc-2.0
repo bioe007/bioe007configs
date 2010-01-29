@@ -1,9 +1,9 @@
 # Auto-written by gtk2_prefs. Do not edit.
-gtk-font-name = "Bitstream Vera Sans 7"
+gtk-font-name = "Bitstream Vera Sans 8"
 gtk-theme-name = "Apathy-grey"
 style "userfont"
 {
-	font_name="Bitstream Vera Sans 7"
+	font_name="Bitstream Vera Sans 8"
 }
 widget_class "*" style "userfont"
 widget "*" style "userfont"
