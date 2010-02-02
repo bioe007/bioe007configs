@@ -1,0 +1,83 @@
+/* Remove Favicon placeholder in Tab Bar */
+.tabbrowser-icon  { display: none !important; }
+.tabbrowser-tabs .tab-icon { display: none; }
+.tabbrowser-tab .tab-icon-image
+    {visibility: hidden !important;}
+/* Tab bar: hide all tabs drop-down list */
+/* .tabbrowser-strip *[class^="icons-allicons"] { display:  */
+	/* none !important } */
+
+.toolbarbutton-icon {display:none!important}
+
+/* Combine Stop and Refresh in one button */
+#stop-button[disabled] { display: none; }
+#stop-button:not([disabled]) + #reload-button { display: none; }
+
+/* Remove Firefox 3.1 new tab button from the tab bar */
+/* .tabs-newtab-button { display: none; }  */
+
+/* .tabbrowser-tabs .tab-text { font-size: 105%; } */
+
+/* Alternatively, kill only default tabbrowser icons (no site icon) */
+/* .tabbrowser-tabs *|tab:not([image]) .tab-icon { display: none; } */
+
+
+/* Remove go button and magnifying glass button from search box */
+.search-go-button, .search-go-button-stack, #go-button { display: none !important; }
+
+/* Remove Forward drop-marker */
+#back-forward-dropmarker { display: none !important; }
+
+/* Hide the Search bar dropmarker */
+.searchbar-dropmarker-image { display: none !important; }
+
+/* Hide the tabbar drop-marker */
+.tabbrowser-strip dropmarker { display: none !important; }
+
+/* Hide the drop-marker in the AwesomeBar 
+.autocomplete-history-dropmarker { display: none !important; }
+*/
+
+/* Hide bookmark favicons and/or text in the Bookmarks toolbar */
+/* toolbarbutton.bookmark-item > .toolbarbutton-icon { display: none; } */
+/* toolbarbutton.bookmark-item > .toolbarbutton-text { display: none !important; } */
+
+/* Place sidebars on the right side of the window 
+window > hbox { direction:rtl; } window > hbox > * { direction:ltr; }
+*/
+
+/* Display the Tab bar at the bottom  */
+#content > tabbox { -moz-box-direction: reverse; }
+
+
+/* Hide toolbar borders 
+toolbar {
+  -moz-appearance: none !important;
+  border-left: 0px !important;
+  border-right: 0px !important;
+  border-bottom: 0px !important;
+  border-top: 0px !important;
+}
+*/
+
+/* Multi-line textareas */
+textarea {
+  background-color: rgb(100, 155, 120) !important;
+  /* foreground-color: rgb(100, 155, 120) !important; */
+}
+
+/* Single line text fields */
+input {
+  /* Set font size and family of text fields */
+  font-family: terminus !important;
+  font-size: 13px !important;
+
+  /* Set background color to something a little prettier */
+  background-color: rgb(100, 105, 100) !important;
+
+  /* Add some key bindings.
+   * For an explanation of how to do this,
+   * see below under "Custom key bindings".
+   */
+  -moz-binding: url("resource:///res/builtin/myHTMLBindings.xml#myInputFields") !important;
+}
