@@ -1,26 +1,42 @@
-/* Remove Favicon placeholder in Tab Bar */
-.tabbrowser-icon  { display: none !important; }
+/* this keeps the gap from existing where the favicon should be */
 .tabbrowser-tabs .tab-icon { display: none; }
-.tabbrowser-tab .tab-icon-image
-    {visibility: hidden !important;}
-/* Tab bar: hide all tabs drop-down list */
-/* .tabbrowser-strip *[class^="icons-allicons"] { display:  */
-	/* none !important } */
+
+/* this keeps the placeholder/generic icon from showing up in the tab-bar */
+.tabbrowser-tab .tab-icon-image { visibility: hidden !important;}
+
+/* hide the 'show all' tabs button  */
+.tabs-container > stack  { display: none !important; }
+
+/* Remove new tab button from the tab bar */
+.tabs-newtab-button {
+	display: none;
+	visibility: hidden !important;
+} 
+
+/* .tabbrowser-tabs tab .tab-text { display: none; } */
+.tabbrowser-tabs tab[selected="false"] .tab-text {
+	font-size: 90%;
+	color: gray;
+}
+.tabbrowser-tabs tab[selected="true"] .tab-text {
+	display: block;
+	min-width: 200px;
+	color: #ddffde;
+	font-size: 100;
+} 
+
+/* Display the Tab bar at the bottom  */
+/* #content > tabbox { -moz-box-direction: reverse; } */
 
 .toolbarbutton-icon {display:none!important}
 
 /* Combine Stop and Refresh in one button */
-#stop-button[disabled] { display: none; }
-#stop-button:not([disabled]) + #reload-button { display: none; }
+/* #stop-button[disabled] { display: none; } */
+/* #stop-button:not([disabled]) + #reload-button { display: none; } */
 
-/* Remove Firefox 3.1 new tab button from the tab bar */
-/* .tabs-newtab-button { display: none; }  */
-
-/* .tabbrowser-tabs .tab-text { font-size: 105%; } */
 
 /* Alternatively, kill only default tabbrowser icons (no site icon) */
 /* .tabbrowser-tabs *|tab:not([image]) .tab-icon { display: none; } */
-
 
 /* Remove go button and magnifying glass button from search box */
 .search-go-button, .search-go-button-stack, #go-button { display: none !important; }
@@ -31,8 +47,6 @@
 /* Hide the Search bar dropmarker */
 .searchbar-dropmarker-image { display: none !important; }
 
-/* Hide the tabbar drop-marker */
-.tabbrowser-strip dropmarker { display: none !important; }
 
 /* Hide the drop-marker in the AwesomeBar 
 .autocomplete-history-dropmarker { display: none !important; }
@@ -46,38 +60,30 @@
 window > hbox { direction:rtl; } window > hbox > * { direction:ltr; }
 */
 
-/* Display the Tab bar at the bottom  */
-#content > tabbox { -moz-box-direction: reverse; }
-
-
-/* Hide toolbar borders 
-toolbar {
-  -moz-appearance: none !important;
-  border-left: 0px !important;
-  border-right: 0px !important;
-  border-bottom: 0px !important;
-  border-top: 0px !important;
-}
-*/
 
 /* Multi-line textareas */
 textarea {
+  font-family: Profont !important;
+  font-size: 12px !important;
   background-color: rgb(100, 155, 120) !important;
-  /* foreground-color: rgb(100, 155, 120) !important; */
+  /* text-color: rgb(100, 155, 120) !important; */
+  /* text-color: #ddffde; */
 }
 
 /* Single line text fields */
 input {
   /* Set font size and family of text fields */
-  font-family: terminus !important;
-  font-size: 13px !important;
-
+  font-family: Profont !important;
+  font-size: 12px !important;
+ 
   /* Set background color to something a little prettier */
-  background-color: rgb(100, 105, 100) !important;
-
+  /* background-color: rgb(100, 105, 100) !important; */
+  background-color: #555555 !important;
+  /* text-color: #ddffde; */
+ 
   /* Add some key bindings.
    * For an explanation of how to do this,
    * see below under "Custom key bindings".
    */
-  -moz-binding: url("resource:///res/builtin/myHTMLBindings.xml#myInputFields") !important;
+  /* -moz-binding: url("resource:///res/builtin/myHTMLBindings.xml#myInputFields") !important; */
 }
