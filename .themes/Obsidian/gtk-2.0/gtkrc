@@ -1,11 +1,10 @@
 #
-# loosely based on the themes:
+# gtk2 theme for rezlooks(hacked) engine 
 #
-#
-# FIXME: the progress bar requiring xfce engine to look 'flat', have tried
-# rezlooks options to no success, it always looks etched in to something. Also
-# tried various other engines (clearlooks, pixmap, gflat)
+# also requires pixmap engine to get the very flat look in the 'statusbar'
+# widgets... 
 # 
+# bioe007 <perrydothargraveatgmaildotcom>
 
 gtk-icon-sizes = "panel-menu=12,12:panel=12,12:gtk-button=12,12:gtk-large-toolbar=16,16:gtk-small-toolbar=12,12"
 
@@ -81,12 +80,12 @@ style "default"
   text[PRELIGHT]    = "#000000" # hover text
 
   fg[ACTIVE]        = "#cdfdce" # selected text unfocused win
-  bg[ACTIVE]        = shade(0.5,"#303b34") #202024") #505050")      # pressed color
+  bg[ACTIVE]        = shade(0.5,"#303b34") # pressed color
   text[ACTIVE]      = "#001000" # text sel & unfocused
   base[ACTIVE]      = "#959f95" # selected item background (out of focus)
 
   fg[SELECTED]      = "#000000" # selected text on lists
-  bg[SELECTED]      = shade(0.7,"#303b34") #abbfab")    # check and radio button color
+  bg[SELECTED]      = shade(0.7,"#303b34") # check and radio button color
   text[SELECTED]    = "#001000" # selected hilight,tab/slider background, & menu stripeMenu active item in active window
   base[SELECTED]    = "#959f95" # sel and focused text
 
@@ -99,7 +98,7 @@ style "default"
 
   engine "rezlooks" 
   {
-    scrollbar_color    = "#9baf9b" #3f3034" 
+    scrollbar_color    = "#9baf9b" 
     progressbarstyle   = 0       #
     menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
     menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
@@ -122,11 +121,6 @@ style "progressbar" = "default"
   bg[NORMAL]   = "#555555" # unfilled portion of pb
   bg[SELECTED] = "#abbfab" # color of filled pb
 
-  engine "rezlooks"
-  {
-    progressbarstyle  = 1       # 0 = candy bar, 1 = flat 	
-  }
- 
 } # 1}}}
 
 style "wide" = "default"
@@ -136,7 +130,7 @@ style "wide" = "default"
 }
 
 style "button" = "default"
-{
+{ #{{{1
   xthickness = 2
   ythickness = 1
   bg[NORMAL]      = "#404040"      # button background
@@ -157,7 +151,7 @@ style "button" = "default"
   # bg[PRELIGHT]    = "#f0f000" #
   # bg[INSENSITIVE] = "#00f0f0" # 
 
-}
+} #1}}}
 
 style "combo" = "default"
 { # {{{
@@ -217,22 +211,17 @@ style "scale" = "button"
 {
   GtkWidget::focus_padding      = 1
   fg[NORMAL]    = "#68696b"   # color of focus box
-  # bg[PRELIGHT] = "#ff0000" #"#68696b"  # slider color on hover
-  # bg[NORMAL]    = "#ff0000"
-
+  # bg[PRELIGHT] = # slider color on hover
 }
 
 style "notebook" = "default"
 { # {{{1
 
-  # bg[NORMAL] = "#cfcfcf" #e2e3e4" # inner window background colour
-  # bg[ACTIVE] = "#d4d5d6" # out of focus tabs
-
   GtkWidget::focus-line-width     = 1
   xthickness = 2
   ythickness = 1
 
-  bg[ACTIVE]      = shade(0.5,"#303b34") #202024") #505050")      # pressed color
+  bg[ACTIVE]      = shade(0.5,"#303b34") # pressed color
   # bg[ACTIVE]      = "#808080" # bg of unselected tabs
   # bg[NORMAL]      = "#121212" # border around tabs and windows
   # bg[SELECTED]    = "#38393b" 
@@ -271,6 +260,7 @@ style "tree" = "default"
   ythickness = 2
   GtkTreeView::odd_row_color  = "#3d3e3f"
   GtkTreeView::even_row_color = "#3d3e3f"
+# FIXME: claws-mail tree view is very fucked up with this... ?
   # text[ACTIVE]      = "#0000ff" #
   # text[NORMAL]      = "#00ff00" # 
   # text[SELECTED]    = "#ff0000" # 
@@ -310,7 +300,6 @@ style "tooltips" = "default"
 
 style "bar" = "default"
 {
-# for some reason to get this 'no line separator' i've got to keep the engine "other" block, otw the line shows up no matter what.
 
     GtkStatusbar::shadow_type = GTK_SHADOW_NONE  # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
     GtkToolbar::shadow_type   = GTK_SHADOW_NONE  # same as ^ but for toolbar
@@ -318,6 +307,8 @@ style "bar" = "default"
     xthickness = 4
     ythickness = 1
 
+# FIXME: for some reason to get this 'no line separator' i've got to keep the
+# engine "other" block, otw the line shows up no matter what.
      engine "pixmap"
      {
      } 
