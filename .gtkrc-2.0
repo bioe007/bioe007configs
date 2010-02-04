@@ -1,6 +1,6 @@
 # Auto-written by gtk2_prefs. Do not edit.
 gtk-font-name = "Bitstream Vera Sans 8"
-gtk-theme-name = "Apathy-grey"
+gtk-theme-name = "Obsidian"
 style "userfont"
 {
 	font_name="Bitstream Vera Sans 8"
