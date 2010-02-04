@@ -1,8 +1,9 @@
 " restart Vimperator
 
 " appearance
-set go-=mbrT
-set showtabline=0
+set go-=nmbrT
+set go+=n
+set showtabline=1
 
 " completion options
 set complete=lsh
@@ -27,13 +28,18 @@ map <S-Space> :nohlsearch<CR>
 " map <C-l> gt
 map gb gT
  
-" move current tab left/right
+" focus left or right tab
 map <C-l> :tabnext<CR>
 map <C-h> :tabprev<CR>
+
 " move current tab left/right
-map <C-L> :tabmove! +1<CR>
-map <C-H> :tabmove! -1<CR>
+map <C-S-l> :tabmove! +1<CR>
+map <C-S-h> :tabmove! -1<CR>
  
+map j 4<c-e>
+map k 4<c-y>
+
+
 " add the bookmark star to vimperator's statusbar 
 javascript <<EOF
 (function(){
@@ -46,8 +52,9 @@ javascript <<EOF
  })();
 EOF
 
+colorscheme mine
  
 " combos tried
 echo ".vimperatorrc sourced"
  
-" vim: ft=vimperator sw=2 sts=2
+" vim: ft=vimperator sw=4 sts=4
