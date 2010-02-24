@@ -1,10 +1,11 @@
 
 if [ -z "$(echo $PATH | grep perry)" ] ; then
-    export PATH="$HOME/.bin:/usr/local/bin:/opt/mozilla/bin":${PATH}
+    export PATH="$HOME/.bin:/usr/local/bin:/opt/java/bin:/opt/mozilla/bin:"${PATH}
     export AWT_TOOLKIT=MToolkit
     export OOO_FORCE_DESKTOP=gnome
     export INTEL_BATCH=2
     export MOZILLA_FIVE_HOME="/usr/lib/xulrunner-1.9.1"
+    export GEM_PATH='/.gem/ruby/1.9.1/gems/' 
 fi
 
 if [ -r "$HOME/.var/dbus_session_bus_address" ] ; then
@@ -33,7 +34,7 @@ MALLOC_CHECK_="0"
 # compiling
 CFLAGS="-march=prescott -O2 -pipe -fomit-frame-pointer -mfpmath=sse -msse3"
 CHOST="i686-pc-linux-gnu"
-CXXFLAGS="${CFLAGS} -fvisibility-inlines-hidden" # --> this seems to break stuff real good -> -fvisibility=hidden"
+CXXFLAGS="${CFLAGS} -fvisibility-inlines-hidden" 
 
 # for CVS
 CVS_RSH="$(which ssh)"
@@ -49,10 +50,11 @@ CC51LIB=/home/perry/.wine/drive_c/cc51/lib
 
 # geda stuff
 GEDADATA="/usr/share/gEDA"
-PAGER="vimpager"
+PAGER="less"
+LESS="-FRSXiqg"
 
-export CFLAGS CXXFLAGS CHOST CVSROOT CVSEDITOR LM_LICENSE_FILE CC51INC CC51LIB 
-export LFS MALLOC_CHECK_ EDITOR GEDADATA PAGER SANDBOX
+export CFLAGS CXXFLAGS CHOST CVSROOT CVSEDITOR LM_LICENSE_FILE CC51INC
+export CC51LIB MALLOC_CHECK_ EDITOR GEDADATA PAGER SANDBOX LESS
 
 # }}}
 
@@ -91,34 +93,6 @@ fi
 # }}}
 
 
-# {{{ Keybindings
-
-bindkey -v
-typeset -g -A key
-#bindkey '\e[3~' delete-char
-bindkey '\e[1~' beginning-of-line
-bindkey '\e[4~' end-of-line
-#bindkey '\e[2~' overwrite-mode
-bindkey '^?' backward-delete-char
-bindkey '^[[1~' beginning-of-line
-bindkey '^[[5~' up-line-or-history
-bindkey '^[[3~' delete-char
-bindkey '^[[4~' end-of-line
-bindkey '^[[6~' down-line-or-history
-bindkey '^[[A' up-line-or-search
-bindkey '^[[D' backward-char
-bindkey '^[[B' down-line-or-search
-bindkey '^[[C' forward-char 
-# for rxvt
-bindkey "\e[8~" end-of-line
-bindkey "\e[7~" beginning-of-line
-
-# completion in the middle of a line
-bindkey '^i' expand-or-complete-prefix
-
-bindkey '\eOd' backward-word
-bindkey '\eOc' forward-word
-# }}}
 
 
 # {{{ Alias stuff
@@ -133,7 +107,7 @@ alias cds="cd $SANDBOX"
 alias mv="mv -i"
 alias t="ctags -R"
 alias grepn="grep -n"
-alias vp="vimpager"
+alias pg="less"
 alias R="PAGER=\"`which less`\" `which R` --save --quiet"
 
 
@@ -167,7 +141,7 @@ setopt hist_ignore_all_dups
 setopt autocd
 setopt extendedglob
 setopt sharehistory histappend
-# setopt hist_ignore_space
+setopt hist_ignore_space
 
 # }}}
 
@@ -176,6 +150,7 @@ setopt sharehistory histappend
 
 zmodload zsh/complist 
 autoload -Uz compinit
+autoload -U edit-command-line
 compinit
 zstyle :compinstall filename '${HOME}/.zshrc'
 zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
@@ -188,6 +163,34 @@ zstyle ':completion:*:warnings' format '%BSorry, no matches for: %d%b'
 
 #}}}
 
+# {{{ Keybindings
+
+bindkey -v
+typeset -g -A key
+#bindkey '\e[3~' delete-char
+bindkey '\e[1~' beginning-of-line
+bindkey '\e[4~' end-of-line
+#bindkey '\e[2~' overwrite-mode
+bindkey '^?' backward-delete-char
+bindkey '^[[1~' beginning-of-line
+bindkey '^[[5~' history-beginning-search-backward
+bindkey '^[[3~' delete-char
+bindkey '^[[4~' end-of-line
+bindkey '^[[6~' down-line-or-history
+bindkey '^[[A'  history-beginning-search-backward
+bindkey '^[[D' backward-char
+bindkey '^[[B' down-line-or-search
+bindkey '^[[C' forward-char 
+# for rxvt
+bindkey "\e[8~" end-of-line
+bindkey "\e[7~" beginning-of-line
+
+# completion in the middle of a line
+bindkey '^i' expand-or-complete-prefix
+
+bindkey '\eOd' backward-word
+bindkey '\eOc' forward-word
+# }}}
 
 # {{{ Window title
 
@@ -224,4 +227,4 @@ promptinit
 
 #}}}
 
-# vim:set filetype=sh textwidth=80 fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
+# vim:set ft=sh tw=80 fdm=marker ts=4 sw=4 et sta ai si:
