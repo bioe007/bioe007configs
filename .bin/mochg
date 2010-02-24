@@ -5,6 +5,7 @@
 # 
 # uncomment below for debugging output
 # echo "mochg called: " $(date) " args: $@"
+. $HOME/.var/dbus_session_bus_address
 if [ "$#" -lt "2" ] ; then
   # echo 'setting stop' >> ~/mocdbg
   echo 'mocp.update("state","STOP")' | awesome-client
