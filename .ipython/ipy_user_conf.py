@@ -124,14 +124,17 @@ def main():
     readline.parse_and_bind("\M-I \d\d\d\d")
     readline.parse_and_bind("\C-r reverse-search-history")
     readline.parse_and_bind("\C-s forward-search-history")
+
     readline.parse_and_bind("\C-p history-search-backward")
     readline.parse_and_bind("\C-n history-search-forward")
-    readline.parse_and_bind("\e[A history-search-backward")
-    readline.parse_and_bind("\e[B history-search-forward")
+    # readline.parse_and_bind("\e[A history-search-backward")
+
+    # readline.parse_and_bind("\e[B history-search-forward")
     readline.parse_and_bind("\C-k kill-line")
     readline.parse_and_bind("\C-u unix-line-discard ")
-    o.readline_remove_delims = '-/~'
-    o.readline_merge_completions = 1
+
+    # o.readline_remove_delims = '-/~'
+    # o.readline_merge_completions = 1
     # o.readline.omit__names = 0
 
     print("IPYTHON: Finish ipy_user_conf.py")
