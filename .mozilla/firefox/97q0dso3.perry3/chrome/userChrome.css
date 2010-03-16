@@ -34,7 +34,6 @@
 /* #stop-button[disabled] { display: none; } */
 /* #stop-button:not([disabled]) + #reload-button { display: none; } */
 
-
 /* Alternatively, kill only default tabbrowser icons (no site icon) */
 /* .tabbrowser-tabs *|tab:not([image]) .tab-icon { display: none; } */
 
@@ -60,14 +59,15 @@
 window > hbox { direction:rtl; } window > hbox > * { direction:ltr; }
 */
 
+/* .dwhelper-statusbarpanel icon { */
+    /* display: -moz-box !important; */
+/* } */
 
 /* Multi-line textareas */
 textarea {
   font-family: Profont !important;
   font-size: 12px !important;
   background-color: rgb(100, 155, 120) !important;
-  /* text-color: rgb(100, 155, 120) !important; */
-  /* text-color: #ddffde; */
 }
 
 /* Single line text fields */
