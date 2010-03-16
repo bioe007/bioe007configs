@@ -37,7 +37,7 @@ CHOST="i686-pc-linux-gnu"
 CXXFLAGS="${CFLAGS} -fvisibility-inlines-hidden" 
 
 # for CVS
-CVS_RSH="$(which ssh)"
+CVS_RSH=ssh
 CVSROOT=":ext:phargrave@10.1.1.16:/srv/Engineering/ph1000/cvs_root_bcsi"
 CVSEDITOR="/usr/bin/vim" 
 EDITOR="/usr/bin/vim"
@@ -61,7 +61,7 @@ export LESS_TERMCAP_se=$'\E[0m' LESS_TERMCAP_so=$'\E[01;47;30m'
 export LESS_TERMCAP_ue=$'\E[0m' LESS_TERMCAP_us=$'\E[00;33m'
 
 export CFLAGS CXXFLAGS CHOST CVSROOT CVSEDITOR LM_LICENSE_FILE CC51INC
-export CC51LIB MALLOC_CHECK_ EDITOR GEDADATA SANDBOX
+export CC51LIB MALLOC_CHECK_ EDITOR GEDADATA SANDBOX CVS_RSH
 
 # }}}
 
@@ -98,8 +98,6 @@ else
 fi
 
 # }}}
-
-
 
 
 # {{{ Alias stuff
@@ -186,7 +184,7 @@ bindkey '^[[4~' end-of-line
 bindkey '^[[6~' down-line-or-history
 bindkey '^[[A'  history-beginning-search-backward
 bindkey '^[[D' backward-char
-bindkey '^[[B' down-line-or-search
+bindkey '^[[B' down-line-or-history
 bindkey '^[[C' forward-char 
 # for rxvt
 bindkey "\e[8~" end-of-line
@@ -235,3 +233,4 @@ promptinit
 #}}}
 
 # vim:set ft=sh tw=80 fdm=marker ts=4 sw=4 et sta ai si:
+alias clyde="sudo clyde"
