@@ -88,4 +88,4 @@ fi
 urxvt +tr -name vim -e zsh -c "$cmd" &
 
 
-# vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
+# vim:set ft=sh tw=80 fdm=indent ts=4 sw=4 et sta ai si:
