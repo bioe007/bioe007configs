@@ -10,7 +10,7 @@
 "         :helptags ./
 "
 set nocompatible   " let vim be vim, not vi
-set nonumber       " show line numbers
+set nonumber       " dont show line numbers
 set ruler          " cursor pos always shown
 set vb t_vb=       " screen flash instead of beeps
 set history=550    " have 150 lines of command-line (etc) history:
@@ -29,7 +29,6 @@ set shiftround
 set expandtab
 set autoindent
 set smarttab
-set smartindent
 
 " always auto-update taglist
 let Tlist_Auto_Update = 1
@@ -61,16 +60,29 @@ endfunction
 function! StatuslineTrailingSpaceWarning()
     "{{{3
     if !exists("b:statusline_trailing_space_warning")
-        if search('\s\+$', 'nw') != 0
-            let b:statusline_trailing_space_warning = '[\s]'
-        else
+        let b:statusline_trailing_space_warning = search('\s\+$', 'nw')
+
+        if b:statusline_trailing_space_warning == 0
             let b:statusline_trailing_space_warning = ''
+        else
+            let b:statusline_trailing_space_warning =
+                        \'[\s' . b:statusline_trailing_space_warning . ']'
         endif
     endif
 
     return b:statusline_trailing_space_warning
 endfunction
 "3}}}
+
+function! StripTrailingSpace()
+    if search('\s\+$', 'nw') != 0
+        exe '%s:\s\+$::'
+        unlet! b:statusline_trailing_space_warning
+        call StatuslineTrailingSpaceWarning()
+    else
+        echo 'No lines with trailing space'
+    endif
+endfunction
 
 "return the syntax highlight group under the cursor ''
 function! StatuslineCurrentHighlight()
@@ -127,7 +139,7 @@ function! StatuslineLongLineWarning()
                                 \ 'm' . s:Median(long_line_lens) . ", " .
                                 \ '$' . max(long_line_lens) . "]"
                 elseif g:SL_LongLine_Verbose > 0
-                    let b:statusline_long_line_warning = "[". b:bad_line . "]"
+                    let b:statusline_long_line_warning = "[". b:long_line . "]"
                 endif
             endif
         endif
@@ -143,17 +155,17 @@ function! s:LongLines()
 
     let long_line_lens = []
 
-    if exists("b:bad_line")
-        unlet b:bad_line
+    if exists("b:long_line")
+        unlet b:long_line
     endif
 
     let i = 1
     while i <= line("$")
         let len = strlen(substitute(getline(i), '\t', spaces, 'g'))
         if len > threshold
-            if !exists("b:bad_line")
+            if !exists("b:long_line")
                 "push the first line as the next bad line
-                let b:bad_line = i
+                let b:long_line = i
             endif
             call add(long_line_lens, len)
         endif
@@ -219,18 +231,23 @@ set laststatus=2
 "1}}}
 
 if !exists("autocommands_loaded")
+    "{{{Autocommands for statusbar
     let autocommands_loaded = 1
     augroup sbars
         au!
+        " update taglist information whenever a buffer is written
         autocmd bufwritepost * exe "TlistUpdate"
         "recalculate the trailing whitespace warning when idle, and after saving
-        autocmd cursorhold,bufwritepost * unlet! b:statusline_trailing_space_warning
+        autocmd cursorholdi,cursorhold,bufwritepost * unlet!
+                    \ b:statusline_trailing_space_warning
         "recalculate the tab warning flag when idle and after writing
         autocmd cursorhold,bufwritepost * unlet! b:statusline_tab_warning
         "recalculate the long line warning when idle and after saving
-        autocmd cursorhold,bufwritepost * unlet! b:statusline_long_line_warning
+        autocmd cursorholdi,cursorhold,bufwritepost * unlet!
+                    \ b:statusline_long_line_warning
     augroup END
 endif
+"}}}
 
 " CLI completion <Tab>
 " first list the available options and complete the longest common part, then
@@ -251,9 +268,9 @@ if has('mouse')
     set mouse=a
 endif
 
-
 " {{{ OS dependent options
 if has("unix")
+    "{{{2
 
     " adding the trailing backslash stores the entire file path into backup
     " direcotry, so multiple project copies can be opened.
@@ -274,8 +291,7 @@ if has("unix")
     augroup mail
         au!
         au BufRead /tmp/mutt-* set tw=72
-        au BufRead /*/claws-mail/tmp/* set tw=72
-        " autocmd FileType mail :nmap <F8> :w<CR>:!aspell -e -c %<CR>:e<CR>
+        autocmd FileType mail :nmap <F8> :w<CR>:!aspell -e -c %<CR>:e<CR>
     augroup END
 
     set clipboard=autoselect
@@ -291,8 +307,9 @@ if has("unix")
     map ,X :sp $HOME/.Xdefaults<CR><C-W>_
     " ", A open .awesome rc.lua & theme
     map ,A :sp $HOME/.config/awesome/rc.lua<CR><C-W>=
-
+    "2}}}
 else
+    "{{{2windows
     set backupdir=~/vimfiles/backups//
     set directory=~/vimfiles/backups//
 
@@ -306,13 +323,14 @@ else
 
     set tags=./tags,./TAGS,tags,TAGS,/usr/avr/include/tags,/usr/include/tags
     let Tlist_Ctags_Cmd = $VIM.'/bin/ctags.exe'
+    "2}}}
 endif
 " }}}
 
-" {{{ GUI/CLI coloring options
 if has("gui_running")
-
+    " {{{ GUI/CLI coloring options
     set mousehide    " Hide the mouse when typing text
+    " hide all gui elements
     set guioptions-=m
     set go-=b
     set go-=l
@@ -359,41 +377,44 @@ augroup ftypes
     "{{{ft behaviors
     au!
 
+    autocmd FileType * set et sw=4 ts=8 sts=4 fdm=syntax tw=80
+
     " load the types.vim highlighting file, if it exists
-    autocmd BufRead, BufNewFile *.[ch]
+    autocmd BufRead,BufNewFile *.[ch]
                 \let fname = expand('<afile>:p:h') . '/types.vim'
-    autocmd BufRead, BufNewFile *.[ch] if filereadable(fname)
-    autocmd BufRead, BufNewFile *.[ch]   exe 'so ' . fname
-    autocmd BufRead, BufNewFile *.[ch] endif
+    autocmd BufRead,BufNewFile *.[ch] if filereadable(fname)
+    autocmd BufRead,BufNewFile *.[ch]   exe 'so ' . fname
+    autocmd BufRead,BufNewFile *.[ch] endif
 
     " if starting a new line in the middle of a comment automatically insert
     " the comment leader characters:
-    autocmd FileType c set et formatoptions+=ro sw=4 ts=4 tw=80
+    autocmd FileType c set et formatoptions+=ro
     autocmd FileType c syn match matchName /\(#define\)\@<= .*/
     autocmd FileType cpp syn match matchName /\(#define\)\@<= .*/
 
     " in makefiles, don't expand tabs to spaces, indentation at 8 chars
     " to be sure that all indents are tabs
-    autocmd FileType make set noet sw=8 tw=80
+    autocmd FileType make set noet sw=8
 
-    autocmd FileType python set et sw=4 ts=8 sts=4 fdm=indent tw=80
+    autocmd FileType python,lua set fdm=indent
+
     filetype plugin on
     filetype indent on
+
+    "ft options
+    let c_comment_strings= 1 " highlighting strings inside C comments
+    let python_highlight_all = 1
+    let python_highlight_space_errors = 1
+    let python_fold=1
+    let perl_fold=1
+    let lua_fold=1
+    let lua_version = 5
+    let lua_subversion = 1
+    let g:is_bash=1             " i use zsh, but meh
+    let g:sh_fold_enabled=7     " allow all folds in bash
 augroup END
 "}}}
 
-"ft options
-let c_comment_strings= 1 " highlighting strings inside C comments
-let python_highlight_all = 1
-let python_highlight_space_errors = 1
-let python_fold=1
-let perl_fold=1
-let lua_fold=1
-let lua_version = 5
-let lua_subversion = 1
-let bash_fold=1
-set foldmethod=syntax
-set textwidth=80
 
 " }}}
 
@@ -456,21 +477,23 @@ map ,c :w<CR>:colorscheme apathy<CR>
 map ,r :help qrcard<CR><C-W>L:vertical res 60<CR>
 
 " strip trailing whitespace
-map ,s :%s:\s\+$::<CR>
+map <silent> ,s :call StripTrailingSpace()<CR>
 
 function! MyGoToLongLine()
     "{{{ Helper function moves to the next long line in buffer
-    if exists("b:bad_line")
-        call cursor(b:bad_line, (&tw ? &tw : 80))
+    if exists("b:long_line")
+        call cursor(b:long_line, (&tw ? &tw : 80))
+        " unfold, then move cursor line to top of window and move back a word
         norm! zv
-        norm! z<CR>
-        call cursor(b:bad_line, (&tw ? &tw : 80))
+        norm! zt
         norm! b
+    else
+        echo "No long lines found"
     endif
 endfunction
 "}}}
 
-map ,l :call MyGoToLongLine()<CR>
+map <silent> ,l :call MyGoToLongLine()<CR>
 
 
 " create tags files quickly
@@ -531,6 +554,4 @@ function! PrintFile(fname)
     " return v:shell_error
 endfunc
 
-
-
-" vim: fdm=marker ts=4 sw=4 et sta ai si:
+" vim: fdm=marker
