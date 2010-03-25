@@ -52,13 +52,9 @@ function! Tname()
     endif
 endfunction
 "3}}}
-"
 
-
-"return '[\s]' if trailing white space is detected
-"return '' otherwise
 function! StatuslineTrailingSpaceWarning()
-    "{{{3
+    "{{{3return '[\s]' if trailing white space is detected
     if !exists("b:statusline_trailing_space_warning")
         let b:statusline_trailing_space_warning = search('\s\+$', 'nw')
 
@@ -75,18 +71,22 @@ endfunction
 "3}}}
 
 function! StripTrailingSpace()
+    "{{{3remove all trailing whitespace from buffer
     if search('\s\+$', 'nw') != 0
+        norm! mZ
         exe '%s:\s\+$::'
         unlet! b:statusline_trailing_space_warning
         call StatuslineTrailingSpaceWarning()
+        norm! gZ
+
     else
         echo 'No lines with trailing space'
     endif
 endfunction
+"}}}
 
-"return the syntax highlight group under the cursor ''
 function! StatuslineCurrentHighlight()
-    "{{{3
+    "{{{3return the syntax highlight group under the cursor ''
     let name = synIDattr(synID(line('.'), col('.'), 1), 'name')
     if name == ''
         return ''
@@ -96,11 +96,11 @@ function! StatuslineCurrentHighlight()
 endfunction
 "3}}}
 
-"return '[&et]' if &et is set wrong
-"return '[mixed-indenting]' if spaces and tabs are used to indent
-"return an empty string if everything is fine
 function! StatuslineTabWarning()
-    "{{{3
+    "{{{3set the b:statusline_tab_warning string
+    "return '[&et]' if &et is set wrong
+    "return '[mixed-indenting]' if spaces and tabs are used to indent
+    "return an empty string if everything is fine
     if !exists("b:statusline_tab_warning")
         let tabs = search('^\t', 'nw') != 0
         let spaces = search('^ ', 'nw') != 0
@@ -118,15 +118,13 @@ endfunction
 "3}}}
 
 
-"return a warning for "long lines" where "long" is either &textwidth or 80 (if
-"no &textwidth is set)
-"
-"return '' if no long lines
-"return '[#x, my, $z] if long lines are found, were x is the number of long
-"lines, y is the median length of the long lines and z is the length of the
-"longest line
 function! StatuslineLongLineWarning()
     "{{{3set the long_line_warning based on g:SL_LongLine_Verbose
+    "warning for "long lines" where "long" is either &textwidth or 80
+    "
+    "return '' if no long lines return '[#x, my, $z] if long lines are found,
+    "were x is the number of long lines, y is the median length of the long
+    "lines and z is the length of the longest line
     if !exists("b:statusline_long_line_warning")
         let long_line_lens = s:LongLines()
         let b:statusline_long_line_warning = ""
@@ -219,11 +217,10 @@ set statusline+=%#error#%{&ro?'':StatuslineLongLineWarning()}
 set statusline+=%*
 
 "show modified, or RO
-set statusline+=%#SignColumn#%{&mod?'\ [+]':''}
+set statusline+=%#SignColumn#%{&mod?'[+]':''}
 set statusline+=%{&ro?'[RO]':''}
 set statusline+=%#DiffText#%w%*
 set statusline+=%=                  "left/right separator
-set statusline+=%-12.(%b\[0x%B\]%)%*      " current char byte-value/hex
 set statusline+=%-12.(\[%l,\ %c%V\]%)%*
 set statusline+=%P
 set laststatus=2
@@ -236,14 +233,14 @@ if !exists("autocommands_loaded")
     augroup sbars
         au!
         " update taglist information whenever a buffer is written
-        autocmd bufwritepost * exe "TlistUpdate"
+        au bufwritepost * exe "TlistUpdate"
         "recalculate the trailing whitespace warning when idle, and after saving
-        autocmd cursorholdi,cursorhold,bufwritepost * unlet!
+        au cursorholdi,cursorhold,bufwritepost * unlet!
                     \ b:statusline_trailing_space_warning
         "recalculate the tab warning flag when idle and after writing
-        autocmd cursorhold,bufwritepost * unlet! b:statusline_tab_warning
+        au cursorhold,bufwritepost * unlet! b:statusline_tab_warning
         "recalculate the long line warning when idle and after saving
-        autocmd cursorholdi,cursorhold,bufwritepost * unlet!
+        au cursorholdi,cursorhold,bufwritepost * unlet!
                     \ b:statusline_long_line_warning
     augroup END
 endif
@@ -277,21 +274,21 @@ if has("unix")
     set backupdir=$HOME/.backups/vim//
     set directory=$HOME/.backups/vim//
 
-    " skeleton files
     augroup skelLoad
-
-        " au! deletes old commands
+    "{{{3 skeleton files
         au!
-
-        autocmd BufNewFile  *.c	0r ~/.vim/templates/skeleton.c
-        autocmd BufNewFile  *.cpp	0r ~/.vim/templates/skeleton.c
-        autocmd BufNewFile  *.h	0r ~/.vim/templates/skeleton.h
+        au BufNewFile  *.c	0r ~/.vim/templates/skeleton.c
+        au BufNewFile  *.cpp	0r ~/.vim/templates/skeleton.c
+        au BufNewFile  *.h	0r ~/.vim/templates/skeleton.h
     augroup END
+    "3}}}
 
     augroup mail
         au!
+
         au BufRead /tmp/mutt-* set tw=72
-        autocmd FileType mail :nmap <F8> :w<CR>:!aspell -e -c %<CR>:e<CR>
+        au FileType mail :nmap <F8> :w<CR>:!aspell -e -c %<CR>:e<CR>
+
     augroup END
 
     set clipboard=autoselect
@@ -316,16 +313,16 @@ else
     " "skeleton files
     augroup skelLoad
         au!
-        autocmd BufNewFile *.c 0r ~/vimfiles/templates/skeleton.c
-        autocmd BufNewFile *.cpp 0r ~/vimfiles/templates/skeleton.c
-        autocmd BufNewFile *.h 0r ~/vimfiles/templates/skeleton.h
+        au BufNewFile *.c 0r ~/vimfiles/templates/skeleton.c
+        au BufNewFile *.cpp 0r ~/vimfiles/templates/skeleton.c
+        au BufNewFile *.h 0r ~/vimfiles/templates/skeleton.h
     augroup END
 
     set tags=./tags,./TAGS,tags,TAGS,/usr/avr/include/tags,/usr/include/tags
     let Tlist_Ctags_Cmd = $VIM.'/bin/ctags.exe'
     "2}}}
 endif
-" }}}
+"}}}
 
 if has("gui_running")
     " {{{ GUI/CLI coloring options
@@ -360,7 +357,7 @@ else
 endif
 
 exe "colorscheme" mycolors
-" }}}
+"}}}
 
 "	{{{ filetypes and syntax hilighting
 "
@@ -377,26 +374,29 @@ augroup ftypes
     "{{{ft behaviors
     au!
 
-    autocmd FileType * set et sw=4 ts=8 sts=4 fdm=syntax tw=80
+    au FileType * set et sw=4 ts=8 sts=4 fdm=syntax tw=80
 
     " load the types.vim highlighting file, if it exists
-    autocmd BufRead,BufNewFile *.[ch]
-                \let fname = expand('<afile>:p:h') . '/types.vim'
-    autocmd BufRead,BufNewFile *.[ch] if filereadable(fname)
-    autocmd BufRead,BufNewFile *.[ch]   exe 'so ' . fname
-    autocmd BufRead,BufNewFile *.[ch] endif
+    function! LoadTypesHilights()
+        let fname = expand('<afile>:p:h') . '/types.vim'
+        if filereadable(fname)
+            exe 'so ' . fname
+        endif
+    endfunction
+
+    au BufRead,BufNewFile *.[ch] call LoadTypesHilights()
 
     " if starting a new line in the middle of a comment automatically insert
     " the comment leader characters:
-    autocmd FileType c set et formatoptions+=ro
-    autocmd FileType c syn match matchName /\(#define\)\@<= .*/
-    autocmd FileType cpp syn match matchName /\(#define\)\@<= .*/
+    au FileType c set et formatoptions+=ro
+    au FileType c syn match matchName /\(#define\)\@<= .*/
+    au FileType cpp syn match matchName /\(#define\)\@<= .*/
 
     " in makefiles, don't expand tabs to spaces, indentation at 8 chars
     " to be sure that all indents are tabs
-    autocmd FileType make set noet sw=8
+    au FileType make set noet sw=8
 
-    autocmd FileType python,lua set fdm=indent
+    au FileType python,lua set fdm=indent
 
     filetype plugin on
     filetype indent on
@@ -416,44 +416,50 @@ augroup END
 "}}}
 
 
-" }}}
+"}}}
 
 "	{{{ search & replace
 "
 function! FixCommaSep(noconfirm)
-    "Fix ugly comma usage
-    "
+    "{{{ Fix ugly comma usage
+
     "e.g. foo(a,b ,c) -> foo(a, b, c)
     if a:noconfirm == 0
+        "{{{ check before every fix or not?
         let confirm = 'c'
     else
         let confirm = ''
     endif
+    "}}}
 
-    " see if there are any matches in this file
-    let messedLine = search('\S,\S', 'Wn')
-    if messedLine != 0
-        exe '%s:\(\S\),\(\S\):\1, \2:g' . confirm
-    else
-        echo 'FixCommaSep: No matches found for \S,\S'
-    endif
-
-
-    let messedLine = search('\S ,\S', 'Wn')
-    if messedLine != 0
-        exe '%s:\(\S\) ,\(\S\):\1, \2:g' . confirm
-    else
-        echo 'FixCommaSep: No matches found for \S ,\S'
-    endif
+    " search check and substitution commands
+    " white space+ before comma, close-{paren, brace, bracket}
+    " white space+ after open-{paren, brace, bracket}
+    let mylist = [
+                \ ['\S,\S',     '%s:\(\S\),\(\S\):\1, \2:g'],
+                \ ['\S\s\+,\S', '%s:\(\S\)\s\+,\(\S\):\1, \2:g'],
+                \ ['\S\s\+}',   '%s:\(\S\)\s\+}:\1}:g'],
+                \ ['{\s\+',     '%s:{\s\+:{:g'],
+                \ ['\S\s\+)',   '%s:\(\S\)\s\+):\1):g'],
+                \ ['(\s\+',     '%s:(\s\+:(:g'],
+                \ ['\S\s\+]',   '%s:\(\S\)\s\+]:\1]:g'],
+                \ ['[\s\+',     '%s:\[\s\+:[:g'],
+                \]
+    for pair in mylist
+        if search(pair[0], 'wn')
+            exe pair[1] . confirm
+        endif
+    endfor
 
 endfunction
+"}}}
 
 set ignorecase " make searches case-insensitive,
 set smartcase  " unless they contain upper-case letters:
 set incsearch  " show the `best match so far'
 set hlsearch   " set highlighted search on
 
-" }}}
+"}}}
 
 "	{{{ bindings
 "
@@ -492,9 +498,7 @@ function! MyGoToLongLine()
     endif
 endfunction
 "}}}
-
 map <silent> ,l :call MyGoToLongLine()<CR>
-
 
 " create tags files quickly
 map <F8> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
@@ -536,9 +540,10 @@ imap <C-b> <Esc>bhi
 " quick search for buffer
 map ,b :buffer
 
-" }}}
+"}}}
 
 if !exists(":DiffOrig")
+    "this really doesnt seem to work right..
     command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
                 \ | wincmd p | diffthis
 endif
