@@ -194,6 +194,7 @@ EXEC 01;32
 # some source files
 .h 01;33
 .c 01;36
+.cpp 01;36
 .hex 01;44
 .map 04;32
 .lst 04;32
