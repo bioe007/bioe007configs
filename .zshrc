@@ -1,18 +1,18 @@
 
 if [ -z "$(echo $PATH | grep perry)" ] ; then
-    export PATH="$HOME/.bin:/usr/local/bin:/opt/java/bin:/opt/mozilla/bin:"${PATH}
+    export PATH="$HOME/.bin:/usr/local/bin:/opt/java/bin:/opt/mozilla/bin:${PATH}"
     export AWT_TOOLKIT=MToolkit
     export OOO_FORCE_DESKTOP=gnome
     export INTEL_BATCH=2
     export MOZILLA_FIVE_HOME="/usr/lib/xulrunner-1.9.1"
-    export GEM_PATH='/.gem/ruby/1.9.1/gems/' 
+    export GEM_PATH='/.gem/ruby/1.9.1/gems/'
 fi
 
 if [ -r "$HOME/.var/dbus_session_bus_address" ] ; then
     . "$HOME/.var/dbus_session_bus_address"
 fi
 
-# {{{ History 
+# {{{ History
 
 HISTFILE=~/.histfile
 HISTSIZE=10000
@@ -21,7 +21,6 @@ SAVEHIST=10000
 
 
 # {{{ Variables
-
 SANDBOX=${HOME}/sandbox
 
 # this fixes troubles with glibc and malloc debugging
@@ -34,12 +33,12 @@ MALLOC_CHECK_="0"
 # compiling
 CFLAGS="-march=prescott -O2 -pipe -fomit-frame-pointer -mfpmath=sse -msse3"
 CHOST="i686-pc-linux-gnu"
-CXXFLAGS="${CFLAGS} -fvisibility-inlines-hidden" 
+CXXFLAGS="${CFLAGS} -fvisibility-inlines-hidden"
 
 # for CVS
 CVS_RSH=ssh
 CVSROOT=":ext:phargrave@10.1.1.16:/srv/Engineering/ph1000/cvs_root_bcsi"
-CVSEDITOR="/usr/bin/vim" 
+CVSEDITOR="/usr/bin/vim"
 EDITOR="/usr/bin/vim"
 
 # required for tasking compiler
@@ -56,7 +55,7 @@ PAGER="less"
 LESS="-FRSXiqg"
 # us seems to be ref text and stuff like options in manpages
 export PAGER LESS LESS_TERMCAP_mb=$'\E[01;31m'
-export LESS_TERMCAP_me=$'\E[0m' LESS_TERMCAP_md=$'\E[01;34m' 
+export LESS_TERMCAP_me=$'\E[0m' LESS_TERMCAP_md=$'\E[01;34m'
 export LESS_TERMCAP_se=$'\E[0m' LESS_TERMCAP_so=$'\E[01;47;30m'
 export LESS_TERMCAP_ue=$'\E[0m' LESS_TERMCAP_us=$'\E[00;33m'
 
@@ -68,7 +67,7 @@ export CC51LIB MALLOC_CHECK_ EDITOR GEDADATA SANDBOX CVS_RSH
 
 # {{{ Dircolors
 
-if [ "$SHELL" != "dumb" ] ; then 
+if [ "$SHELL" != "dumb" ] ; then
   # zshrc default
   # dircolors ~/.dircolors
   LS_COLORS="rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:\
@@ -90,7 +89,7 @@ ow=04;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:\
 *.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.axa=00;36:\
 *.oga=00;36:*.spx=00;36:*.xspf=00;36:*.h=01;33:*.c=01;36:*.hex=01;44:\
 *.map=04;32:*.lst=04;32:*.src=04;32:*.lua=01;36:*.R=01;36:*.py=01;36:\
-*.pyc=01;32:"
+*.cpp=01;36:*.pyc=01;32:"
   export LS_COLORS
   alias ls='ls -Lh --group-directories-first --color=auto'
 else
@@ -115,18 +114,16 @@ alias grepn="grep -n"
 alias pg="less"
 alias R="PAGER=\"`which less`\" `which R` --save --quiet"
 
+# ls
+alias lsf='ls -hlF --color="yes" | grep -v "\/" |' $PAGER
 
 # required for man to operate correctly using utf-8
 alias man='LC_ALL=C man'
 
-# 
-# correctly set path for octave use
-alias octave="LD_LIBRARY_PATH=/opt/octave/lib:$LD_LIBRARY_PATH PATH=/opt/octave/bin:$PATH /opt/octave/bin/octave"
-
 # command shortcuts for windows compiler functions
 TASKPATH="$HOME/.wine/drive_c/cc51/bin"      # path to tasking binaries
 DYNCPATH="$HOME/.wine/drive_c/DCRABBIT_9.21" # path to dynamic-C
- 
+
 WINECMD=$(which wine)
 alias mk51="$WINECMD    ${TASKPATH}/mk51.exe"
 alias cc51="$WINECMD    ${TASKPATH}/cc51.exe"     # compiler
@@ -153,7 +150,7 @@ setopt hist_ignore_space
 
 # {{{ Completion stuff
 
-zmodload zsh/complist 
+zmodload zsh/complist
 autoload -Uz compinit
 autoload -U edit-command-line
 compinit
@@ -185,7 +182,7 @@ bindkey '^[[6~' down-line-or-history
 bindkey '^[[A'  history-beginning-search-backward
 bindkey '^[[D' backward-char
 bindkey '^[[B' down-line-or-history
-bindkey '^[[C' forward-char 
+bindkey '^[[C' forward-char
 # for rxvt
 bindkey "\e[8~" end-of-line
 bindkey "\e[7~" beginning-of-line
@@ -202,23 +199,25 @@ bindkey '\eOc' forward-word
 case $TERM in
     # *xterm*|rxvt*|rxvt-unicode|rxvt-256color|(dt|k|E)term)
     *xterm*|rxvt*|(dt|k|E)term)
-		precmd () { print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~]\a" } 
-		preexec () { print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~] ($1)\a" }
-	;;
+        precmd () { print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~]\a" }
+        preexec () { print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~] ($1)\a" }
+    ;;
     screen*)
-    	precmd () { 
-			print -Pn "\e]83;title \"$1\"\a" 
-			# print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~]\a" 
-		}
-		preexec () { 
-			print -Pn "\e]83;title \"$1\"\a" 
-			print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~] ($1)\a" 
-		}
-	;; 
+        precmd () {
+            print -Pn "\e]83;title \"$1\"\a"
+            # print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~]\a"
+        }
+        preexec () {
+            print -Pn "\e]83;title \"$1\"\a"
+            print -Pn "\e]0;$TERM - (%L) [%n@%M]%# [%~] ($1)\a"
+        }
+    ;;
 esac
 
 #}}}
 
+
+fortune.clone
 
 # {{{ prompt
 autoload -U promptinit
