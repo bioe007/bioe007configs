@@ -1,4 +1,3 @@
-
 if [ -z "$(echo $PATH | grep perry)" ] ; then
     export PATH="$HOME/.bin:/usr/local/bin:/opt/java/bin:/opt/mozilla/bin:${PATH}"
     export AWT_TOOLKIT=MToolkit
@@ -18,7 +17,6 @@ HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
 # }}}
-
 
 # {{{ Variables
 SANDBOX=${HOME}/sandbox
@@ -64,7 +62,6 @@ export CC51LIB MALLOC_CHECK_ EDITOR GEDADATA SANDBOX CVS_RSH
 
 # }}}
 
-
 # {{{ Dircolors
 
 if [ "$SHELL" != "dumb" ] ; then
@@ -98,7 +95,6 @@ fi
 
 # }}}
 
-
 # {{{ Alias stuff
 
 alias p="sudo pacman"
@@ -113,6 +109,9 @@ alias t="ctags -R"
 alias grepn="grep -n"
 alias pg="less"
 alias R="PAGER=\"`which less`\" `which R` --save --quiet"
+
+# FIXME: very shady... is this really needed?
+alias clyde="sudo clyde"
 
 # ls
 alias lsf='ls -hlF --color="yes" | grep -v "\/" |' $PAGER
@@ -135,7 +134,6 @@ alias dync="$WINECMD    ${DYNCPATH}/Dccl_cmp.exe" # dyn-c compiler
 
 # }}}
 
-
 # {{{ options
 
 setopt correctall
@@ -146,7 +144,6 @@ setopt sharehistory histappend
 setopt hist_ignore_space
 
 # }}}
-
 
 # {{{ Completion stuff
 
@@ -216,9 +213,6 @@ esac
 
 #}}}
 
-
-fortune.clone
-
 # {{{ prompt
 autoload -U promptinit
 
@@ -231,5 +225,4 @@ promptinit
 
 #}}}
 
-# vim:set ft=sh tw=80 fdm=marker ts=4 sw=4 et sta ai si:
-alias clyde="sudo clyde"
+# vim:set ft=sh fdm=marker:
