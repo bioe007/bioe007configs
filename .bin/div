@@ -3,7 +3,9 @@
 # div
 #
 # easy diff visible in vimpager
-# wrote because i'm too lazy to type `diff -wu $1 $2 | vimpager` for all those pacnew files
+#
+# wrote because i'm too lazy to type `diff -wu $1 $2 | vimpager` for all
+# those pacnew files
 #
 # perry hargrave >perrydothargraveatgmaildotcom<
 # aka bioe007
@@ -14,25 +16,24 @@ DIFFOPTS=${DIFFOPTS:-"wu"}
 PGR=${PAGER:-`which less`}
 PACSEARCHPATH="/etc"
 
-#{{{ usage()
 usage() {
-    cat << EOF >&2 
+    cat << EOF >&2
 Usage as diff substitute:
     $SELFNAME [diff options] [$SELFNAME options] <file1> <file2>
 
-    This invokes: 
+    This invokes:
         basecmd=$DIFFCMD -$DIFFOPTS <file1> <file2>| $PGR
-        
+
             (*current settings shown)
 
     Arguments to 'diff' can be passed just like normal, $SELFNAME assumes
-    diff -wu by default. 
+    diff -wu by default.
 
 Usage for pacman:
     $SELFNAME [-P|--Pac]
-    
+
     This invokes a find operation to look for files suffixed with '.pacnew'
-    in the /etc directory. Each pair of foo.conf and foo.conf.pacnew are 
+    in the /etc directory. Each pair of foo.conf and foo.conf.pacnew are
     diff'ed and displayed in the \$PAGER
 
 $SELFNAME options:
@@ -49,25 +50,22 @@ $SELFNAME options:
     Comments or suggestions to perry.hargrave@gmail.com
 EOF
 }
-#}}}
 
-#{{{ error()
-# if given a 2nd parameter this will not kill the script
+
 error() {
+# if given a 2nd parameter this will not kill the script
     echo "ERROR: $SELFNAME: $1"
     test "$2" && return\
         || echo "ERROR: $SELFNAME: giving up..."
-        
+
     if [ -e "$TMPFILE" ]; then
         rm $TMPFILE
     fi
     exit 1
 }
-#}}}
 
-#{{{ dodiff()
+
 dodiff() {
-
     # current file index and number of files
     i_diff="0"
     i_last=${#fileList[*]}
@@ -83,13 +81,15 @@ dodiff() {
         touch $TMPFILE || error "Couldn't write to $TMPFILE"
     fi
 
-    #{{{ iterate the pairs in the file list
+    # iterate the pairs in the file list
     while [ $i_diff -lt $i_last ]; do
 
         # both files must be readable by the user
-        if [ -r "${fileList[$i_diff]}" ] && [ -r "${fileList[$((i_diff+1))]}" ] ; then
+        if [ -r "${fileList[$i_diff]}" ] && \
+            [ -r "${fileList[$((i_diff+1))]}" ] ; then
 
-            #{{{ if --nobatch IS NOT specified or --outfile IS then batch the diffs
+            # if --nobatch IS NOT specified or --outfile IS
+            # then batch the diffs
             if (("$BATCH")) ; then
                 echo "$SELFNAME: \`$DIFFCMD -$DIFFOPTS ${fileList[$i_diff]} ${fileList[$((i_diff+1))]} >> $TMPFILE'"\
                     | tee -a "$TMPFILE"
@@ -101,7 +101,7 @@ dodiff() {
                 echo "$SELFNAME: \`$DIFFCMD -$DIFFOPTS ${fileList[$i_diff]} ${fileList[$((i_diff+1))]} | $PGR'"
                 $DIFFCMD -$DIFFOPTS ${fileList[$i_diff]} ${fileList[$((i_diff+1))]} | $PGR
             fi
-            #}}}
+            
 
             # increment file counter
             i_diff=$((i_diff+2))
@@ -112,8 +112,8 @@ dodiff() {
             continue
         fi
     done
-    #}}}
     
+
     if [ -e "$TMPFILE" ]; then
         $PGR $TMPFILE
 
@@ -126,26 +126,25 @@ dodiff() {
     # done
     exit 0
 }
-#}}}
 
-#{{{ pacmode()
+
 pacmode() {
 
-        echo "$SELFNAME: pacman mode... looking for *.pacnew in /etc/"
+    echo "$SELFNAME: pacman mode... looking for *.pacnew in /etc/"
 
-        i_pfiles=0
-        while read line ; do
-            echo "$SELFNAME: Found $line"
-            fileList[$i_pfiles]="${line%.pacnew}"
-            i_pfiles=$((i_pfiles+1))
+    i_pfiles=0
+    while read line ; do
+        echo "$SELFNAME: Found $line"
+        fileList[$i_pfiles]="${line%.pacnew}"
+        i_pfiles=$((i_pfiles+1))
 
-            fileList[$i_pfiles]="$line"
-            i_pfiles=$((i_pfiles+1))
+        fileList[$i_pfiles]="$line"
+        i_pfiles=$((i_pfiles+1))
 
-        done < <(find /etc -type f -regex ".*pacnew" )
+    done < <(find /etc -type f -regex ".*pacnew" )
 
 }
-#}}}
+
 
 SW="1"
 iFile=0
@@ -153,7 +152,7 @@ fileList[$iFile]=""
 unset BATCH
 BATCH=1
 
-#{{{ cli option parsing
+# cli option parsing
 
 if [ "$#" -lt "1" ]; then
     usage
@@ -193,7 +192,7 @@ while [ "$#" -gt "0" ]; do
 
 
         # check files
-        * ) 
+        * )
             if [ -r "$1" ] ; then
                 fileList[$iFile]="$1"
                 iFile=$((iFile+1))
@@ -207,8 +206,7 @@ while [ "$#" -gt "0" ]; do
 
     shift $SW
 done
-#}}}
-    
+
 
 if [[ "$DOPAC" ]] ; then
     pacmode
@@ -216,4 +214,3 @@ fi
 
 dodiff
 
-# vim:set ft=sh fdm=marker ts=4 sw=4 et sta ai si: 
