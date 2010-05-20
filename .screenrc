@@ -23,7 +23,6 @@ terminfo rxvt-unicode 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 
 screen -t foo
 screen -t bar
-screen -t irssi irssi
 select 0
 
 setenv DISPLAY=':0.0'
