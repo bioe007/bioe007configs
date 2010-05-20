@@ -2,7 +2,8 @@
 #
 
 # so i can source this into screen terminals that exist across X sessions
-echo "export DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" | tee $HOME/.var/dbus_session_bus_address
+echo "export DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" \
+        | tee $HOME/.var/dbus_session_bus_address
 
 xset +dpms dpms 300 900 0 &
 xset +fp $HOME/.fonts/misc,$HOME/.fonts/new,$HOME/.fonts/profont-x11 &
@@ -10,7 +11,7 @@ unclutter -noevents -idle 3 -root &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
 
-#sync PRIMARY with clipboard 
+#sync PRIMARY with clipboard
 autocutsel -s PRIMARY -buttonup -fork
 
-exec ck-launch-session awesome 
+exec ck-launch-session awesome
