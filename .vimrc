@@ -10,37 +10,117 @@
 "         :helptags ./
 "
 set nocompatible   " let vim be vim, not vi
-set nonumber       " dont show line numbers
-set ruler          " cursor pos always shown
-set vb t_vb=       " screen flash instead of beeps
-set history=550    " have 150 lines of command-line (etc) history:
-set undolevels=200 " number of commans
+set history=550    " have 550 lines of command-line (etc) history:
+set undolevels=200 " number of commands
 set hidden         " dont require saving to switch buffers
-set showmatch      " show matches for parens/brackets
-set ch=1           " Make command line one lines high
-set winminheight=0 " let windows shrink to filenames only
-set shortmess+=r   " use [RO] for to save space in the message line:
-set showmode       " display the current mode
-set showcmd        " and partially-typed commands in the status line:
 set nowrap         " dont wrap long lines
 set shiftwidth=4   " use indents of 4 spaces,
 set tabstop=4      " and have them copied down lines:
-set shiftround
-set expandtab
-set autoindent
-set smarttab
+set shiftround     " round indent to multiple of sw
+set expandtab      " use spaces instead of tabs
+set autoindent     " copy indent from prev line or syn
+set smarttab       " smartly handle the tab/space thing
 
+" {{{1 OS dependent options
+if has("unix")
+    "{{{2
+
+    " adding the trailing backslash stores the entire file path into backup
+    " direcotry, so multiple project copies can be opened.
+    let g:my_vimrc = $HOME . "/.vimrc"
+    let g:my_vimdir = $HOME . "/.vim"
+    let g:my_guifont = "Profont\ 12"
+
+    set clipboard=autoselect
+    set shell=/bin/zsh
+
+    set tags=./tags,./TAGS,tags,TAGS,/usr/avr/include/tags,
+                \/usr/include/tags
+    let my_ctags_cmd = '/usr/bin/ctags'
+
+    augroup mail
+        "{{{3 settings for mutt
+        au!
+
+        function! MailStripSigDupes()
+            "{{{4remove signature block if its already in the mail
+            let signature_match = '-- \_.\+Perry Hargrave\_.\+\*\* End of'
+                        \. ' statement \*\*'
+            let quoted_signature_match = '> -- \_.\+\*\* End of statement \*\*'
+
+            " successive calls to search will move the cursor to where these
+            " match, then can just dG because the signature must have been
+            " appended to the mail
+            if search(quoted_signature_match) != 0
+                "move one line down so we don't find the quoted match again
+                norm! j
+                let sig_start = search(signature_match)
+                if sig_start != 0
+                " remove signature from sig_start to EOF
+                norm! dG
+                endif
+            endif
+            echo 'leaving sig strip'
+        endfunction
+        "4}}}
+
+        au BufReadPost /tmp/mutt-* call  MailStripSigDupes()
+
+    augroup END
+    "3}}}
+    "2}}}
+else
+    "{{{2windows
+    let g:my_vimrc = "X:/.vimrc"
+    let g:my_vimdir = $HOME . "/_vim"
+    let g:my_guifont = "Dina:h10:cANSI"
+
+    let &tags="X:/sandbox/tags,./tags,./TAGS,tags,TAGS"
+    let my_ctags_cmd = $VIM . '/bin/ctags.exe'
+    "2}}}
+endif
+"1}}}
+let &runtimepath=my_vimdir . "," . &runtimepath
+let &backupdir=my_vimdir.'/var/backups//'
+let &directory=my_vimdir.'/var/swap//'
+
+augroup skelLoad
+    "{{{3 skeleton files
+    au!
+    exe "au BufNewFile  *.c 0r" my_vimdir."/templates/skeleton.c"
+    exe "au BufNewFile  *.cpp 0r" my_vimdir."/templates/skeleton.cpp"
+    exe "au BufNewFile  *.h 0r" my_vimdir."/templates/skeleton.h"
+    exe "au BufNewFile  *.lua 0r" my_vimdir."/templates/skeleton.lua"
+    exe "au BufNewFile  *.py 0r" my_vimdir."/templates/skeleton.py"
+augroup END
+"3}}}
+
+"{{{1 Tag list options
+let Tlist_Ctags_Cmd = my_ctags_cmd
 " always auto-update taglist
 let Tlist_Auto_Update = 1
 " close vim if only tlist is open
 let Tlist_Exit_OnlyWindow = 1
 " always to taglist processing
 let Tlist_Process_File_Always = 1
+"1}}}
 
-"{{{1 Status line
-"{{{2Status line functions
+"""{{{1 Appearance
+set nonumber       " dont show line numbers
+set vb t_vb=       " no flash
+set showmatch      " show matches for parens/brackets
+set ch=1           " Make command line one lines high
+set winminheight=0 " let windows shrink to filenames only
+set shortmess+=aI  " use [RO] for to save space in the message line:
+set showmode       " display the current mode
+set showcmd        " and partially-typed commands in the status line:
+set scrolloff=5    " keep cursor +/- 5 lines in window
+set ruler          " cursor pos always shown
+
+"{{{2 Status line
+"{{{3Status line functions
 function! Tname()
-    "{{{3 either show the tag name or filetype
+    "{{{4 either show the tag name or filetype
     let tname = Tlist_Get_Tagname_By_Line()
     if strlen(tname)
         let tname = Tlist_Get_Tagname_By_Line()
@@ -51,10 +131,10 @@ function! Tname()
         return ""
     endif
 endfunction
-"3}}}
+"4}}}
 
 function! StatuslineTrailingSpaceWarning()
-    "{{{3return '[\s]' if trailing white space is detected
+    "{{{4return '[\s]' if trailing white space is detected
     if !exists("b:statusline_trailing_space_warning")
         let b:statusline_trailing_space_warning = search('\s\+$', 'nw')
 
@@ -68,10 +148,10 @@ function! StatuslineTrailingSpaceWarning()
 
     return b:statusline_trailing_space_warning
 endfunction
-"3}}}
+"4}}}
 
 function! StripTrailingSpace()
-    "{{{3remove all trailing whitespace from buffer
+    "{{{4remove all trailing whitespace from buffer
     if search('\s\+$', 'nw') != 0
         norm! mZ
         exe '%s:\s\+$::'
@@ -86,7 +166,7 @@ endfunction
 "}}}
 
 function! StatuslineCurrentHighlight()
-    "{{{3return the syntax highlight group under the cursor ''
+    "{{{4return the syntax highlight group under the cursor ''
     let name = synIDattr(synID(line('.'), col('.'), 1), 'name')
     if name == ''
         return ''
@@ -94,10 +174,10 @@ function! StatuslineCurrentHighlight()
         return '[' . name . ']'
     endif
 endfunction
-"3}}}
+"4}}}
 
 function! StatuslineTabWarning()
-    "{{{3set the b:statusline_tab_warning string
+    "{{{4set the b:statusline_tab_warning string
     "return '[&et]' if &et is set wrong
     "return '[mixed-indenting]' if spaces and tabs are used to indent
     "return an empty string if everything is fine
@@ -115,11 +195,10 @@ function! StatuslineTabWarning()
     endif
     return b:statusline_tab_warning
 endfunction
-"3}}}
-
+"4}}}
 
 function! StatuslineLongLineWarning()
-    "{{{3set the long_line_warning based on g:SL_LongLine_Verbose
+    "{{{4set the long_line_warning based on g:SL_LongLine_Verbose
     "warning for "long lines" where "long" is either &textwidth or 80
     "
     "return '' if no long lines return '[#x, my, $z] if long lines are found,
@@ -144,10 +223,10 @@ function! StatuslineLongLineWarning()
     endif
     return b:statusline_long_line_warning
 endfunction
-"3}}}
+"4}}}
 
 function! s:LongLines()
-    "{{{3return a list containing the lengths of the long lines in this buffer
+    "{{{4return a list containing the lengths of the long lines in this buffer
     let threshold = (&tw ? &tw : 80)
     let spaces = repeat(" ", &ts)
 
@@ -172,11 +251,10 @@ function! s:LongLines()
 
     return long_line_lens
 endfunction
-"3}}}
-
+"4}}}
 
 function! s:Median(nums)
-    "{{{3find the median of the given array of numbers
+    "{{{4find the median of the given array of numbers
     let nums = sort(a:nums)
     let l = len(nums)
 
@@ -187,8 +265,8 @@ function! s:Median(nums)
         return (nums[l/2] + nums[(l/2)-1]) / 2
     endif
 endfunction
+"4}}}
 "3}}}
-"2}}}
 
 " controls the output of longline functions
 let g:SL_LongLine_Verbose=1
@@ -225,10 +303,8 @@ set statusline+=%-12.(\[%l,\ %c%V\]%)%*
 set statusline+=%P
 set laststatus=2
 
-"1}}}
-
 if !exists("autocommands_loaded")
-    "{{{Autocommands for statusbar
+    "{{{3Autocommands for statusline
     let autocommands_loaded = 1
     augroup sbars
         au!
@@ -244,7 +320,36 @@ if !exists("autocommands_loaded")
                     \ b:statusline_long_line_warning
     augroup END
 endif
-"}}}
+"3}}}
+"2}}}
+
+if has("gui_running")
+    " {{{2 GUI/CLI coloring options
+    set mousehide    " Hide the mouse when typing text
+    " hide all gui elements
+    set guioptions=
+    let fontop = ":set guifont=" . g:my_guifont
+    " exe "set guifont=" . g:my_guifont
+    exe fontop
+
+    echo "gui running stuff now"
+
+    "coloring
+    let moria_style='dark'
+    let moria_fontface='mixed'
+    let g:my_colors = 'moria'
+
+elseif &t_Co == 256
+    " set for urxvt-256
+    let g:my_colors = 'apathy'
+else
+    let g:my_colors = 'torte'
+endif
+
+exe ":colorscheme" g:my_colors
+"2}}}
+
+"1}}}
 
 " CLI completion <Tab>
 " first list the available options and complete the longest common part, then
@@ -265,114 +370,20 @@ if has('mouse')
     set mouse=a
 endif
 
-" {{{ OS dependent options
-if has("unix")
-    "{{{2
-
-    " adding the trailing backslash stores the entire file path into backup
-    " direcotry, so multiple project copies can be opened.
-    set backupdir=$HOME/.backups/vim//
-    set directory=$HOME/.backups/vim//
-
-    augroup skelLoad
-    "{{{3 skeleton files
-        au!
-        au BufNewFile  *.c	0r ~/.vim/templates/skeleton.c
-        au BufNewFile  *.cpp	0r ~/.vim/templates/skeleton.c
-        au BufNewFile  *.h	0r ~/.vim/templates/skeleton.h
-    augroup END
-    "3}}}
-
-    augroup mail
-        au!
-
-        au BufRead /tmp/mutt-* set tw=72
-        au FileType mail :nmap <F8> :w<CR>:!aspell -e -c %<CR>:e<CR>
-
-    augroup END
-
-    set clipboard=autoselect
-    set shell=/bin/zsh
-
-    set tags=./tags,./TAGS,tags,TAGS,/usr/avr/include/tags,
-                \/usr/include/tags,/home/perry/sandbox/tags_global
-    let Tlist_Ctags_Cmd = '/usr/bin/ctags'
-
-    " ", Z open .bash_profile
-    map ,Z :sp $HOME/.zshrc<CR><C-W>_
-    " ", X open .Xdefualts
-    map ,X :sp $HOME/.Xdefaults<CR><C-W>_
-    " ", A open .awesome rc.lua & theme
-    map ,A :sp $HOME/.config/awesome/rc.lua<CR><C-W>=
-    "2}}}
-else
-    "{{{2windows
-    set backupdir=~/vimfiles/backups//
-    set directory=~/vimfiles/backups//
-
-    " "skeleton files
-    augroup skelLoad
-        au!
-        au BufNewFile *.c 0r ~/vimfiles/templates/skeleton.c
-        au BufNewFile *.cpp 0r ~/vimfiles/templates/skeleton.c
-        au BufNewFile *.h 0r ~/vimfiles/templates/skeleton.h
-    augroup END
-
-    set tags=./tags,./TAGS,tags,TAGS,/usr/avr/include/tags,/usr/include/tags
-    let Tlist_Ctags_Cmd = $VIM.'/bin/ctags.exe'
-    "2}}}
-endif
-"}}}
-
-if has("gui_running")
-    " {{{ GUI/CLI coloring options
-    set mousehide    " Hide the mouse when typing text
-    " hide all gui elements
-    set guioptions-=m
-    set go-=b
-    set go-=l
-    set go-=r
-    set go-=T
-    set go-=t
-
-    if has("unix")
-        "set the X11 font to use
-        set guifont=Terminus\ 10
-        " set toolbariconsize=tiny
-    else
-        " windows font to use
-        set guifont=Dina:h10:cANSI
-    endif
-
-    "	coloring
-    let moria_style='dark'
-    let moria_fontface='mixed'
-    let mycolors = 'moria'
-
-elseif &t_Co == 256
-    " set for urxvt-256
-    let mycolors = 'apathy'
-else
-    let mycolors = 'torte'
-endif
-
-exe "colorscheme" mycolors
-"}}}
-
-"	{{{ filetypes and syntax hilighting
+"{{{ filetypes and syntax hilighting
 "
 " Switch on syntax hilighting if it wasn't on yet.
 if !exists("syntax_on")
     syntax on
 endif
 
-
-" enable filetype detection:
-filetype on
-
 augroup ftypes
     "{{{ft behaviors
     au!
+
+    " enable filetype detection:
+    filetype on
+
 
     au FileType * set et sw=4 ts=8 sts=4 fdm=syntax tw=80
 
@@ -398,6 +409,13 @@ augroup ftypes
 
     au FileType python,lua set fdm=indent
 
+    au FileType gitcommit set tw=72
+    au FileType java set ft=javascript
+
+    au BufRead,BufNewFile *.txt set tw=72
+    au FileType mail set tw=72
+    au FileType mail :nmap <F8> :w<CR>:!aspell -e -c %<CR>:e<CR>
+
     filetype plugin on
     filetype indent on
 
@@ -405,20 +423,20 @@ augroup ftypes
     let c_comment_strings= 1 " highlighting strings inside C comments
     let python_highlight_all = 1
     let python_highlight_space_errors = 1
-    let python_fold=1
-    let perl_fold=1
-    let lua_fold=1
+    let python_fold = 1
+    let perl_fold = 1
+    let lua_fold = 1
     let lua_version = 5
     let lua_subversion = 1
-    let g:is_bash=1             " i use zsh, but meh
-    let g:sh_fold_enabled=7     " allow all folds in bash
+    let g:is_bash = 1             " i use zsh, but meh
+    let g:sh_fold_enabled = 7     " allow all folds in bash
 augroup END
 "}}}
 
 
 "}}}
 
-"	{{{ search & replace
+"{{{ search & replace
 "
 function! FixCommaSep(noconfirm)
     "{{{ Fix ugly comma usage
@@ -438,6 +456,9 @@ function! FixCommaSep(noconfirm)
     let mylist = [
                 \ ['\S,\S',     '%s:\(\S\),\(\S\):\1, \2:g'],
                 \ ['\S\s\+,\S', '%s:\(\S\)\s\+,\(\S\):\1, \2:g'],
+                \ ['\S\s\+,\s\+\S', '%s:\(\S\)\s\+,\s\+\(\S\):\1, \2:g'],
+                \ ['\S+\S',     '%s:\(\S\)+\(\S\):\1 + \2:g'],
+                \ ['\S\s\++\S', '%s:\(\S\)\s\++\(\S\):\1 + \2:g'],
                 \ ['\S\s\+}',   '%s:\(\S\)\s\+}:\1}:g'],
                 \ ['{\s\+',     '%s:{\s\+:{:g'],
                 \ ['\S\s\+)',   '%s:\(\S\)\s\+):\1):g'],
@@ -461,7 +482,7 @@ set hlsearch   " set highlighted search on
 
 "}}}
 
-"	{{{ bindings
+"{{{ bindings
 "
 " clear search highlights
 noremap <silent> <space> :noh<CR>
@@ -472,13 +493,16 @@ map fc :call FixCommaSep(0)<CR>
 " for pastebin @ pocoo
 map <f12> :Lodgeit<CR>
 ", v brings up my .vimrc
-map ,v :sp $HOME/.vimrc<CR><C-W>_
+map ,v :exe "sp" g:my_vimrc<CR>
 ", V reload vimrc
-map <silent> ,V :source $HOME/.vimrc<CR>:filetype detect<CR>
+" map <silent> ,V :exe "source" $HOME/g:my_vimrc
+map <silent> ,V :exe "source" g:my_vimrc<CR>
+            \:filetype detect<CR>
             \:exe ":echo 'vimrc reloaded'"<CR>
 " ,c for writing and reloading my colorscheme file
 " (assumes im already editing it)
-map ,c :w<CR>:colorscheme apathy<CR>
+map ,c :w<CR>
+            \:exe "colorscheme" g:my_colors<CR>
 ", r load my vim quick reference card
 map ,r :help qrcard<CR><C-W>L:vertical res 60<CR>
 
@@ -501,9 +525,13 @@ endfunction
 map <silent> ,l :call MyGoToLongLine()<CR>
 
 " create tags files quickly
-map <F8> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" map <F8> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+map <F8> :exe "!" . my_ctags_cmd .
+            \"-R --c++-kinds=+p --fields=+iaS --extra=+q".<CR>
+
 " toggle taglist
-map <silent> ,t :TlistToggle<CR>  :colorscheme apathy<CR>
+map <silent> ,t :TlistToggle<CR>
+"exe "colorscheme" g:my_colors<CR>
 
 " comments
 noremap <silent> ,# :call CommentLineToEnd('# ')<CR>+
