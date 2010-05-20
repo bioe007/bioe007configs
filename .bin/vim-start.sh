@@ -33,7 +33,8 @@ fi
 
 # assume anything left is a file, only add readable files to the list
 while [ "$#" -ge "1" ] ; do
-    if [ -r "$1" ] ; then
+    touch "$1"
+    if [ "$?" -eq 0 ] && [ -r "$1" ]; then
         files="$files $1"
     fi
     shift
