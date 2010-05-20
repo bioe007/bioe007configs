@@ -202,7 +202,7 @@ Allow24bitOutput	= yes
 #UseRealtimePriority	= no
 
 # Size of the in-memory cache for file tags in KB.
-TagsCacheSize		= 512
+TagsCacheSize		= 2048
 
 # Number items in the playlist.
 PlaylistNumbering	= no
