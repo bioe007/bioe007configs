@@ -408,8 +408,12 @@ augroup ftypes
     au FileType make set noet sw=8
 
     au FileType python,lua set fdm=indent
+    au BufRead,BufNewFile *.lua.in set ft=lua
 
+    " git TAG descriptions are recognized as 'conf' files..
+    au BufRead,BufNewFile .git/TAG* set ft=gitcommit
     au FileType gitcommit set tw=72
+
     au FileType java set ft=javascript
 
     au BufRead,BufNewFile *.txt set tw=72
