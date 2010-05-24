@@ -166,3 +166,9 @@ notmail
 .config/xfce4
 .config/qtcurve
 .config/uzbl
+.gtk-bookmarks
+.gEDA
+.mailcap
+.mairixrc
+.mysqlgui
+.gstreamer-0.10
