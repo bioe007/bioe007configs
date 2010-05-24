@@ -1,4 +1,4 @@
-! {{{ URXVT 
+! {{{ URXVT
 URxvt*termName:         rxvt-256color
 URxvt*loginShell:       false
 URxvt*saveLines:        5500
@@ -9,9 +9,10 @@ URxvt*geometry:         180x25
 URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
 
 ! {{{ URLs mark-and-yank
+!
 URxvt*cutchars:         '`"()\'*<>[]{|}'
 /* match left-mouse-button */
-URxvt*matcher.button:   1                   
+URxvt*matcher.button:   1
 URxvt.keysym.M-u:       perl:mark-yank-urls:activate_mark_mode
 URxvt.underlineURLs:    true
 URxvt.perl-lib:         /home/perry/.urxvt/
@@ -32,7 +33,7 @@ Xft.antialias: 1
 Xft.hinting: 1
 Xft.rgba: rgb
 Xft.lcdfilter:  lcddefault
-Xft.hintstyle:  hintslight 
+Xft.hintstyle:  hintslight
 ! }}}
 
 URxvt*internalBorder:     3
@@ -55,18 +56,18 @@ URxvt*scrollBar:          False
 
 
 ! {{{ colors
-! 
-! default terminal colors 
+!
+! default terminal colors
 !   0-7 low-intensity
-!   8-15 high-intensity 
-! 
+!   8-15 high-intensity
+!
 ! {{{intensity b
 ! URxvt*background:         #000000
 ! URxvt*foreground:         #cfcfcf
 ! URxvt*colorBD:            lightyellow
-! URxvt*colorUL:            yellow   
+! URxvt*colorUL:            yellow
 ! URxvt*cursorColor:        #07A5FF
-! 
+!
 !black
 ! URxvt*color0:  #000000
 ! URxvt*color8:  #999999
@@ -78,23 +79,23 @@ URxvt*scrollBar:          False
 ! green
 ! URxvt*color2:  #559933
 ! URxvt*color10: #66D077
-! 
+!
 ! yellow
 ! URxvt*color3:  #FF9922
 ! URxvt*color11: #FFFFAF
-! 
+!
 ! blue
 ! URxvt*color4:  #3579A8
 ! URxvt*color12: #0023FA
-! 
+!
 ! orange
 ! URxvt*color5:  #FF9F08
 ! URxvt*color13: #FFAF31
-! 
+!
 ! cyan
 ! URxvt*color6:  #00BBDD
 ! URxvt*color14: #0DEBFF
-! 
+!
 !white
 ! URxvt*color7:  #cfcfcf
 ! URxvt*color15: #DEDEDE
@@ -105,7 +106,7 @@ URxvt*scrollBar:          False
 URxvt*background:         #222222
 URxvt*foreground:         #9e9eae
 URxvt*colorBD:            lightyellow
-URxvt*colorUL:            yellow   
+URxvt*colorUL:            yellow
 URxvt*cursorColor:        #098225
 
 !black
@@ -142,7 +143,7 @@ URxvt*color15: #bbbbbb
 ! }}}
 
 ! {{{ CURSOR
-Xcursor.theme: Neutral_Plus 
+Xcursor.theme: Neutral_Plus
 Xcursor.theme_core: true
 Xcursor.size: 15
 ! }}}
@@ -150,10 +151,10 @@ Xcursor.size: 15
 ! {{{ irssi
 !   -- also: set 'vbell on' in screen
 !   --       set 'bell_msg' "\a in window!"
-urxvt*urgentOnBell: true 
+urxvt*urgentOnBell: true
 ! irssi*urgentOnBell:true
 ! weechat*urgentOnBell:true
 ! }}}
 
 
-! vim:set fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
+! vim:set fdm=marker ts=4 sw=4 et sta ai:
