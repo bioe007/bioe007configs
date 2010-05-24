@@ -531,9 +531,8 @@ endfunction
 map <silent> ,l :call MyGoToLongLine()<CR>
 
 " create tags files quickly
-" map <F8> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-map <F8> :exe "!" . my_ctags_cmd .
-            \"-R --c++-kinds=+p --fields=+iaS --extra=+q".<CR>
+map <F8> :exe "! " my_ctags_cmd
+            \" -R --c++-kinds=+p --fields=+iaS --extra=+q "<CR>
 
 " toggle taglist
 map <silent> ,t :TlistToggle<CR>
