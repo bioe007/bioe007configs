@@ -412,7 +412,9 @@ augroup ftypes
 
     " git TAG descriptions are recognized as 'conf' files..
     au BufRead,BufNewFile .git/TAG* set ft=gitcommit
+    au FileType vcscommit set tw=72
     au FileType gitcommit set tw=72
+    au FileType gitcommit call setpos('.', [0, 1, 1, 0])
 
     au FileType java set ft=javascript
 
