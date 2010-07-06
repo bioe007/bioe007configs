@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+#
+#   8-15-07 , used with dosemu 1.4
+#           place files rt* into ~/.dosemu/drive_c/
+#           run dosemu -install as user and select RW path (#1 option)
+#
+#
+case $1 in
+    "--reset" | "-r" )
+        sudo dosemu -s "rtrst16.exe"
+        ;;
+
+    "--test" | "-t" )
+        sudo dosemu -s "rttest16.exe"
+        ;;
+
+    * )
+        # $(pwd)/bpph.hex -> /home/perry/.dosemu/drive_c"
+        cp -v $(find $(pwd) -type f -name "bpph.hex") \
+            "$HOME"/.dosemu/drive_c || exit 1
+        sudo dosemu -t -dumb -I 'video {none}' \
+            -s "rtload16.exe bpph.hex /R64 /P0x378 /H /I64"
+        # sudo dosemu -s "rtload16.exe bpph.hex /R64 /P0x378 /H /I64"
+        ;;
+esac
+
