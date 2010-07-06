@@ -1,0 +1,5 @@
+#!/bin/bash
+num=${1:-2}
+Xephyr -ac +bs -br -noreset -screen 1200x600  :$num &
+sleep 1
+# DISPLAY=:$num.0 awesome
