@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Put this shell script in a directory in your $PATH, e.g. /usr/local/bin.
+#
+# Add these lines to your .muttrc and uncomment it:
+# --------------------------------<muttrc>------------------------------------
+# macro index \ea "!abook-autoexport\n:source ~/.mutt/aliases\n" "Start abook"
+# macro index A \
+#   "|abook-autoexport --add-email-quiet\n:source ~/.mutt/aliases\n" \
+#   "Create new alias from the actual message"
+# --------------------------------</muttrc>-----------------------------------
+#
+# Check if your .muttrc includes the command "source ~/.mutt/aliases" and
+# add it if necessary.
+#
+# Optional: Import your existing mutt aliases into abook with
+#    abook --convert --informat mutt --infile $HOME/.mutt/aliases \
+#            --outformat abook --outfile $HOME/.abook/addressbook
+#
+# Now restart mutt and open abook with <ESC>a. As soon as you exit from
+# abook your addressbook gets exported and reloaded into mutt.
+#
+abook ${@}
+abook --convert \
+    --informat abook --infile $HOME/.abook/addressbook \
+    --outformat mutt --outfile $HOME/.mutt/aliases.new
+mv $HOME/.mutt/aliases $HOME/.mutt/aliases.bak
+mv $HOME/.mutt/aliases.new $HOME/.mutt/aliases
+

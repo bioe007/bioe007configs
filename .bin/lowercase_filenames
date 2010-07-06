@@ -1,0 +1,17 @@
+#!/bin/bash
+# makes all filenames lowercase
+
+dirs="$(find "$1" -type d)"
+echo ${dirs[0]}
+exit 0
+if [ -d "$1" ] ; then
+  mv "$1" $(echo $fname | tr '[A-Z]' '[a-z]' | tr ' ' '_') 
+
+for fname in "$1"/* ; do
+  nuname=$(echo $fname | tr '[A-Z]' '[a-z]' | tr ' ' '_') 
+	# mv -v "$fname" "$nuname"
+	echo $fname  --> $nuname 
+done
+
+
+for file in ./* ; do mv "$file" "$(echo $file | sed s/[0-9][0-9]_//)" ; done

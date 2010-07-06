@@ -1,0 +1,83 @@
+#!/bin/bash
+#
+# PacNews
+#
+# pbrisbin 2009
+#
+###
+
+message() {
+  echo "pacnews is designed to streamline dealing with .pacnew files."
+  echo
+  echo "pacnews must be run as root, and will optionally accept a"
+  echo "directory on which to act, otherwise /etc will be searched by"
+  echo "default."
+  echo
+  echo "all *.pacnew files found will be presented to you one by one; "
+  echo "you'll have the option of viewing/editing your current config"
+  echo "file side by side with the pacnew file through vimdiff, then"
+  echo "you can remove the pacnew file, replace you're existing" 
+  echo "config file with the .pacnew file, or do nothing."
+  echo
+  echo "answering anything other than \"y\" to the options will"
+  echo "eventually bring you back without changing your system in any"
+  echo "way."
+  echo
+  exit 1
+}
+
+errorout(){
+  echo "error: $1"
+  exit 1
+}
+
+prompt() {
+  echo -n ":: $1? [Y/n] " && read A
+  case $A in
+    y) return 0 ;;
+    q) exit 0   ;;
+    *) return 1 ;;
+  esac
+}
+
+[ "$(whoami)" != "root" ] && errorout "You must be root"
+
+which vimdiff >/dev/null 2>&1 || errorout "You need vimdiff installed"
+
+if [ -z $1 ]; then
+  DIR="/etc"
+else
+  [ -d $1 ] || message
+  DIR="$1"
+fi
+
+[ "$(find $DIR -name '*.pacnew')" = "" ] && {
+  echo "No .pacnew files found."
+  exit 0
+}
+
+for file in $(find $DIR -name '*.pacnew'); do
+  current="${file/.pacnew/}"
+  if prompt "$file found, view differences"; then
+    vimdiff $current $file
+    if prompt "remove $file"; then
+      rm $file || errorout "could not remove the pacnew file"
+      echo ">> $file was removed"
+    else
+      if prompt "replace $current with $file"; then
+        cp $current $current.pacsave || errorout "could not back up existing config"
+        echo ">> $current saved as $current.pacsave"
+        mv $file $current || errorout "could not replace your config file"
+        echo ">> $current replaced by $file"
+      fi
+    fi
+  else
+    echo ">> Skipping $file..."
+  fi
+done
+
+exit 0
+
+### Created: 200905141304
+
+# vim:set ft=sh fdm=marker ts=4 sw=4 et sta ai si: 

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ $# -lt 2 ]; then
+  echo "usage: $0 [number] [some message]"
+  exit 1
+fi
+
+number="$1"; shift
+
+echo "$*" | mutt "$number@vtext.com"
+

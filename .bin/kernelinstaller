@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# a small script to install kernels the way I like
+#
+if [ $UID != "0" ] ; then
+  echo "Must be run as root"
+fi
+
+if [ ! -e "$(pwd)/.config" ] ; then 
+	echo "no config found"
+	exit 1
+fi
+# set -eu
+#trap 	
+tmstmp=$(date +%y%m%d%H%M)
+vers_kernel=$(cat $(pwd)/.config | grep "^# Linux" | cut -f 2 -d ':' | tr -d ' ')
+vers_local=$(cat $(pwd)/.config | grep -w "^CONFIG_LOCALVERSION" | cut -f 2 -d = | tr -d '\"')
+kstrng="bzImage-$vers_kernel$vers_local-$tmstmp"
+mpstrng="System.map-$vers_kernel$vers_local-$tmstmp"
+cfgstrng="config-$vers_kernel$vers_local-$tmstmp"
+
+echo "$tmstmp"
+echo -e "$kstrng \n$mpstrng \n$cfgstrng"
+# exit 0
+# install modules
+echo "installing modules for $kstrng"
+make modules_install > /dev/null
+
+# copy config, system map and kernel image to /boot
+cp -v ./.config /boot/$cfgstrng
+cp -v System.map /boot/$mpstrng
+cp -v arch/i386/boot/bzImage /boot/$kstrng
+
+# force new symlinks to new config, map and image
+ln -vsf /boot/$cfgstrng /boot/config
+ln -vsf /boot/$mpstrng /boot/System.map
+ln -vsf /boot/$kstrng /boot/bzImage
+
+# run lilo to install on mbr
+#if [ -r "/etc/lilo.conf" ] && [ ! -r "/boot/grub/menu.lst" ] ; then
+#	echo "running lilo" 
+#	/sbin/lilo -v | grep -i 'warn\|error'
+#fi

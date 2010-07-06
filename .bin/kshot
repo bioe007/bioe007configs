@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# kshot
+#
+
+TGTDIR="$HOME/images/screenshots/$(date +%Y)"
+
+echo $TGTDIR
+
+upload() {
+    ompload "$TGTDIR/\$f" | xsel -i; echo "\$f"
+}
+scrtcmd="mv -v \$f $TGTDIR ; ompload $TGTDIR/\$f | xsel -i; echo \$f"
+echo $scrtcmd
+a=`scrot $@ -e $scrtcmd` 
+exit 0
+# -e 'mv -v $f '${TGTDIR}'; ompload '${TGTDIR}'/$f | xsel -i; echo $f'`
+url="$(echo `xsel -o` | sed s/^.*to\ // | sed s/\ S.*$//)"
+txt="SHOT: $url"
+echo naughty.notify\(\{text = \"$txt\", timeout = 30, hover_timeout = false, run = function\(n\) awful.util.spawn\(\"firefox $url\"\)\; awful.tag.viewonly\(shifty.name2tag\(\"web\"\)\)\; n.die\(\)  end, fg = \"\#FFC301\", width = 180\}\) | awesome-client -
+echo $txt
+

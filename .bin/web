@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+# web
+#
+# auth: Perry Hargrave
+# date: 2010-07-06
+#
 CMD=$(which firefox)
 ARGS=""
 TAB="new-tab"
@@ -7,30 +13,24 @@ TAB="new-tab"
 GBASE='http://www.google.com/search?q='
 GSFX='&ie=UTF-8&oe=UTF-8'
 
-open()
-{
+open() {
     echo tab is $TAB
-    # $CMD -a firefox -remote "openURL($ARGS, $TAB)" > /dev/null 2>&1 || \
-        # exec $CMD "$ARGS"
     $CMD -a firefox -remote "openURL($ARGS)" > /dev/null 2>&1 || \
         exec $CMD "$ARGS"
 }
 
-search()
-{
+search() {
     ARGS="${GBASE}${ARGS}${GSFX}"
     open
 }
 
 # grab search string from x selection buffer, then call search
-search_xsel()
-{
+search_xsel() {
     ARGS="$(xsel -p -o)"
     search
 }
 
-usage()
-{
+usage() {
     echo "$(basename $0) -[sxo] [-n] arguments
             --search, -s search using arguments
             --xsel, -x   search using contents X selection buffer
@@ -46,24 +46,19 @@ if (($# > 0)); then
             '--search' | '-s')
                 FUNCTION="search"
                 ;;
-
             '--xsel' | '-x')
                 FUNCTION="search_xsel"
                 ;;
-
             '--open' | '-o')
                 FUNCTION="open"
                 ;;
-
             '--notab' | '-n')
+                # it actually seems this is not possible?
                 TAB=""
-                echo tab is $TAB
                 ;;
-
             *)
                 ARGS="$ARGS $1"
                 ;;
-
         esac
         shift
     done
