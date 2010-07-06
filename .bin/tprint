@@ -8,7 +8,7 @@ INFILE=""
 
 # base enscript and lpr options
 # -Ec filters for c files
-OPTS_ENSCRIPT="-T 2 -f Courier8 --word-wrap"
+OPTS_ENSCRIPT="--margins=36:36:72:72 -T 2 -f Courier8 --word-wrap"
 OPTS_LPR="-r"
 
 PDF=""
@@ -71,6 +71,8 @@ if [ "$#" -ge "$MINARG" ] ; then
             ;;
 
             -* | --help | '-h' )
+            echo tprint args: $@
+
             echo $USAGE
             exit 1
             ;;
@@ -90,6 +92,18 @@ if [ "$#" -ge "$MINARG" ] ; then
     done
 
 else
+    # getting from stdin
+    message="$(cat -)"
+    mydate="$(echo "$message" | formail -cx Date)"
+    mysubj="$(echo "$message" | formail -cx Subject | tr -cd \[:graph\:])"
+    msgid="$(echo "$message" | formail -X Message-ID | tr -d \[:blank:\])"
+    fname="/tmp/$mysubj"
+    echo "$mydate" > $fname
+    echo "-----------------------------------------------------------" >> $fname
+    echo "$message" >> "$fname"
+    tprint -pdf "$fname"
+    rm "$fname"
+
     echo $USAGE
     exit 1
 fi
