@@ -46,11 +46,4 @@ hardstatus string '%{= .w}[%= %{= .w}%?%-Lw%{w}%?%{g}[ %n:%f:%t%?(%u)%? ]%{w}%?%
 # set the second mark, write to the screen-exchange
 # file, and use xsel to synchronize the paste buffer
 # with the X selection.
-# bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel -n < /tmp/screen-exchange'"
 bindkey -m > eval "stuff ' '" writebuf "exec sh -c 'xsel < /tmp/screen-exchange'"
-
-
-
-
-
-# vim:set filetype=sh textwidth=80 fdm=syntax tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:
