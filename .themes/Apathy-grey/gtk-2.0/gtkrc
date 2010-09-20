@@ -8,7 +8,7 @@
 # FIXME: the progress bar requiring xfce engine to look 'flat', have tried
 # rezlooks options to no success, it always looks etched in to something. Also
 # tried various other engines (clearlooks, pixmap, gflat)
-# 
+#
 
 gtk-icon-sizes = "panel-menu=12,12:panel=12,12:gtk-button=12,12:gtk-large-toolbar=16,16:gtk-small-toolbar=12,12"
 
@@ -34,7 +34,7 @@ style "default"
   GtkButton::default_spacing        = 3
   GtkButton::focus-padding          = 1
   GtkCheckButton::indicator_size    = 12  #size of the indicator for the roll over
-  GtkRadioButton::indicator_size    = 12 
+  GtkRadioButton::indicator_size    = 12
   # }}}
 
   # {{{ handles
@@ -61,7 +61,7 @@ style "default"
   # }}}
 
   ExoIconBar::focus_padding         = 2
-  GtkMenuItem::selected_shadow_type = GTK_SHADOW_NONE 
+  GtkMenuItem::selected_shadow_type = GTK_SHADOW_NONE
   GtkMenuItem::internal_padding     = 2
   GtkExpander::expander_size        = 12
   GtkTreeView::expander_size        = 11
@@ -102,16 +102,15 @@ style "default"
 
 #}}}
 
-  engine "rezlooks" 
+  engine "rezlooks"
   {
-    scrollbar_color    = "#505050" 
+    scrollbar_color    = "#505050"
+    progressbarstyle  = 0       # 0 = candy bar, 1 = flat
     menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
     menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
     listviewitemstyle  = 0       # 0 = flat, 1 = 3d-ish (gradient)
-    progressbarstyle  = 1       # 0 = candy bar, 1 = flat 	
-    # scrollbarstyle = 1	  # 0 = strokes in the scrollbar, 1 = no strokes	
-    # cornerstyle 		 = 1       # 0 = rounded, 1 = not rounded
     animation          = FALSE
+    contrast = .9
   }
 }
 #}}}
@@ -120,13 +119,10 @@ style "default"
 
 style "progressbar" = "default"
 {
-  bg[PRELIGHT]      = "#505050" 
+  bg[PRELIGHT]      = "#505050"
   xthickness = 0
   ythickness = 0
-  engine "xfce"
-  {
-  }
- 
+
 }
 
 style "wide" = "default"
@@ -147,7 +143,7 @@ style "button" = "default"
 
   fg[PRELIGHT]    = "#dfcfcf" # text on highlight
   fg[ACTIVE]      = "#efefef" # text when button pressed
-  
+
   text[PRELIGHT]  = "#cfcfcf" # text on prelighted combobox
   text[ACTIVE]  = "#000000" # text on prelighted combobox
 }
@@ -222,7 +218,7 @@ style "pager" = "panel"
     xthickness = 1
     ythickness = 1
 
-    bg[SELECTED]      = "#545454" 
+    bg[SELECTED]      = "#545454"
     fg[SELECTED]      = "#505050"
 
 }
@@ -247,10 +243,10 @@ style "bar" = "default"
 
      engine "pixmap"
      {
-     } 
+     }
 }
 
-# for debugging 
+# for debugging
 style "bleach" = "default"
 {
   fg[NORMAL]        = "#ffffff" # mouseover, Most text
@@ -300,7 +296,7 @@ class "*Statusbar*"   style "bar" #"wide"
 widget_class "*Statusbar*"   style "bar" #"wide"
 widget_class "*MenuItem.*" style "menu-item"
 
-# buttons & boxes 
+# buttons & boxes
 class         "*Button*"                style "button"
 widget_class  "*Button*"                style "button"
 widget_class  "*<GtkToggleButton>*"     style "button"
