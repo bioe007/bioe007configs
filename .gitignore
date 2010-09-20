@@ -173,3 +173,4 @@ notmail
 .gstreamer-0.10
 .bin/*.*
 misc
+.pcb/preferences
