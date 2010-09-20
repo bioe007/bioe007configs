@@ -4,7 +4,7 @@
 #
 # Simple (xfce engine)
 # Candido-Graphite
-# 
+#
 
 gtk-icon-sizes = "panel-menu=12,12:panel=12,12:gtk-button=12,12:gtk-large-toolbar=16,16:gtk-small-toolbar=12,12"
 
@@ -13,7 +13,7 @@ style "default"
 # widgets
   GtkWidget::focus-line-pattern                = "\0"
   # GtkWidget::focus-line-width                  = 0
-  # GtkWidget::focus_padding                     = 0 
+  # GtkWidget::focus_padding                     = 0
   GtkWidget::interior_focus                    = 5
   GtkWidget::internal_padding                  = 4
 
@@ -42,17 +42,17 @@ style "default"
   GtkScrollbar::has_backward_stepper           = 1
   GtkScrollbar::min_slider_length              = 20 # smallest size of scroll bar slider to match size of buttons (4 X 4), it looks good in User inter Pref.
   GtkStatusbar::shadow_type                    = none # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
-  GtkToolbar::shadow_type                      = none # same as ^ but for toolbar 
+  GtkToolbar::shadow_type                      = none # same as ^ but for toolbar
   GtkMenuBar::shadow_type                      = none # ^^ for menubar... 8O
   GtkMenuBar::internal-padding = 0
 
-  ExoIconBar::focus_padding                    = 2 
+  ExoIconBar::focus_padding                    = 2
   GtkMenuItem::selected_shadow_type            = none
   GtkMenuItem::internal_padding                = 2
-  GtkExpander::expander_size = 12 
+  GtkExpander::expander_size = 12
   GtkTreeView::expander_size = 11
-  GtkTreeView::odd_row_color                   = "#cccccc" 
-  GtkTreeView::even_row_color                  = "#cccccc" 
+  GtkTreeView::odd_row_color                   = "#cccccc"
+  GtkTreeView::even_row_color                  = "#cccccc"
 
   xthickness = 1
   ythickness = 1
@@ -81,14 +81,14 @@ style "default"
   text[SELECTED]	  = "#cfcfff" # selected text (on highlight)
   text[INSENSITIVE]	= "#b1b1b1" # greyed text arrows
 
-  engine "rezlooks" 
+  engine "rezlooks"
   {
-    scrollbar_color    = "#404050" 
+    scrollbar_color    = "#404050"
     menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
     menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
     listviewitemstyle  = 0       # 0 = flat, 1 = 3d-ish (gradient)
-    # progressbarstyle  = 2       # 0 = candy bar, 1 = flat 	
-    # scrollbarstyle			= 1	  # 0 = strokes in the scrollbar, 1 = no strokes	
+    progressbarstyle  = 0       # 0 = candy bar, 1 = flat
+    # scrollbarstyle			= 1	  # 0 = strokes in the scrollbar, 1 = no strokes
     menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
     menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
     # cornerstyle 		 = 1       # 0 = rounded, 1 = not rounded
@@ -99,13 +99,11 @@ style "default"
 
 style "progressbar" = "default"
 {
+  GtkProgressbar::shadow_type = GTK_SHADOW_NONE
   bg[PRELIGHT]      = "#404050" #progress bar color e2e2e2"
   xthickness = 0
   ythickness = 0
-  engine "xfce"
-  {
-  }
- 
+
 }
 
 style "wide" = "default"
@@ -124,13 +122,13 @@ style "button" = "default"
   ythickness = 1
   bg[NORMAL]		  = "#cfcfcf"      # button background
   bg[ACTIVE]		  = "#404050"      # pressed color
-  bg[SELECTED]		= "#404050"    # check and radio button color 
+  bg[SELECTED]		= "#404050"    # check and radio button color
   bg[INSENSITIVE]	= "#e2e3e2"    # greyed buttons
-  bg[PRELIGHT]    = "#545454" 
+  bg[PRELIGHT]    = "#545454"
 
   fg[PRELIGHT]    = "#cfcfff" # text on highlight
   fg[ACTIVE]      = "#cfcfff" # text when button pressed
-  
+
   text[PRELIGHT]  = "#cfcfff" # text on prelighted combobox
 }
 style "combo" = "button"
@@ -194,7 +192,7 @@ style "pager" = "panel"
     xthickness = 1
     ythickness = 1
 
-    bg[SELECTED]      = "#545454" 
+    bg[SELECTED]      = "#545454"
     fg[SELECTED]      = "#404050"
 
 }
@@ -212,14 +210,14 @@ style "bar" = "default"
 # for some reason to get this 'no line separator' i've got to keep the engine "other" block, otw the line shows up no matter what.
 
     GtkStatusbar::shadow_type = GTK_SHADOW_NONE  # changes the look of statusbar in thunar (at least) out,in,etched-{out,in},none
-    GtkToolbar::shadow_type = GTK_SHADOW_NONE  # same as ^ but for toolbar 
+    GtkToolbar::shadow_type = GTK_SHADOW_NONE  # same as ^ but for toolbar
     GtkMenuBar::shadow_type = GTK_SHADOW_NONE  # ^^ for menubar... 8O
     xthickness = 4
     ythickness = 1
 
      engine "pixmap"
      {
-     } 
+     }
 }
 style "bleach" = "default"
 {
@@ -266,7 +264,7 @@ class "*Statusbar*"   style "bar" #"wide"
 widget_class "*Statusbar*"   style "bar" #"wide"
 widget_class "*MenuItem.*" style "menu-item"
 
-# buttons & boxes 
+# buttons & boxes
 class         "*Button*"                style "button"
 widget_class  "*Button*"                style "button"
 widget_class  "*<GtkToggleButton>*"     style "button"
