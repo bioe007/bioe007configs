@@ -1,9 +1,9 @@
 #
-# gtk2 theme for rezlooks(hacked) engine 
+# gtk2 theme for rezlooks(hacked) engine
 #
 # also requires pixmap engine to get the very flat look in the 'statusbar'
-# widgets... 
-# 
+# widgets...
+#
 # bioe007 <perrydothargraveatgmaildotcom>
 
 gtk-icon-sizes = "panel-menu=12,12:panel=12,12:gtk-button=12,12:gtk-large-toolbar=16,16:gtk-small-toolbar=12,12"
@@ -20,6 +20,7 @@ style "default"
   GtkWidget::interior_focus       = 5
   GtkWidget::internal_padding     = 4
   GtkWidget::wide-separators     = 1
+  GtkWidget::link-color     = "#002244"
   # }}}
 
   # {{{ buttons
@@ -30,7 +31,7 @@ style "default"
   GtkButton::default_spacing        = 3
   GtkButton::focus-padding          = 1
   GtkCheckButton::indicator_size    = 14  #size of the indicator for the roll over
-  GtkRadioButton::indicator_size    = 14 
+  GtkRadioButton::indicator_size    = 14
   # }}}
 
   # {{{ handles
@@ -55,7 +56,7 @@ style "default"
   # }}}
 
   ExoIconBar::focus_padding         = 2
-  GtkMenuItem::selected_shadow_type = GTK_SHADOW_NONE 
+  GtkMenuItem::selected_shadow_type = GTK_SHADOW_NONE
   GtkMenuItem::internal_padding     = 2
   GtkExpander::expander_size        = 12
   GtkTreeView::expander_size        = 11
@@ -96,15 +97,15 @@ style "default"
 
 #}}}
 
-  engine "rezlooks" 
+  engine "rezlooks"
   {
-    scrollbar_color    = "#9baf9b" 
+    scrollbar_color    = "#9baf9b"
     progressbarstyle   = 0       #
     menubarstyle       = 0       # 0 = flat, 1 = sunken, 2 = flat gradient
     menuitemstyle      = 0       # 0 = flat, 1 = 3d-ish (gradient), 2 = 3d-ish (button)
     listviewitemstyle  = 0       # 0 = flat, 1 = 3d-ish (gradient)
     animation          = FALSE
-    contrast = .9 
+    contrast = .9
   }
 }
 #}}}
@@ -138,18 +139,18 @@ style "button" = "default"
   bg[SELECTED]    = shade(0.7,"#303b34") #abbfab")    # check and radio button color
   # bg[INSENSITIVE] = "#222222" #e2e3e4"    # greyed buttons
   bg[PRELIGHT]    = shade(0.9,"#303b34") #545454")
-# 
+#
   # fg[PRELIGHT]    = "#bdedbe" #dfcfcf" # text on highlight
   # fg[ACTIVE]      = "#cfffce" #efefef" # text when button pressed
-  # 
+  #
   # text[PRELIGHT]  = "#bdedbe" #cfcfcf" # text on prelighted combobox
   # text[ACTIVE]  = "#000000" # text on prelighted combobox
-  
-  # bg[ACTIVE]      = "#0000ff" # 
-  # bg[NORMAL]      = "#00ff00" # 
-  # bg[SELECTED]    = "#ff0000" # 
+
+  # bg[ACTIVE]      = "#0000ff" #
+  # bg[NORMAL]      = "#00ff00" #
+  # bg[SELECTED]    = "#ff0000" #
   # bg[PRELIGHT]    = "#f0f000" #
-  # bg[INSENSITIVE] = "#00f0f0" # 
+  # bg[INSENSITIVE] = "#00f0f0" #
 
 } #1}}}
 
@@ -159,24 +160,24 @@ style "combo" = "default"
   GtkWidget::focus-line-width = 2
   xthickness = 3
   ythickness = 3
-# {{{ colors 
+# {{{ colors
   # fg[ACTIVE]        = "#cdfdce" # selected text
   # bg[ACTIVE]        = "#302020" # color of pressed stuff
   # text[ACTIVE]      = "#001000" # text sel & unfocused
   # base[ACTIVE]      = "#9f9595" # sel but unfocused
- 
+
   # fg[NORMAL]        = "#abbfab" # unselected text and active arrow +/- widgets
   # bg[NORMAL]      = "#00ff00" # color around action buttons
   # base[NORMAL]      = "#646464" # bg under check/radio/text
- 
+
   # fg[SELECTED]      = "#000000" # ??
   bg[SELECTED]      = "#abffab" # the dot/check
   # text[SELECTED]    = "#001000" # text sel & focused tb
   # base[SELECTED]    = "#9f9595" # sel and focused
- 
+
   # fg[PRELIGHT]      = "#ddffde" # text color on hover
   # bg[PRELIGHT]      = "#302020" # bg color when hover over
- 
+
   # fg[INSENSITIVE]   = "#414141" # unselectable text or arrows
   # bg[INSENSITIVE]   = "#343434" # inactive buttons
   # text[INSENSITIVE] = "#323232" #
@@ -189,21 +190,21 @@ style "spin" = "combo"
   ythickness = 4
   GtkSpinButton::focus-padding = 1
   GtkSpinButton::stepper_size = 9
-  GtkWidget::interior-focus = 0                                                                                                                               
-  GtkWidget::focus-line-width = 0                                                                                                                             
-  GtkEntry::inner-border = { 0, 0, 0, 0} 
+  GtkWidget::interior-focus = 0
+  GtkWidget::focus-line-width = 0
+  GtkEntry::inner-border = { 0, 0, 0, 0}
   GtkSpinButton::shadow_type = GTK_SHADOW_OUT
 
-  fg[ACTIVE]      = "#cdffce" # 
+  fg[ACTIVE]      = "#cdffce" #
   bg[ACTIVE]      = "#302020" # bg pressed color
   fg[NORMAL]      = "#cdddce" # color of spinbutton arros
   fg[PRELIGHT]    = "#dfffdf" #
 
 } # 1}}}
 
-  # bg[ACTIVE]      = "#0000ff" # 
-  # bg[NORMAL]      = "#00ff00" # 
-  # bg[SELECTED]    = "#ff0000" # 
+  # bg[ACTIVE]      = "#0000ff" #
+  # bg[NORMAL]      = "#00ff00" #
+  # bg[SELECTED]    = "#ff0000" #
   # bg[PRELIGHT]    = "#f0f000" #
   # bg[INSENSITIVE] = "#00f0f0" #
 
@@ -224,15 +225,15 @@ style "notebook" = "default"
   bg[ACTIVE]      = shade(0.5,"#303b34") # pressed color
   # bg[ACTIVE]      = "#808080" # bg of unselected tabs
   # bg[NORMAL]      = "#121212" # border around tabs and windows
-  # bg[SELECTED]    = "#38393b" 
+  # bg[SELECTED]    = "#38393b"
   bg[SELECTED]      = shade(0.4, "#8dad8e") # color of bar on top of active tab
 
   # fg[ACTIVE]      = "#bdedbe" # clicked button on tabbar
   # fg[NORMAL]      = "#abbfab" # focus line around tab and button color?
-  # fg[SELECTED]    = "#ff0000" # 
+  # fg[SELECTED]    = "#ff0000" #
   # fg[PRELIGHT]    = "#bdedbe" # hover over tabbar button
   # fg[INSENSITIVE] = "#414141" # disabled tabbar buttons
- 
+
 } # 1}}}
 
 
@@ -262,8 +263,8 @@ style "tree" = "default"
   GtkTreeView::even_row_color = "#3d3e3f"
 # FIXME: claws-mail tree view is very fucked up with this... ?
   # text[ACTIVE]      = "#0000ff" #
-  # text[NORMAL]      = "#00ff00" # 
-  # text[SELECTED]    = "#ff0000" # 
+  # text[NORMAL]      = "#00ff00" #
+  # text[SELECTED]    = "#ff0000" #
   # text[PRELIGHT]    = "#f0f000" #
   # text[INSENSITIVE] = "#00f0f0" #
 
@@ -286,7 +287,7 @@ style "pager" = "panel"
     xthickness = 1
     ythickness = 1
 
-    bg[SELECTED]      = "#545454" 
+    bg[SELECTED]      = "#545454"
     fg[SELECTED]      = "#505050"
 
 }
@@ -311,7 +312,7 @@ style "bar" = "default"
 # engine "other" block, otw the line shows up no matter what.
      engine "pixmap"
      {
-     } 
+     }
 }
 
 # for debugging all white
@@ -363,7 +364,7 @@ class "*Statusbar*"   style "bar" #"wide"
 widget_class "*Statusbar*"   style "bar" #"wide"
 widget_class "*MenuItem.*" style "menu-item"
 
-# buttons & boxes 
+# buttons & boxes
 class         "*Button*"                style "button"
 widget_class  "*Button*"                style "button"
 widget_class  "*<GtkToggleButton>*"     style "button"
@@ -398,7 +399,7 @@ widget_class "*.GtkFrame.GtkLabel" style "frame-title"
 class "GtkNotebook" style "notebook"
 # widget_class "*.GtkNotebook.*.GtkEventBox" style "button"
 # widget_class "*.GtkNotebook.*.GtkViewport" style "button"
-# 
+#
 # Panel & pager
 widget_class "*Panel*GtkToggleButton" style "panel"
 widget_class "*Panel*GtkButton" style "panel"
