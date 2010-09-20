@@ -76,7 +76,6 @@ sandbox
 *authority*
 .inkscape
 .feh*
-.bin
 .dosemu
 .config/*txt
 .config/rox*
@@ -172,3 +171,5 @@ notmail
 .mairixrc
 .mysqlgui
 .gstreamer-0.10
+.bin/*.*
+misc
