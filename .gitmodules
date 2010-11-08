@@ -1,3 +1,11 @@
 [submodule ".config/awesome"]
-	path = .config/awesome
-	url = git@github.com:bioe007/awesome-configs.git
+        path = .config/awesome
+        url = git@github.com:bioe007/awesome-configs.git
+
+[submodule ".vim"]
+        path = .vim
+        url = git@github.com:bioe007/vimfiles.git
+
+[submodule ".zsh"]
+        path = .zsh
+        url = git@github.com:bioe007/zshconfig.git
