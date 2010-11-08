@@ -174,3 +174,5 @@ notmail
 .bin/*.*
 misc
 .pcb/preferences
+*.docx
+*.PDF
