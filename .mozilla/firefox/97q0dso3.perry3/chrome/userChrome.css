@@ -1,6 +1,3 @@
-/* this keeps the gap from existing where the favicon should be */
-.tabbrowser-tabs .tab-icon { display: none; }
-
 /* this keeps the placeholder/generic icon from showing up in the tab-bar */
 .tabbrowser-tab .tab-icon-image { visibility: hidden !important;}
 
@@ -9,21 +6,25 @@
 
 /* Remove new tab button from the tab bar */
 .tabs-newtab-button {
-	display: none;
-	visibility: hidden !important;
-} 
+        display: none;
+        visibility: hidden !important;
+}
+
+/* this keeps the gap from existing where the favicon should be */
+.tabbrowser-tabs .tab-icon { display: none; }
 
 /* .tabbrowser-tabs tab .tab-text { display: none; } */
 .tabbrowser-tabs tab[selected="false"] .tab-text {
-	font-size: 90%;
-	color: gray;
+        font-size: 90%;
+        color: gray;
 }
 .tabbrowser-tabs tab[selected="true"] .tab-text {
-	display: block;
-	min-width: 200px;
-	color: #ddffde;
-	font-size: 100;
-} 
+        display: block;
+        min-width: 200px;
+        /* color: #ddffde; */
+        color: #000333;
+        font-size: 100;
+}
 
 /* Display the Tab bar at the bottom  */
 /* #content > tabbox { -moz-box-direction: reverse; } */
@@ -47,7 +48,7 @@
 .searchbar-dropmarker-image { display: none !important; }
 
 
-/* Hide the drop-marker in the AwesomeBar 
+/* Hide the drop-marker in the AwesomeBar
 .autocomplete-history-dropmarker { display: none !important; }
 */
 
@@ -55,9 +56,9 @@
 /* toolbarbutton.bookmark-item > .toolbarbutton-icon { display: none; } */
 /* toolbarbutton.bookmark-item > .toolbarbutton-text { display: none !important; } */
 
-/* Place sidebars on the right side of the window 
+/* Place sidebars on the right side of the window  */
 window > hbox { direction:rtl; } window > hbox > * { direction:ltr; }
-*/
+/**/
 
 /* .dwhelper-statusbarpanel icon { */
     /* display: -moz-box !important; */
@@ -75,12 +76,12 @@ input {
   /* Set font size and family of text fields */
   font-family: Profont !important;
   font-size: 12px !important;
- 
+
   /* Set background color to something a little prettier */
   /* background-color: rgb(100, 105, 100) !important; */
-  background-color: #555555 !important;
+  /* background-color: #555555 !important; */
   /* text-color: #ddffde; */
- 
+
   /* Add some key bindings.
    * For an explanation of how to do this,
    * see below under "Custom key bindings".
