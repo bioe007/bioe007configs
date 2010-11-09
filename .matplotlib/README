@@ -1,0 +1,5 @@
+
+for tex to work:
+    dvipng
+    texlive-most
+    ghostscript
