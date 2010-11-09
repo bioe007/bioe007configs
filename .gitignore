@@ -176,3 +176,5 @@ misc
 .pcb/preferences
 *.docx
 *.PDF
+.elinks
+*
