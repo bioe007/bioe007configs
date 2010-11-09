@@ -14,4 +14,4 @@ xmodmap ~/.Xmodmap &
 #sync PRIMARY with clipboard
 autocutsel -s PRIMARY -buttonup -fork
 
-exec ck-launch-session awesome
+exec ck-launch-session dbus-launch awesome
