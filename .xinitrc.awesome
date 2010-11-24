@@ -10,6 +10,7 @@ xset +fp $HOME/.fonts/misc,$HOME/.fonts/new,$HOME/.fonts/profont-x11 &
 unclutter -noevents -idle 3 -root &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
+wicd-client &
 
 #sync PRIMARY with clipboard
 autocutsel -s PRIMARY -buttonup -fork
