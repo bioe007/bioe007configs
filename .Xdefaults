@@ -33,7 +33,7 @@ Xft.antialias: 1
 Xft.hinting: 1
 Xft.rgba: rgb
 Xft.lcdfilter:  lcddefault
-Xft.hintstyle:  hintslight
+Xft.hintstyle:  hintfull
 ! }}}
 
 URxvt*internalBorder:     3
@@ -50,111 +50,32 @@ URxvt*scrollBar:          False
 !URxvt*inheritPixmap:      false
 !URxvt*reverseVideo:       false
 
-! Bloged http://www.jukie.net/~bart/blog/tag/urxvt
+! Zenburn color-scheme
+urxvt*background:  #3f3f3f
+urxvt*foreground:  #dcdccc
+! black + red
+!urxvt*color0:     #3f3f3f
+urxvt*color0:      #1E2320
+urxvt*color1:      #705050
+! green + yellow
+urxvt*color2:      #60b48a
+urxvt*color3:      #dfaf8f
+! blue + purple
+urxvt*color4:      #506070
+urxvt*color5:      #dc8cc3
+! cyan + white
+urxvt*color6:      #8cd0d3
+urxvt*color7:      #dcdccc
+! bright-black + bright-red
+urxvt*color8:      #709080
+urxvt*color9:      #dca3a3
+! bright-green + bright-yellow
+urxvt*color10:     #c3bf9f
+urxvt*color11:     #f0dfaf
+! bright-blue + bright-purple
+urxvt*color12:     #94bff3
+urxvt*color13:     #ec93d3
+! bright-cyan + bright-white
+urxvt*color14:     #93e0e3
+urxvt*color15:     #ffffff
 
-! }}}
-
-
-! {{{ colors
-!
-! default terminal colors
-!   0-7 low-intensity
-!   8-15 high-intensity
-!
-! {{{intensity b
-! URxvt*background:         #000000
-! URxvt*foreground:         #cfcfcf
-! URxvt*colorBD:            lightyellow
-! URxvt*colorUL:            yellow
-! URxvt*cursorColor:        #07A5FF
-!
-!black
-! URxvt*color0:  #000000
-! URxvt*color8:  #999999
-! !
-! red
-! URxvt*color1:  #DE1923
-! URxvt*color9:  #FF6050
-! !
-! green
-! URxvt*color2:  #559933
-! URxvt*color10: #66D077
-!
-! yellow
-! URxvt*color3:  #FF9922
-! URxvt*color11: #FFFFAF
-!
-! blue
-! URxvt*color4:  #3579A8
-! URxvt*color12: #0023FA
-!
-! orange
-! URxvt*color5:  #FF9F08
-! URxvt*color13: #FFAF31
-!
-! cyan
-! URxvt*color6:  #00BBDD
-! URxvt*color14: #0DEBFF
-!
-!white
-! URxvt*color7:  #cfcfcf
-! URxvt*color15: #DEDEDE
-! }}}
-
-! }}}
-!
-URxvt*background:         #222222
-URxvt*foreground:         #9e9eae
-URxvt*colorBD:            lightyellow
-URxvt*colorUL:            yellow
-URxvt*cursorColor:        #098225
-
-!black
-URxvt*color0:  #232323
-URxvt*color8:  #434343
-
-!red
-URxvt*color1:  #c43239
-URxvt*color9:  #d44f55
-
-!green
-URxvt*color2:  #369336
-URxvt*color10: #4eae4e
-
-!yellow
-URxvt*color3:  #a2ae4e
-URxvt*color11: #bcc967
-
-!blue
-URxvt*color4:  #5367cb
-URxvt*color12: #6279ec
-
-!orange
-URxvt*color5:  #ba5112
-URxvt*color13: #cd682b
-
-!cyan
-URxvt*color6:  #22bbb9
-URxvt*color14: #46cdb5
-
-! !white
-URxvt*color7:  #999999
-URxvt*color15: #bbbbbb
-! }}}
-
-! {{{ CURSOR
-Xcursor.theme: Neutral_Plus
-Xcursor.theme_core: true
-Xcursor.size: 15
-! }}}
-
-! {{{ irssi
-!   -- also: set 'vbell on' in screen
-!   --       set 'bell_msg' "\a in window!"
-urxvt*urgentOnBell: true
-! irssi*urgentOnBell:true
-! weechat*urgentOnBell:true
-! }}}
-
-
-! vim:set fdm=marker ts=4 sw=4 et sta ai:
