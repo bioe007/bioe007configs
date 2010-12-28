@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for file in *.JPG; do
+	convert -resize 800x600 $file ${file%.JPG}_resize.jpg
+done
