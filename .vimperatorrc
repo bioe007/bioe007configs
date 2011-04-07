@@ -1,10 +1,12 @@
 " appearance
-set go-=nmbrT
-set go+=n
-set showtabline=1
+" set go-=nmbrT
+" set go+=n
+set gui=nonavigation,nomenu
+set tabnumbers
+" set showtabline=1
 
 " completion options
-set complete=lsh
+set complete=lshb
 set defsearch="google"
 set editor="/home/perry/.bin/vim-start.sh"
 set focuscontent=true
@@ -49,7 +51,7 @@ javascript <<EOF
  bookPanel.setAttribute("id", "book-panel-clone");
  bookPanel.appendChild(document.getElementById("star-button"));
  bookPanel.firstChild.setAttribute("style", "padding: 0; max-height: 16px;");
- document.getElementById("status-bar")
+ document.getElementById("tab-bar")
  .insertBefore(bookPanel, document.getElementById("security-button"));
  })();
 EOF
@@ -66,7 +68,7 @@ EOF
  " })();
 " EOF
 "
-colorscheme mine
+colorscheme zenburn
 
 " combos tried
 echo ".vimperatorrc sourced"
