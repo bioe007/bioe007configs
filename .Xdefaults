@@ -79,3 +79,17 @@ urxvt*color13:     #ec93d3
 urxvt*color14:     #93e0e3
 urxvt*color15:     #ffffff
 
+! {{{ CURSOR
+Xcursor.theme: Neutral_Plus
+Xcursor.theme_core: true
+Xcursor.size: 15
+! }}}
+
+! {{{ irssi
+!   -- also: set 'vbell on' in screen
+!   --       set 'bell_msg' "\a in window!"
+urxvt*urgentOnBell: true
+irssi*urgentOnBell:true
+weechat*urgentOnBell:true
+! }}}
+
