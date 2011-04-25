@@ -1,7 +1,5 @@
 #!/bin/bash
 #
-
-# so i can source this into screen terminals that exist across X sessions
 echo "export DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS" \
         | tee $HOME/.var/dbus_session_bus_address
 
@@ -11,6 +9,8 @@ unclutter -noevents -idle 3 -root &
 xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
 wicd-client &
+sonata --hidden &
+thunar --daemon &
 
 #sync PRIMARY with clipboard
 autocutsel -s PRIMARY -buttonup -fork
