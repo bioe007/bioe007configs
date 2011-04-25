@@ -10,5 +10,3 @@ export MOZILLA_FIVE_HOME="/usr/lib/xulrunner-1.9.0.4"
 export AWT_TOOLKIT=MToolkit
 export OOO_FORCE_DESKTOP=gnome
 export INTEL_BATCH=2
-
-export XDG_DATA_DIRS=/usr/share/kde4/:$XDG_DATA_DIRS
