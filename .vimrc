@@ -32,7 +32,7 @@ if has("unix")
     " trailing backslash stores entire file path in backupdir
     let g:my_vimrc = $HOME . "/.vimrc"
     let g:my_vimdir = $HOME . "/.vim"
-    let g:my_guifont = "Terminus\\ 10"
+    let g:my_guifont = "Terminus\\ 12"
 
     set clipboard=autoselect
     set shell=/bin/zsh
@@ -285,12 +285,9 @@ if has("gui_running")
     set guioptions=
     set guioptions+=c
     exe "set guifont=" . g:my_guifont
-    let moria_style='dark'
-    let moria_fontface='mixed'
-    let g:my_colors = 'moria'
+    let g:my_colors = 'zenburn'
 elseif &t_Co == 256
-    let g:my_colors = 'apathy'
-    let g:apathy_style = 'mono'
+    let g:my_colors = 'zenburn'
 else
     let g:my_colors = 'desert'
 endif
@@ -420,7 +417,7 @@ map <f12> :Lodgeit<CR>
 exe 'map <Leader>b :buffer '
 map <silent> <Leader>r :help qrcard<CR><C-W>L:vertical res 60<CR>
 map <silent> <Leader>s :call StripTrailingSpace()<CR>
-noremap <silent> <Leader>a :nohlsearch<CR>
+nnoremap <C-l> :nohlsearch<CR><C-l>
 map <Leader>x :ToggleScratch<CR>
 map <Leader>cc <plug>NERDCommenterToggle
 
@@ -431,11 +428,18 @@ inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
 inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
             \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 
+"Load my TODO list and unfold it
+map <Leader>p :exe "tabe " . $HOME . '/TODO'<CR>zi
+
 ",v ,V edit/reload vimrc
 map <Leader>v :exe "sp" g:my_vimrc<CR>
 map <silent> <Leader>V :exe "source" g:my_vimrc<CR>
             \:filetype detect<CR>
             \:exe ":echo 'vimrc reloaded'"<CR>
+
+" VCS commands
+map <silent> <Leader>d :VCSDiff<CR>
+map <silent> <Leader>ci :VCSCommit<CR>
 
 function! MyGoToLongLine()
     " Helper function moves to the next long line in buffer
@@ -457,17 +461,21 @@ map! <S-Insert> <MiddleMouse>
 
 " windows
 nnoremap <C-k> <C-W>k
-nnoremap <C-h> <C-W>h
-nnoremap <C-l> <C-W>l
 nnoremap <C-j> <C-W>j
 map <C-m> <C-W>+
 map <C-n> <C-W>-
 map <silent> <Leader>t :TlistToggle<CR>
 map <F8> :exe "! " my_ctags_cmd
             \" -R --c++-kinds=+p --fields=+iaS --extra=+q "<CR>
+nnoremap <Leader>, k:call
+            \ search('^'. matchstr(getline(line('.')+1), '\(\s*\)')
+            \ .'\S', 'b')<CR>^
+nnoremap <Leader>. :call
+            \ search('^'. matchstr(getline(line('.')), '\(\s*\)') .'\S')<CR>^
+
 
 " insert time
-map <Leader>d "=strftime("%Y-%m-%d")<CR>P"
+map <Leader>D "=strftime("%Y-%m-%d")<CR>P"
 
 " abbreviations
 iab teh the
