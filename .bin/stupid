@@ -23,7 +23,7 @@ VIDEOSTATEFILE="$HOME/.var/video_state"
 WP_CMD="`which nitrogen` --restore"
 
 # default position, can be changed from cli args
-EXTPOS="--right-of"
+EXTPOS="--left-of"
 
 # my screens
 # add indices here and modelines below for new screens
