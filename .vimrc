@@ -34,7 +34,6 @@ if has("unix")
     let g:my_vimdir = $HOME . "/.vim"
     let g:my_guifont = "Terminus\\ 12"
 
-    set clipboard=autoselect
     set shell=/bin/zsh
 
     set tags=./tags,./TAGS,tags,TAGS,~/.vim/tags/avr,~/.vim/tags/lua
@@ -357,7 +356,6 @@ function! MyPythonSettings()
     call HiPyDocStrings()
     iab __i def __init__(self, *args, **kwargs):
     iab ar* *args, **kwargs):
-
 endfunction
 
 " load the types.vim highlighting file, if it exists
@@ -420,6 +418,9 @@ map <silent> <Leader>s :call StripTrailingSpace()<CR>
 nnoremap <C-l> :nohlsearch<CR><C-l>
 map <Leader>x :ToggleScratch<CR>
 map <Leader>cc <plug>NERDCommenterToggle
+
+" if forget to `sudo vim` a file
+cmap w!! w !sudo tee % >/dev/null
 
 " completion menu
 inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
