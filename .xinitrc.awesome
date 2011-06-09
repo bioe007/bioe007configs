@@ -10,6 +10,7 @@ xrdb -load ~/.Xdefaults &
 xmodmap ~/.Xmodmap &
 wicd-client &
 sonata --hidden &
+dropboxd &
 thunar --daemon &
 
 #sync PRIMARY with clipboard
