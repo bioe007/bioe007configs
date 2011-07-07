@@ -262,7 +262,7 @@ set statusline+=%{&ro?'[RO]':''}
 set statusline+=%#DiffText#%w%*
 set statusline+=%=                          "left/right separator
 set statusline+=%-12.(\[%l,\ %c%V\]%)%*
-set statusline+=%P
+set statusline+=%P\ #%n
 set laststatus=2
 
 if !exists("slau_loaded")
