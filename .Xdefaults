@@ -1,0 +1,96 @@
+! {{{ URXVT
+URxvt*termName:         rxvt-256color
+URxvt*loginShell:       false
+URxvt*saveLines:        5500
+URxvt*geometry:         180x25
+! URxvt*meta8:            true   /* teh fail w/vim and irssi+screen */
+
+/* places a hardcopy in home dir when print is pressed */
+URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
+
+! {{{ URLs mark-and-yank
+!
+URxvt*cutchars:         '`"()\'*<>[]{|}'
+/* match left-mouse-button */
+URxvt*matcher.button:   1
+URxvt.keysym.M-u:       perl:mark-yank-urls:activate_mark_mode
+URxvt.underlineURLs:    true
+URxvt.perl-lib:         /home/perry/.urxvt/
+URxvt.perl-ext:         default,selection,mark-yank-urls
+URxvt.urlLauncher:      /usr/bin/firefox
+! }}}
+
+! {{{ appearance
+! URxvt*transparent:        true
+URxvt.cursorBlink:        true
+URxvt.cursorOnTime:       400
+URxvt.cursorOffTime:      140
+
+! {{{ FONT handling
+Rxvt*font:               xft:Terminus:pixelsize=14:autohint=true
+Rxvt*boldFont:           xft:Terminus:bold:pixelsize=14:bold:autohint=true
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.rgba: rgb
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintfull
+! }}}
+
+URxvt*internalBorder:     3
+URxvt*jumpScroll:         true
+URxvt*scrollTtyOutput:    false
+URxvt*scrollTtyKeypress:    true
+!URxvt*tintColor:          grey
+!URxvt*shading:            10
+!URxvt*fading:             0
+!URxvt*fadeColor:          grey
+URxvt*scrollBar:          False
+!URxvt*scrollBar_floating:          scrollBar_floatingtrue
+!URxvt*scrollBar_right:             scrollBar_rightfalse
+!URxvt*scrollColor:                 #000000
+!URxvt*inheritPixmap:      false
+!URxvt*reverseVideo:       false
+
+! Zenburn color-scheme
+urxvt*background:  #3f3f3f
+urxvt*foreground:  #dcdccc
+! black + red
+!urxvt*color0:     #3f3f3f
+urxvt*color0:      #1E2320
+urxvt*color1:      #705050
+! green + yellow
+urxvt*color2:      #60b48a
+urxvt*color3:      #dfaf8f
+! blue + purple
+urxvt*color4:      #506070
+urxvt*color5:      #dc8cc3
+! cyan + white
+urxvt*color6:      #8cd0d3
+urxvt*color7:      #dcdccc
+! bright-black + bright-red
+urxvt*color8:      #709080
+urxvt*color9:      #dca3a3
+! bright-green + bright-yellow
+urxvt*color10:     #c3bf9f
+urxvt*color11:     #f0dfaf
+! bright-blue + bright-purple
+urxvt*color12:     #94bff3
+urxvt*color13:     #ec93d3
+! bright-cyan + bright-white
+urxvt*color14:     #93e0e3
+urxvt*color15:     #ffffff
+
+! {{{ CURSOR
+Xcursor.theme: Neutral_Plus
+Xcursor.theme_core: true
+Xcursor.size: 15
+! }}}
+
+! {{{ irssi
+!   -- also: set 'vbell on' in screen
+!   --       set 'bell_msg' "\a in window!"
+urxvt*urgentOnBell: true
+irssi*urgentOnBell:true
+weechat*urgentOnBell:true
+! }}}
+
