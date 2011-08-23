@@ -1,0 +1,9 @@
+[submodule "/home/phargrave/.bash"]
+	path = /home/phargrave/.bash
+	url = git@github.com:bioe007/config-bash.git
+[submodule "/home/phargrave/.vim"]
+	path = /home/phargrave/.vim
+	url = git@github.com:bioe007/vim-config.git
+[submodule "/home/phargrave/.config/awesome"]
+	path = /home/phargrave/.config/awesome
+	url = git@github.com:bioe007/awesome-configs.git
