@@ -1,9 +1,0 @@
-gtk-font-name = "Bitstream Vera Sans 9"
-gtk-theme-name = "Obsidian"
-style "userfont"
-{
-        font_name="Bitstream Vera Sans 9"
-}
-widget_class "*" style "userfont"
-widget "*" style "userfont"
-gtk-icon-theme-name="ALLBLACK"

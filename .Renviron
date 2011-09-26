@@ -1,7 +1,0 @@
-
-R_LIBS_USER="~/sandbox/r/lib"
-R_LIBS="~/sandbox/r/lib"
-
-
-
-# vim:set filetype=r textwidth=80 fdm=marker tabstop=4 shiftwidth=4 expandtab smarttab autoindent smartindent:

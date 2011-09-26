@@ -1,7 +1,0 @@
-#!/bin/bash
-num=${1:-2}
-Xephyr -ac +bs -br -noreset -screen 800x450  :$num &
-# Trying to get multi-headed screen (xinerama)
-# Xephyr -ac +bs -br -noreset -screen 800x600 -screen 600x400+800+0  :$num &
-sleep 1
-DISPLAY=:$num.0 awesome

@@ -1,6 +1,0 @@
-#!/bin/bash
-
-file="$1"
-echo $file | xclip -i
-awenotify Copied\\n\\t$file\\n\\nto clipboard.
-
