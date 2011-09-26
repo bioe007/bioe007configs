@@ -1,9 +1,7 @@
 " appearance
-set go-=nmbrT
+set go=
 set go+=n
-" set gui=nonavigation,
-" set tabnumbers
-set showtabline=multitab
+set showtabline='always'
 
 " completion options
 set complete=lshb
