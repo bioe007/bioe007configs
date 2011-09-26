@@ -16,8 +16,8 @@ URxvt*matcher.button:   1
 URxvt.keysym.M-u:       perl:mark-yank-urls:activate_mark_mode
 URxvt.underlineURLs:    true
 URxvt.perl-lib:         /home/perry/.urxvt/
-URxvt.perl-ext:         selection,mark-yank-urls
-URxvt.urlLauncher:      firefox
+URxvt.perl-ext:         default,selection,mark-yank-urls
+URxvt.urlLauncher:      /usr/bin/firefox
 ! }}}
 
 ! {{{ appearance
@@ -38,7 +38,8 @@ Xft.hintstyle:  hintfull
 
 URxvt*internalBorder:     3
 URxvt*jumpScroll:         true
-URxvt*scrollTtyOutput:    true
+URxvt*scrollTtyOutput:    false
+URxvt*scrollTtyKeypress:    true
 !URxvt*tintColor:          grey
 !URxvt*shading:            10
 !URxvt*fading:             0

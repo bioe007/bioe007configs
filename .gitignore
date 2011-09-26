@@ -1,3 +1,4 @@
+tags
 .bash_history
 .aumixrc
 .lesshst
@@ -161,7 +162,6 @@ mail
 .kde4
 .wxglade
 notmail
-*.txt
 .config/xfce4
 .config/qtcurve
 .config/uzbl
@@ -177,4 +177,12 @@ misc
 *.docx
 *.PDF
 .elinks
-*
+.pentadactyl
+.xsession-errors
+.mission-control
+.dropbox
+.fltk
+.wicd
+.pki
+.pulse-cookie
+.lyrics
