@@ -13,13 +13,9 @@ fi
 
 [[ -r "$HOME/.Xmodmap" ]] && xmodmap ~/.Xmodmap &
 /usr/share/eclipse/eclimd > ~/.var/eclimd.log 2>&1 &
+autocutsel -s PRIMARY -buttonup -fork
+dropboxd > ~/.var/dropboxd.log 2>&1 &
+xset +dpms dpms 300 900 0 &
+xset +fp $HOME/.fonts/misc,$HOME/.fonts/new,$HOME/.fonts/profont-x11 &
 
-# handles themes, starts gnome-screensaver. You may have to use gconf to
-# disable it setting the background.
-# gnome-session &
-gnome-settings-daemon &
-nm-applet &             # assuming you're using Network Manager
-gnome-power-manager &   # for laptops and stuff
-# gnome-volume-manager &  # for mounting CDs, USB sticks, and such
-# awesome receives xinit's process id; when it terminates, X will be terminated
 exec ck-launch-session dbus-launch awesome
