@@ -15,6 +15,7 @@ fi
 xset +dpms dpms 300 900 0 &
 xset +fp $HOME/.fonts &
 
+nitrogen --restore &
 nm-applet &
 sonata --hidden &
 /usr/share/eclipse/eclimd > ~/.var/eclimd.log 2>&1 &
