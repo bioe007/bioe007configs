@@ -1,6 +1,6 @@
 " appearance
 set go=
-set go+=n
+set go+=CMNcs
 set showtabline='always'
 
 " completion options
