@@ -1,9 +1,0 @@
-[submodule ".bash"]
-	path = .bash
-	url = git@github.com:bioe007/config-bash.git
-[submodule ".vim"]
-	path = .vim
-	url = git@github.com:bioe007/vim-config.git
-[submodule ".config/awesome"]
-	path = .config/awesome
-	url = git@github.com:bioe007/awesome-configs.git
