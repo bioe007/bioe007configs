@@ -1,12 +1,7 @@
-# Configuration file for dircolors, a utility to help you set the
-# LS_COLORS environment variable used by GNU ls with the --color option.
-# Copyright (C) 1996, 1999-2009
-# Free Software Foundation, Inc.
-# Copying and distribution of this file, with or without modification,
-# are permitted provided the copyright notice and this notice are preserved.
-# The keywords COLOR, OPTIONS, and EIGHTBIT (honored by the
-# slackware version of dircolors) are recognized but ignored.
-# Below, there should be one TERM entry for each termtype that is colorizable
+# Zenburn color theme for the color GNU ls utility.
+# Ivaylo Kuzev <ivkuzev@gmail.com>, 2014 - 2015
+
+# Term Section
 TERM Eterm
 TERM ansi
 TERM color-xterm
@@ -36,15 +31,22 @@ TERM mach-color
 TERM mlterm
 TERM putty
 TERM rxvt
+TERM rxvt-256color
 TERM rxvt-cygwin
 TERM rxvt-cygwin-native
 TERM rxvt-unicode
+TERM rxvt-unicode256
+TERM rxvt-unicode-256color
 TERM screen
 TERM screen-256color
 TERM screen-256color-bce
 TERM screen-bce
 TERM screen-w
 TERM screen.linux
+TERM st
+TERM st-meta
+TERM st-256color
+TERM st-meta-256color
 TERM vt100
 TERM xterm
 TERM xterm-16color
@@ -52,154 +54,215 @@ TERM xterm-256color
 TERM xterm-88color
 TERM xterm-color
 TERM xterm-debian
-# Below are the color init strings for the basic file types. A color init
-# string consists of one or more of the following numeric codes:
+TERM xterm-termite
+
+## Documentation
+#
 # Attribute codes:
 # 00=none 01=bold 04=underscore 05=blink 07=reverse 08=concealed
 # Text color codes:
 # 30=black 31=red 32=green 33=yellow 34=blue 35=magenta 36=cyan 37=white
 # Background color codes:
 # 40=black 41=red 42=green 43=yellow 44=blue 45=magenta 46=cyan 47=white
-#NORMAL 00 # no color code at all
-#FILE 00 # regular file: use no color at all
-RESET 0 # reset to "normal" color
-DIR 01;34 # directory
-LINK 01;36 # symbolic link. (If you set this to 'target' instead of a
- # numerical value, the color is as for the file pointed to.)
-MULTIHARDLINK 00 # regular file with more than one link
-FIFO 40;33 # pipe
-SOCK 01;35 # socket
-DOOR 01;35 # door
-BLK 40;33;01 # block device driver
-CHR 40;33;01 # character device driver
-ORPHAN 40;31;01 # symlink to nonexistent file, or non-stat'able file
-SETUID 37;41 # file that is setuid (u+s)
-SETGID 30;43 # file that is setgid (g+s)
-CAPABILITY 30;41 # file with capability
-STICKY_OTHER_WRITABLE 00;31 # dir that is sticky and other-writable (+t,o+w)
-OTHER_WRITABLE 04;42 # dir that is other-writable (o+w) and not sticky
-STICKY 37;44 # dir with the sticky bit set (+t) and not other-writable
+#
+# Text 256 color coding:
+# 38;5;COLOR_NUMBER
+# Background 256 color coding:
+# 48;5;COLOR_NUMBER
+
+# block device driver:
+BLK 48;5;108;38;5;223;01
+# file with capability:
+CAPABILITY 01;38;5;95
+# character device driver:
+CHR 48;5;108;38;5;223;01
+# directory:
+DIR 01;38;5;223
+# door:
+DOOR 48;5;234;38;5;180;01
 # This is for files with execute permission:
-EXEC 01;32
-# List any file extensions like '.gz' or '.tar' that you would like ls
-# to colorize below. Put the extension, a space, and the color init string.
-# (and any comments you want to add after a '#')
-# If you use DOS-style suffixes, you may want to uncomment the following:
-#.cmd 01;32 # executables (bright green)
-#.exe 01;32
-#.com 01;32
-#.btm 01;32
-#.bat 01;32
-# Or if you want to colorize scripts even if they do not have the
-# executable bit actually set.
-#.sh 01;32
-#.csh 01;32
- # archives or compressed (bright red)
-.tar 01;31
-.tgz 01;31
-.arj 01;31
-.taz 01;31
-.lzh 01;31
-.lzma 01;31
-.tlz 01;31
-.txz 01;31
-.zip 01;31
-.z 01;31
-.Z 01;31
-.dz 01;31
-.gz 01;31
-.lz 01;31
-.xz 01;31
-.bz2 01;31
-.bz 01;31
-.tbz 01;31
-.tbz2 01;31
-.tz 01;31
-.deb 01;31
-.rpm 01;31
-.jar 01;31
-.rar 01;31
-.ace 01;31
-.zoo 01;31
-.cpio 01;31
-.7z 01;31
-.rz 01;31
-# image formats
-.jpg 01;35
-.jpeg 01;35
-.gif 01;35
-.bmp 01;35
-.pbm 01;35
-.pgm 01;35
-.ppm 01;35
-.tga 01;35
-.xbm 01;35
-.xpm 01;35
-.tif 01;35
-.tiff 01;35
-.png 01;35
-.svg 01;35
-.svgz 01;35
-.mng 01;35
-.pcx 01;35
-.mov 01;35
-.mpg 01;35
-.mpeg 01;35
-.m2v 01;35
-.mkv 01;35
-.ogm 01;35
-.mp4 01;35
-.m4v 01;35
-.mp4v 01;35
-.vob 01;35
-.qt 01;35
-.nuv 01;35
-.wmv 01;35
-.asf 01;35
-.rm 01;35
-.rmvb 01;35
-.flc 01;35
-.avi 01;35
-.fli 01;35
-.flv 01;35
-.gl 01;35
-.dl 01;35
-.xcf 01;35
-.xwd 01;35
-.yuv 01;35
-.cgm 01;35
-.emf 01;35
-# http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions
-.axv 01;35
-.anx 01;35
-.ogv 01;35
-.ogx 01;35
+EXEC 01;38;5;108
+# pipe:
+FIFO 48;5;234;38;5;180;01
+# regular file:
+#FILE 00
+# symbolic link:
+LINK 48;5;234;38;5;223
+# normal (nonfilename) text:
+#NORMAL 00
+# orphaned symbolic link:
+ORPHAN 48;5;234;38;5;187
+# directory that is other-writable (o+w) and not sticky:
+OTHER_WRITABLE 48;5;234;38;5;180
+# file that is setuid (u+s):
+SETUID 48;5;234;38;5;66
+# file that is setgid (g+s):
+SETGID 48;5;234;38;5;66
+# socket:
+SOCK 48;5;234;38;5;180;01
+# directory with the sticky bit set (+t) and not other-writable:
+STICKY 48;5;180;38;5;234
+# dir that is sticky and other-writable (+t,o+w):
+STICKY_OTHER_WRITABLE 48;5;180;38;5;234
+
+# archives
+.7z 01;38;5;174
+.arj 01;38;5;174
+.bz2 01;38;5;174
+.bz 01;38;5;174
+.gz 01;38;5;174
+.rar 01;38;5;174
+.tar 01;38;5;174
+.tgz 01;38;5;174
+.tbz 01;38;5;174
+.tbz2 01;38;5;174
+.xz 01;38;5;174
+.zip 01;38;5;174
+
+# packaged apps
+.apk 01;38;5;95
+.deb 01;38;5;174
+.jad 01;38;5;95
+.jar 01;38;5;95
+.rpm 01;38;5;174
+
+# images|graphics
+.bmp 00;38;5;109
+.gif 00;38;5;109
+.ico 00;38;5;109
+.jpg 00;38;5;109
+.JPG 00;38;5;109
+.jpeg 00;38;5;109
+.png 00;38;5;109
+.svg 00;38;5;109
+.xbm 00;38;5;109
+.xpm 00;38;5;109
+
 # audio formats
-.aac 00;36
-.au 00;36
-.flac 00;36
-.mid 00;36
-.midi 00;36
-.mka 00;36
-.mp3 00;36
-.mpc 00;36
-.ogg 00;36
-.ra 00;36
-.wav 00;36
-# http://wiki.xiph.org/index.php/MIME_Types_and_File_Extensions
-.axa 00;36
-.oga 00;36
-.spx 00;36
-.xspf 00;36
-# some source files
-.h 01;33
-.c 01;36
-.cpp 01;36
-.hex 01;44
-.map 04;32
-.lst 04;32
-.src 04;32
-.lua 01;36
-.R 01;36
-.py 01;36
-.pyc 01;32
+.aac 00;38;5;116
+.au 00;38;5;116
+.flac 00;38;5;116
+.mid 00;38;5;116
+.midi 00;38;5;116
+.mka 00;38;5;116
+.mp3 00;38;5;116
+.mpc 00;38;5;116
+.ogg 00;38;5;116
+.ra 00;38;5;116
+.wav 00;38;5;116
+
+# video formats
+.mov 00;38;5;66
+.mpg 00;38;5;66
+.mpeg 00;38;5;66
+.m2v 00;38;5;66
+.mkv 00;38;5;66
+.ogm 00;38;5;66
+.mp4 00;38;5;66
+.m4v 00;38;5;66
+.mp4v 00;38;5;66
+.vob 00;38;5;66
+.qt 00;38;5;66
+.nuv 00;38;5;66
+.wmv 00;38;5;66
+.asf 00;38;5;66
+.rm 00;38;5;66
+.rmvb 01;38;5;66
+.flc 00;38;5;66
+.avi 00;38;5;66
+.fli 00;38;5;66
+.flv 00;38;5;66
+.gl 00;38;5;66
+.m2ts 00;38;5;66
+.divx 00;38;5;66
+.webm 00;38;5;66
+
+# shell
+.awk 00;38;5;151
+.bash 00;38;5;151
+.bat 00;38;5;151
+.BAT 00;38;5;151
+.sed 00;38;5;151
+.sh 00;38;5;151
+.zsh 00;38;5;151
+
+# build
+*CMakeLists.txt 00;38;5;187
+.cabal 00;38;5;187
+*Makefile 00;38;5;187
+.mk 00;38;5;187
+.make 00;38;5;187
+
+# source files
+.c 01;38;5;187
+.h 01;38;5;187
+.s 01;38;5;187
+.cs 01;38;5;187
+.java 01;38;5;187
+.scala 01;38;5;187
+.hs 01;38;5;187
+.py 01;38;5;187
+.rb 01;38;5;187
+.php 01;38;5;187
+.pl 01;38;5;187
+.vim 01;38;5;187
+.js 01;38;5;187
+.coffee 01;38;5;187
+.go 01;38;5;187
+.lisp 01;38;5;187
+.scm 01;38;5;187
+
+# documents
+.txt 04;38;5;188
+.tex 04;38;5;188
+.html 04;38;5;188
+.xhtml 04;38;5;188
+.xml 04;38;5;188
+.md 04;38;5;188
+.mkd 04;38;5;188
+.markdown 04;38;5;188
+.org 04;38;5;188
+.pandoc 04;38;5;188
+.pdc 04;38;5;188
+.pdf 04;38;5;188
+
+# Files of special interest
+*rc 04;38;5;180
+.conf 04;38;5;180
+*Dockerfile 04;38;5;180
+
+# meta
+*README 04;38;5;187
+*LICENSE 04;38;5;187
+*AUTHORS 04;38;5;187
+
+# version control
+.gitignore 00;38;5;248
+.gitmodules 00;38;5;248
+
+# logs and backups
+.log 00;38;5;234
+.bak 00;38;5;234
+.aux 00;38;5;234
+.toc 00;38;5;234
+*~ 00;38;5;234
+*# 00;38;5;234
+.swp 00;38;5;234
+.tmp 00;38;5;234
+.temp 00;38;5;234
+.o 00;38;5;234
+.pyc 00;38;5;234
+.class 00;38;5;234
+.cache 00;38;5;234
+
+# pacman files
+.pacnew 48;5;95;38;5;108
+.pacsave 48;5;95;38;5;108
+.pacorig 48;5;95;38;5;108
+*PKGBUILD 00;38;5;110
+
+# rpm files
+.rpmsave 48;5;95;38;5;108
+.rpmorig 48;5;95;38;5;108
+.rpmnew 48;5;95;38;5;108
+.spec 00;38;5;110
