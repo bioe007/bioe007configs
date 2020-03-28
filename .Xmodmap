@@ -31,8 +31,8 @@ keycode 179 = XF86Tools
 
 remove Mod4 = Super_L
 remove Lock = Caps_Lock
-keysym Escape = Caps_Lock
-keysym Super_L = Escape
+!keysym Escape = Caps_Lock
+!keysym Super_L = Escape
 keysym Caps_Lock = Super_L
 add Lock = Caps_Lock
 add Mod4 = Super_L
