@@ -5,19 +5,19 @@ URxvt*saveLines:        5500
 URxvt*geometry:         180x25
 ! URxvt*meta8:            true   /* teh fail w/vim and irssi+screen */
 
-/* places a hardcopy in home dir when print is pressed */
-URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
+!/* places a hardcopy in home dir when print is pressed */
+!URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
 
 ! {{{ URLs mark-and-yank
 !
 URxvt*cutchars:         '`"()\'*<>[]{|}'
-/* match left-mouse-button */
+!/* match left-mouse-button */
 URxvt*matcher.button:   1
-URxvt.keysym.M-u:       perl:mark-yank-urls:activate_mark_mode
+!URxvt.keysym.M-u:       perl:mark-yank-urls:activate_mark_mode
 URxvt.underlineURLs:    true
 URxvt.perl-lib:         /home/perry/.urxvt/
 URxvt.perl-ext:         default,selection,mark-yank-urls
-URxvt.urlLauncher:      /usr/bin/firefox
+! URxvt.urlLauncher:      /usr/bin/firefox
 ! }}}
 
 ! {{{ appearance
@@ -27,29 +27,25 @@ URxvt.cursorOnTime:       400
 URxvt.cursorOffTime:      140
 
 ! {{{ FONT handling
-Rxvt*font:               xft:Terminus:pixelsize=14:autohint=true
-Rxvt*boldFont:           xft:Terminus:bold:pixelsize=14:bold:autohint=true
+Rxvt*font:               xft:Hack:pixelsize=14:autohint=true
+Rxvt*boldFont:           xft:Hack:bold:pixelsize=14:bold:autohint=true
 Xft.antialias: 1
 Xft.hinting: 1
 Xft.rgba: rgb
 Xft.lcdfilter:  lcddefault
 Xft.hintstyle:  hintfull
+
+! :Bind C-0, C-+ and C-= to activate small, medium, and big font size resp.     
+URxvt.keysym.C-0: command:\033]710;xft:Hack:pixelsize=14:autohint=true\007
+URxvt.keysym.C-minus: command:\033]710;xft:Hack:pixelsize=12:autohint=true\007
+URxvt.keysym.C-equal: command:\033]710;xft:Hack:pixelsize=16:autohint=true\007
 ! }}}
 
 URxvt*internalBorder:     3
 URxvt*jumpScroll:         true
 URxvt*scrollTtyOutput:    false
 URxvt*scrollTtyKeypress:    true
-!URxvt*tintColor:          grey
-!URxvt*shading:            10
-!URxvt*fading:             0
-!URxvt*fadeColor:          grey
 URxvt*scrollBar:          False
-!URxvt*scrollBar_floating:          scrollBar_floatingtrue
-!URxvt*scrollBar_right:             scrollBar_rightfalse
-!URxvt*scrollColor:                 #000000
-!URxvt*inheritPixmap:      false
-!URxvt*reverseVideo:       false
 
 ! Zenburn color-scheme
 urxvt*background:  #3f3f3f

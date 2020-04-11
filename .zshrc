@@ -104,6 +104,7 @@ export GOPATH="$HOME/go"
 PATH="${GOPATH}/bin:$PATH"
 export PATH="${HOME}/bin:${HOME}/.local/bin:${PATH}"
 
+export EDITOR="$(which vim)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # ole words. de# key bindings
