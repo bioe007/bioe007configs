@@ -1,0 +1,94 @@
+! {{{ URXVT
+URxvt*termName:         rxvt-256color
+URxvt*loginShell:       false
+URxvt*saveLines:        5500
+URxvt*geometry:         180x25
+! URxvt*meta8:            true   /* teh fail w/vim and irssi+screen */
+
+!/* places a hardcopy in home dir when print is pressed */
+!URxvt.print-pipe: cat > $(TMPDIR=$HOME mktemp urxvt.XXXXX)
+
+! {{{ URLs mark-and-yank
+!
+!URxvt.copyCommand: xclip -i -selection clipboard
+!URxvt.pasteCommand: xclip -o -selection clipboard
+
+URxvt*cutchars:         '`"()\'*<>[]{|}'
+URxvt.perl-ext-common:  default,matcher,selection,keyboard-select,url-select
+!/* match left-mouse-button */
+URxvt*matcher.button:   1
+URxvt.keysym.M-Escape:  perl:keyboard-select:activate
+URxvt.keysym.M-u:       perl:url-select:select_next
+URxvt.url-select.launcher: xdg-open
+URxvt.url-select.underline:    true
+URxvt.keyboard-select.clipboard: true
+! }}}
+
+! {{{ appearance
+! URxvt*transparent:        true
+URxvt.cursorBlink:        true
+URxvt.cursorOnTime:       400
+URxvt.cursorOffTime:      140
+
+! {{{ FONT handling
+Rxvt*font:               xft:Hack:pixelsize=14:autohint=true
+Rxvt*boldFont:           xft:Hack:bold:pixelsize=14:bold:autohint=true
+Xft.antialias: 1
+Xft.hinting: 1
+Xft.rgba: rgb
+Xft.lcdfilter:  lcddefault
+Xft.hintstyle:  hintfull
+
+! :Bind C-0, C-+ and C-= to activate normal, smaller, and big font size resp.
+URxvt.keysym.C-0: command:\033]710;xft:Hack:pixelsize=14:autohint=true\007
+URxvt.keysym.C-minus: command:\033]710;xft:Hack:pixelsize=12:autohint=true\007
+URxvt.keysym.C-equal: command:\033]710;xft:Hack:pixelsize=16:autohint=true\007
+! }}}
+
+URxvt.internalBorder:     10
+URxvt*jumpScroll:         true
+URxvt*scrollTtyOutput:    false
+URxvt*scrollTtyKeypress:  true
+URxvt*scrollBar:          False
+
+! Zenburn color-scheme
+urxvt*background:  #3f3f3f
+urxvt*foreground:  #dcdccc
+! black + red
+!urxvt*color0:     #3f3f3f
+urxvt*color0:      #1E2320
+urxvt*color1:      #fc5050
+! green + yellow
+urxvt*color2:      #60b48a
+urxvt*color3:      #dfaf8f
+! blue + purple
+urxvt*color4:      #506070
+urxvt*color5:      #dc8cc3
+! cyan + white
+urxvt*color6:      #8cd0d3
+urxvt*color7:      #dcdccc
+! bright-black + bright-red
+urxvt*color8:      #709080
+urxvt*color9:      #dca3a3
+! bright-green + bright-yellow
+urxvt*color10:     #c3bf9f
+urxvt*color11:     #f0dfaf
+! bright-blue + bright-purple
+urxvt*color12:     #94bff3
+urxvt*color13:     #ec93d3
+! bright-cyan + bright-white
+urxvt*color14:     #93e0e3
+urxvt*color15:     #ffffff
+
+! {{{ CURSOR
+Xcursor.theme: Neutral_Plus
+Xcursor.theme_core: true
+Xcursor.size: 15
+! }}}
+
+! {{{ irssi
+!   -- also: set 'vbell on' in screen
+!   --       set 'bell_msg' "\a in window!"
+urxvt*urgentOnBell: true
+weechat*urgentOnBell:true
+! }}}
