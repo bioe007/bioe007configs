@@ -85,6 +85,7 @@ alias less="less -R"
 alias grep="grep --color=auto"
 alias gst="git status"
 alias tma="tmux attach || tmux"
+alias ca="conda deactivate && conda activate"
 
 bindkey -v
 
