@@ -34,6 +34,7 @@ zplugin ice pick"async.zsh" src"pure.zsh"; zplugin light sindresorhus/pure
 # Load OMZ Git library
 zplugin snippet OMZ::lib/git.zsh
 
+zplugin snippet OMZ::plugins/colored-man-pages/colored-man-pages.plugin.zsh
 # Load Git plugin from OMZ
 zplugin snippet OMZ::plugins/git/git.plugin.zsh
 # zplugin snippet OMZ::plugins/virtualenv/virtualenv.plugin.zsh
