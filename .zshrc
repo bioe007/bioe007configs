@@ -6,8 +6,8 @@
 setopt histignorealldups sharehistory
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
-HISTSIZE=1000
-SAVEHIST=10000
+HISTSIZE=10000
+SAVEHIST=100000
 HISTFILE=~/.zsh_history
 
 # Use modern completion system
@@ -78,6 +78,9 @@ fi
 if [ -r ~/.alias ] ; then
     source ~/.alias
 fi
+if [ -r /usr/share/nvm/init-nvm.sh ] ; then
+    source /usr/share/nvm/init-nvm.sh
+fi
 alias p="sudo pacman"
 alias snap="sudo snap"
 alias suspend="sudo systemctl suspend"
@@ -86,7 +89,7 @@ alias less="less -R"
 alias grep="grep --color=auto"
 alias gst="git status"
 alias tma="tmux attach || tmux"
-alias ca="conda deactivate && conda activate"
+# alias ca="conda deactivate && conda activate"
 
 bindkey -v
 
@@ -137,16 +140,26 @@ bindkey '^i' expand-or-complete-prefix
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/perry/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/perry/anaconda3/etc/profile.d/conda.sh" ]; then
-        . "/home/perry/anaconda3/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/perry/anaconda3/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+# __conda_setup="$('/home/perry/anaconda3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+# if [ $? -eq 0 ]; then
+    # eval "$__conda_setup"
+# else
+    # if [ -f "/home/perry/anaconda3/etc/profile.d/conda.sh" ]; then
+        # . "/home/perry/anaconda3/etc/profile.d/conda.sh"
+    # else
+        # export PATH="/home/perry/anaconda3/bin:$PATH"
+    # fi
+# fi
+# unset __conda_setup
+# # <<< conda initialize <<<
+
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/home/perry/google-cloud-sdk/path.zsh.inc' ]; then . '/home/perry/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/home/perry/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/perry/google-cloud-sdk/completion.zsh.inc'; fi
+
+source ~/.fzf/shell/key-bindings.zsh
+source ~/.fzf/shell/completion.zsh
 
