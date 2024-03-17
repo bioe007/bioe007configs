@@ -1,0 +1,81 @@
+#!/bin/sh
+
+mkdir -p $1/{bin,build,config,include,lib,src}
+mkdir -p $1/{bin,build}/{Debug,Release}
+
+
+cat > $1/CMakeLists.txt << EOF 
+cmake_minimum_required(VERSION 3.14)
+
+project($1 VERSION 0.1)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# GoogleTest Setup boilerplate, note that the URL should be updated periodically
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/e2239ee6043f73722e7aa812a459f54a28552929.zip
+)
+# For Windows: Prevent overriding the parent project's compiler/linker settings
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+# EXAMPLE for adding gtest executables
+# add_executable(
+    # hello_test
+    # hello_test.cc
+# )
+
+# Add test executables here with gtest_main
+target_link_libraries(
+    gtest_main
+)
+
+configure_file(include/config.h.in
+    "\${CMAKE_CURRENT_SOURCE_DIR}/include/config.h")
+
+
+add_executable($1
+    "\${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
+
+target_include_directories($1 PUBLIC
+    "\${CMAKE_CURRENT_SOURCE_DIR}/include")
+
+set_target_properties($1
+    PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "\${PROJECT_SOURCE_DIR}/bin/$<CONFIG>")
+
+target_compile_features($1 PUBLIC cxx_std_11)
+
+# add compiler warning flags just when building this project
+# via the BUILD_INTERFACE generator expression
+set(gcc_like_cxx "$<COMPILE_LANG_AND_ID:CXX,ARMClang,AppleClang,Clang,GNU>")
+set(msvc_cxx "$<COMPILE_LANG_AND_ID:CXX,MSVC>")
+
+set(gcc_flags "-Wall;-Wextra;-Wshadow;-Wshadow;-Wformat=2")
+set(msvc_flags "-W3")
+
+target_compile_options($1 PRIVATE
+   "$<${gcc_like_cxx}:$<BUILD_INTERFACE:${gcc_flags}>>"
+   "$<${msvc_cxx}: $<BUILD_INTERFACE:${msvc_flags}>>")
+
+include(GoogleTest)
+# Add the test
+# gtest_discover_tests(<hello>_test)
+
+
+# vim: filetype=cmake
+EOF
+
+cat > $1/include/config.h.in << EOF
+#pragma once
+#define VERSION_MAJOR @Imview_VERSION_MAJOR@
+#define VERSION_MINOR @Imview_VERSION_MINOR@
+EOF
+
+# needed for clangd completion
+ln -sf build/Debug/compile_commands.json $1/compile_commands.json

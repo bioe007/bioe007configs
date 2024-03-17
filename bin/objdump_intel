@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# helper to dump intel-like
+#
+#
+
+objdump -z -M intel -S -D -j .data -j .bss

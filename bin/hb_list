@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+# List titles with handbrake, helpful for finding the main feature.
+#
+
+HandBrakeCLI -i ${1} -t --main-feature 2>&1 | grep -C2 'Main\ Feature'

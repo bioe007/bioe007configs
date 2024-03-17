@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# --preset-list
+# iPhone & iPod Touch:
+#       -e x264  -q 20.0 -a 1 -E faac -B 128
+#       -6 dpl2 -R Auto -D 0.0 -f mp4 -X 480
+#       -m -x
+#       abac=0:ref=2:me=umh:bframes=0:weightp=0:subme=6:8x8dct=0:trellis=0
+
+dir_name="$(pwd)"
+
+NICENR=19
+
+# Accepts arg1 as input directory
+dir_input="${1:-VIDEO_TS}"
+
+dir_source="-i $dir_input"
+
+outname="$(basename $dir_name)"
+outname="$(titlecase $outname)"
+outname="${2:-$outname}"
+# output to mp4 container, with chapter markers.
+destination="-f mp4 -m -o ${outname}_ipod.mp4"
+
+# ffmpeg faster, 600 bitrate
+video_options="-e ffmpeg4 -vb 600"
+video_options="-e x264 -vb 600"
+
+video_extended="abac=0:ref=2:me=umh:bframes=0:weightp=0:subme=6:8x8dct=0:trellis=0"
+video_options="$video_options $video_extended"
+
+# Single track, faac encode @128kbps in stereo
+audio_options="-a 1 -E faac -B 64 --mixdown stereo"
+
+# 480pix width
+picture_options="-X 480"
+
+echo "dir_input: $dir_input"
+echo "dir_source: $dir_source"
+echo "destination: $destination"
+
+nice -n $NICENR HandBrakeCLI \
+    $dir_source $video_options $audio_options $picture_options $destination

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+# scrot -s "/$HOME/Images/Screenshots/qr_%F_%T_$wx$h.png" \
+#     -e 'echo Image size $w x $h; echo ""; zbarimg -q "$f"' | \
+#     sed -i s/^QR-Code:// | brave --incognito -
+
+BROWSER=$(which brave)
+BROWSER_OPTS='--incognito'
+URL=$(scrot -s "/$HOME/Images/Screenshots/qr_%F_%T_$wx$h.png" -e 'zbarimg -q "$f"| sed s/^QR-Code://')
+
+
+$BROWSER $BROWSER_OPTS $URL
+
+

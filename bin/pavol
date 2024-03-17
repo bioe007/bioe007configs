@@ -1,0 +1,8 @@
+#!/bin/bash
+
+VARG=$1
+VOLUME=${VARG:-'+5%'}
+for SINK in `pacmd list-sinks | grep 'index:' | cut -b12-`; do
+    echo $VOLUME
+    pactl set-sink-volume $SINK $VOLUME
+done

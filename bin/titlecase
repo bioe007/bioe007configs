@@ -1,0 +1,3 @@
+#!/bin/bash
+#
+echo "$1" | tr [:upper:] [:lower:] | sed -e 's/[^\_]*/\u&/g' -e 's/[^\/]*/\u&/g'

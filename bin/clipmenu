@@ -1,0 +1,7 @@
+#!/bin/bash
+
+/usr/bin/clipmenu -nb '#DCDCCC' \
+        -nf '#3F3F3F' \
+        -sf '#1E2320' \
+        -sb '#F0DFAF'
+

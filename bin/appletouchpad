@@ -1,0 +1,44 @@
+#!/bin/bash
+# notes, this is what  i'm seeing when listing capabilities.
+# Device 'Apple Inc. Magic Trackpad 2':
+#       Device Enabled (154):   1
+#       Coordinate Transformation Matrix (156): 1.000000, 0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000, 1.000000
+# NOTE: libinput Tapping Enabled (371): 1
+#       libinput Tapping Enabled Default (372): 0
+#       libinput Tapping Drag Enabled (373):    1
+#       libinput Tapping Drag Enabled Default (374):    1
+#       libinput Tapping Drag Lock Enabled (375):       0
+#       libinput Tapping Drag Lock Enabled Default (376):       0
+#       libinput Tapping Button Mapping Enabled (377):  1, 0
+#       libinput Tapping Button Mapping Default (378):  1, 0
+#       libinput Natural Scrolling Enabled (288):       0
+#       libinput Natural Scrolling Enabled Default (289):       0
+#       libinput Scroll Methods Available (290):        1, 1, 0
+#       libinput Scroll Method Enabled (291):   1, 0, 0
+#       libinput Scroll Method Enabled Default (292):   1, 0, 0
+#       libinput Click Methods Available (379): 1, 1
+#       libinput Click Method Enabled (380):    1, 0
+#       libinput Click Method Enabled Default (381):    0, 1
+#       libinput Middle Emulation Enabled (297):        0
+#       libinput Middle Emulation Enabled Default (298):        0
+#       libinput Accel Speed (299):     0.000000
+#       libinput Accel Speed Default (300):     0.000000
+#       libinput Accel Profiles Available (301):        1, 1
+#       libinput Accel Profile Enabled (302):   1, 0
+#       libinput Accel Profile Enabled Default (303):   1, 0
+#       libinput Left Handed Enabled (304):     0
+#       libinput Left Handed Enabled Default (305):     0
+#       libinput Send Events Modes Available (273):     1, 0
+#       libinput Send Events Mode Enabled (274):        0, 0
+#       libinput Send Events Mode Enabled Default (275):        0, 0
+#       Device Node (276):      "/dev/input/event27"
+#       Device Product ID (277):        76, 613
+#       libinput Drag Lock Buttons (306):       <no items>
+#       libinput Horizontal Scroll Enabled (307):       0
+
+
+MYTPAD="Apple Inc. Magic Trackpad 2"
+TAPPING="libinput Tapping Enabled"
+
+xinput set-prop "$MYTPAD" "$TAPPING" 1
+

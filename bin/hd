@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# helper to make canonical hexdumps easier.
+
+hexdump -C $@

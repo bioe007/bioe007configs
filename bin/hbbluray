@@ -1,0 +1,78 @@
+#!/bin/bash
+
+# --preset-list
+#
+# High Profile
+#       -e x264  -q 20.0 -a 1,1 -E faac,copy:ac3 -B 160,160 -6 dpl2,auto -R
+#       Auto,Auto -D 0.0,0.0 -f mp4 -4 --detelecine --decomb --loose-anamorphic
+#       -m -x b-adapt=2:rc-lookahead=50
+
+titlecase () {
+    echo "$1" | tr [:upper:] [:lower:] | sed -e 's/[^\_]*/\u&/g' -e 's/[^\/]*/\u&/g'
+}
+
+dir_name="$(pwd)"
+
+# Can specify niceness when called
+NICENR="${NICE:-19}"
+
+QUALITY="${QUALITY:-23}"
+
+OUTDIR="${OUTDIR:-/mnt/xertia/media/dvd}"
+
+TITLE="${TITLE:--2}"
+
+# Accepts arg1 as input directory, otherwise searches for a default
+#dir_input="${1:-$(find . -maxdepth 5 -type d -name VIDEO_TS)}"
+dir_input="${1:-/media/bluray}"
+
+if [ -z "$dir_input" ] ; then
+    echo "No input directory found"
+    exit 1
+fi
+
+dir_source="-i $dir_input"
+
+outname="$(blkid -o value -s LABEL /dev/sr0)"
+outname=$(titlecase $outname)
+outname="$OUTDIR/${2:-$outname}.mp4"
+
+
+# Single track, faac encode @160kbps pro-logic 2, auto sample rate
+audio="-E faac,copy:ac3 -B 160,160 -6 dpl2,auto -R Auto,Auto -D 0.0,0.0 "
+
+# to mp4 container, with chapter markers.
+# NOTE: Removed -4 switch as it breaks PS3 compatibility
+destination="-f mp4 -m -o ${outname}"
+
+v_ext="-x b-adapt=2:rc-lookahead=50"
+v_ext+=" abac=0:ref=2:me=umh:bframes=0:weightp=0:subme=6:8x8dct=0:trellis=0"
+video=" -e x264 -q ${QUALITY} -a 1,1 $v_ext"
+
+if (( "${TITLE}" >= -1 )) ; then
+    video+=" -t ${TITLE}"
+fi
+
+filter="--detelecine --decomb"
+
+picture="--loose-anamorphic"
+
+subtitle=""
+
+echo '-----------------------------------------'
+echo 'Confirm settings:'
+for var in dir_source dir_input outname video audio picture filter subtitle; do
+    echo -e \t$var = ${!var}
+done
+echo -e "\nnice -n $NICENR HandBrakeCLI $dir_source $video $audio $picture $destination"
+echo -e "\nDoes this look OK? [y/N]"
+read PROCEED
+if [ "$PROCEED" != "y" ]; then
+    echo "Aborting due to user request"
+    exit 1
+fi
+
+echo 'Beginning encoding job...'
+
+nice -n $NICENR HandBrakeCLI \
+    $dir_source $video $audio $picture $subtitle $destination

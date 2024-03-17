@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# no matter how i tried with stupid nvidia settings it never works so i guess
+# just do this every time i start x... 
+
+# xrandr --output DP-1 --rotate left --left-of DP-3 --output DP-3 --primary
+
+xrandr --output DP-4 --mode 3440x1440 --rate 75.05
+xrandr --output DP-0 --mode 2560x1440 --rotate left --left-of DP-4 --output DP-4 --primary
