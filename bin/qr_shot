@@ -6,10 +6,17 @@
 #     sed -i s/^QR-Code:// | brave --incognito -
 
 BROWSER=$(which brave)
-BROWSER_OPTS='--incognito'
+BROWSER_OPTS='--new-window'
+# Seems like --class=QRFOLLOW flag doesn't work in brave
+
 URL=$(scrot -s "/$HOME/Images/Screenshots/qr_%F_%T_$wx$h.png" -e 'zbarimg -q "$f"| sed s/^QR-Code://')
 
 
-$BROWSER $BROWSER_OPTS $URL
-
+if [[ "$URL" =~ ^"https" ]] ; then
+    $BROWSER $BROWSER_OPTS $URL
+else
+    echo "Cant find url or url is not secure:"
+    echo "${URL}"
+    echo
+fi
 

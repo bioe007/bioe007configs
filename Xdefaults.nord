@@ -34,8 +34,8 @@ URxvt.cursorOffTime:      140
 !Rxvt*font:               xft:TerminessNerdFontMono:pixelsize=14:autohint=true
 !Rxvt*boldFont:           xft:TerminessNerdFontMono:bold:pixelsize=14:bold:autohint=true
 ! Rxvt*font:               xft:Terminus:pixelsize=16:autohint=true
-URxvt*font:               xft:TerminessNerdFontMono:pixelsize=16
-URxvt*boldFont:           xft:TerminessNerdFontMono:bold:pixelsize=16:bold:autohint=true
+URxvt*font:               xft:TerminessNerdFontMono:pixelsize=14
+URxvt*boldFont:           xft:TerminessNerdFontMono:bold:pixelsize=14:bold:autohint=true
 Xft.antialias: 1
 Xft.hinting: 1
 Xft.rgba: rgb
