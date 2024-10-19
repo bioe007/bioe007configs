@@ -1,9 +1,15 @@
 #!/bin/bash
 
 # no matter how i tried with stupid nvidia settings it never works so i guess
-# just do this every time i start x... 
+# just do this every time i start x...
 
-# xrandr --output DP-1 --rotate left --left-of DP-3 --output DP-3 --primary
+# --left-of DP-4 --output DP-4 --primary
+xrandr --output DP-4 --mode 3440x1440 --rate 99.98
+# --right-of DP-0
+xrandr --output DP-0 --mode 2560x1440 --rotate left --left-of DP-4
+xrandr --output DP-4 --primary
+# sleep 0.5
 
-xrandr --output DP-4 --mode 3440x1440 --rate 75.05
-xrandr --output DP-0 --mode 2560x1440 --rotate left --left-of DP-4 --output DP-4 --primary
+# xrandr --output DP-4 --primary
+# /usr/bin/nvidia-settings --assign CurrentMetamode="DP-4: 3440x1440_75 +1440+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, AllowGSYNCCompatible=On}, DP-0: 2560x1440 +0+0 {rotation=left, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+# /usr/bin/nvidia-settings --assign CurrentMetamode="DPY-5: 3440x1440_100 @3440x1440 +1440+0 {AllowGSYNCCompatible=On, ViewPortIn=3440x1440, ViewPortOut=3440x1440+0+0, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}, DPY-1: nvidia-auto-select @1440x2560 +0+0 {ViewPortIn=1440x2560, ViewPortOut=2560x1440+0+0, Rotation=90, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
