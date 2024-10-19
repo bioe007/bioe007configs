@@ -109,9 +109,8 @@ export GOPATH="$HOME/go"
 PATH="${GOPATH}/bin:$PATH"
 export PATH="${HOME}/bin:${HOME}/.local/bin:${PATH}"
 
-export EDITOR="$(which vim)"
+export EDITOR="$(which nvim)"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 # ole words. de# key bindings
 bindkey "\e[1~" beginning-of-line
 bindkey "\e[4~" end-of-line
@@ -160,6 +159,31 @@ if [ -f '/home/perry/google-cloud-sdk/path.zsh.inc' ]; then . '/home/perry/googl
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/perry/google-cloud-sdk/completion.zsh.inc' ]; then . '/home/perry/google-cloud-sdk/completion.zsh.inc'; fi
 
-source ~/.fzf/shell/key-bindings.zsh
-source ~/.fzf/shell/completion.zsh
+# [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# source ~/.fzf/shell/key-bindings.zsh
+# source ~/.fzf/shell/completion.zsh
+eval "$(fzf --zsh)"
 
+# -- Use fd instead of fzf --
+
+export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd --type=d --hidden --strip-cwd-prefix --exclude .git"
+
+# Use fd (https://github.com/sharkdp/fd) for listing path candidates.
+# - The first argument to the function ($1) is the base path to start traversal
+# - See the source code (completion.{bash,zsh}) for the details.
+_fzf_compgen_path() {
+  fd --hidden --exclude .git . "$1"
+}
+
+# Use fd to generate the list for directory completion
+_fzf_compgen_dir() {
+  fd --type=d --hidden --exclude .git . "$1"
+}
+
+function zvm_after_init() {
+    bindkey -r '^G'
+    source fzf-git.sh
+ }
+source "$HOME/bin/fzf-git/fzf-git.sh"
