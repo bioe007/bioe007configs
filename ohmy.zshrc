@@ -196,5 +196,10 @@ bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
 bindkey '^r' history-incremental-search-backward
+# export GOROOT=
+export GOPATH="$HOME/go"
+PATH="${GOPATH}/bin:$PATH"
+export PATH="${HOME}/bin:${HOME}/.local/bin:${PATH}"
+
 
 #:vim fdm=marker
