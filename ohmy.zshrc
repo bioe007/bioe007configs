@@ -107,17 +107,36 @@ fi
 alias p="sudo pacman"
 alias snap="sudo snap"
 alias suspend="sudo systemctl suspend"
-# alias ls="ls --color"
 alias ls="eza --color=always --icons=always"
 alias ll="eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions"
 alias less="less -R"
 alias grep="grep --color=auto"
-alias gst="git status"
 alias tma="tmux attach || tmux"
+alias v="nvim"
+alias grn="go run ."
+alias grt="go test -v ./..."
+alias mv='mv -i'
+alias rm='rm -i'
+alias cp='cp -i'
+alias ln='ln -i'
+alias md='mkdir -pv'
+alias df='df -h'
+
+alias gs="git status"
+alias ga="git add"
+alias gal="git add -u"
+alias gall="git add -A"
+alias gl="git log"
+alias gll="git long --online"
+
+alias ping="ping -c 5"
+alias pingfast="ping -c 100 -i 0.2"
 
 
 eval $(thefuck --alias fk)
 
+
+source <(fzf --zsh)
 # -- Use fd instead of fzf --
 export FZF_DEFAULT_COMMAND="fd --hidden --strip-cwd-prefix --exclude .git"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
@@ -134,14 +153,20 @@ _fzf_compgen_path() {
 _fzf_compgen_dir() {
   fd --type=d --hidden --exclude .git . "$1"
 }
-export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS'
+
+export FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS"
+    --bind 'ctrl-y:execute-silent(xclip -selection primary {})'
+    --bind 'alt-y:execute-silent(readlink -f {} | xclip -selection primary)'
     --color=fg:#e5e9f0,bg:#3b4252,hl:#81a1c1
     --color=fg+:#e5e9f0,bg+:#3b4252,hl+:#81a1c1
     --color=info:#eacb8a,prompt:#bf6069,pointer:#b48dac
-    --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b'
+    --color=marker:#a3be8b,spinner:#b48dac,header:#a3be8b"
 
 export FZF_CTRL_T_OPTS="--preview 'bat -n --color=always --line-range :500 {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+
+# hides command history number from results
+export FZF_CTRL_R_OPTS="--with-nth 2.."
 
 # Advanced customization of fzf options via _fzf_comprun function
 # - The first argument to the function is the name of the command.
@@ -152,6 +177,7 @@ _fzf_comprun() {
 
   case "$command" in
     cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    ls)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
     export|unset) fzf --preview "eval 'echo $'{}"         "$@" ;;
     ssh)          fzf --preview 'dig {}'                   "$@" ;;
     *)            fzf --preview "bat -n --color=always --line-range :500 {}" "$@" ;;
@@ -195,8 +221,9 @@ bindkey '^N' history-search-forward
 bindkey '^?' backward-delete-char
 bindkey '^h' backward-delete-char
 bindkey '^w' backward-kill-word
-bindkey '^r' history-incremental-search-backward
-# export GOROOT=
+# bindkey '^r' history-incremental-search-backward
+
+
 export GOPATH="$HOME/go"
 PATH="${GOPATH}/bin:$PATH"
 export PATH="${HOME}/bin:${HOME}/.local/bin:${PATH}"
