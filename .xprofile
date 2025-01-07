@@ -1,0 +1,18 @@
+
+# /usr/bin/xrandr --output DP-4 --mode 3440x1440 --rate 75.05
+# /usr/bin/xrandr --output DP-0 --mode 2560x1440 --rotate left --left-of DP-4 --output DP-4 --primary
+# /usr/bin/nvidia-settings --assign CurrentMetamode="DP-4: 3440x1440_75 +1440+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, AllowGSYNCCompatible=On}, DP-0: 2560x1440 +0+0 {rotation=left, ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+/home/perry/bin/myrandr &
+(/usr/bin/sleep 0.1 ; /usr/bin/nitrogen --restore) &
+/usr/bin/rfkill block wlan &
+
+/usr/bin/playerctld &
+/usr/bin/blueman-applet &
+/usr/bin/slack -u &
+/usr/bin/signal-desktop &
+/usr/bin/obsidian &
+/usr/bin/brave &
+/usr/bin/youtube-music &
+/usr/bin/steam &
+# /usr/bin/bitwarden-desktop &
+export QT_QPA_PLATFORMTHEME=gtk2 && exec --no-startup-id sleep 2 && /usr/bin/kdeconnect-indicator &
