@@ -1,0 +1,8 @@
+#!/bin/bash
+# helper to make easier setting refresh rate for gaming and disabling dpms,
+# screen blanking, etc..
+
+echo "Setting DP-4 to ~165hz refresh rate"
+xrandr --output DP-4 --mode 3440x1440 --rate 164.90
+echo "Disabling screen sleep, sleeps 1s"
+sleep 1; xset s off -dpms
