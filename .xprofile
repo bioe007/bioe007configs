@@ -13,6 +13,7 @@
 /usr/bin/obsidian &
 /usr/bin/brave &
 /usr/bin/youtube-music &
-/usr/bin/steam &
-# /usr/bin/bitwarden-desktop &
-export QT_QPA_PLATFORMTHEME=gtk2 && exec --no-startup-id sleep 2 && /usr/bin/kdeconnect-indicator &
+/usr/bin/steam -nochatui -nofriendsui -silent &
+/usr/bin/bitwarden-desktop &
+/home/perry/bin/kdeconnect_launch &
+/usr/bin/picom &
